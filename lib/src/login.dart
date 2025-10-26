@@ -1,6 +1,6 @@
 import 'package:ecommerce_mobile/api/api_service.dart';
-import 'package:ecommerce_mobile/src/app_route.dart';
-import 'package:ecommerce_mobile/utils/checkEmailAndPhone.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -27,22 +27,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signIn() async {
-    final url = dotenv.env['BACKEND_URL'] ?? "";
-    if (!_formKey.currentState!.saveAndValidate()) return;
+    Navigator.pushReplacementNamed(context, AppRoute.home);
+    // final url = dotenv.env['BACKEND_URL'] ?? "";
+    // if (!_formKey.currentState!.saveAndValidate()) return;
 
-    Map<String, dynamic> body = {'password': password.text.trim()};
-    if (isValidEmail(emailORPhone.text.trim())) {
-      body['email'] = emailORPhone.text.trim();
-    } else {
-      body['phone'] = emailORPhone.text.trim();
-    }
+    // Map<String, dynamic> body = {'password': password.text.trim()};
+    // if (isValidEmail(emailORPhone.text.trim())) {
+    //   body['email'] = emailORPhone.text.trim();
+    // } else {
+    //   body['phone'] = emailORPhone.text.trim();
+    // }
 
-    print('body is : $body');
-    Map<String, dynamic> responseData = await ApiService().post(url, body);
-    debugPrint('response is: ${responseData['data']}');
-    if (responseData['success']) {
-      Navigator.pushReplacementNamed(context, AppRoute.home);
-    }
+    // print('body is : $body');
+    // Map<String, dynamic> responseData = await ApiService().post(url, body);
+    // debugPrint('response is: ${responseData['data']}');
+    // if (responseData['success']) {
+    //   Navigator.pushReplacementNamed(context, AppRoute.home);
+    // }
   }
 
   @override
@@ -72,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "Sign into your account!",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -163,17 +164,27 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("New to Mega Smart Cart? "),
+                      const Text("New to Mega Smart Cart? ", style: TextStyle(fontWeight: FontWeight.w600)),
                       GestureDetector(
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoute.register),
-                        child: const Text(
-                          "Sign Up",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
-                            decorationThickness: 2,
-                          ),
+                        onTap: () => Navigator.pushNamed(context, AppRoute.register),
+                        child: Stack(
+                          children: [
+                            Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 1, // move the underline lower
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                height: 2, // thickness of underline
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

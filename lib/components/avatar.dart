@@ -10,7 +10,7 @@ class Avatar extends StatelessWidget {
     Key? key,
     required this.asset,
     this.paddingSize = 0,
-    this.size = 60,
+    this.size = 40,
     this.onTap,
   }) : super(key: key);
 

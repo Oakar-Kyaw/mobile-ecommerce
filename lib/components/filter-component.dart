@@ -14,7 +14,7 @@ class _FilterComponentState extends State<FilterComponent> {
     final colorScheme = ShadTheme.of(context).colorScheme;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 20 , vertical: 8),
       decoration: BoxDecoration(color: colorScheme.background),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,7 +41,7 @@ class _FilterComponentState extends State<FilterComponent> {
                   ),
                 ],
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 10),
               Row(
                 children: [
                   const Text("Filter"),

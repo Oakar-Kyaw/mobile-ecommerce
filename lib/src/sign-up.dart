@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:ecommerce_mobile/api/api_service.dart';
-import 'package:ecommerce_mobile/src/app_route.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
-import 'package:ecommerce_mobile/src/app_route.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -83,54 +87,26 @@ class _SignUpPageState extends State<SignUpPage> {
   //   }
   // }
 
-  Future<void> _registerWithGoogle(BuildContext context) async {
-    try {
-      const url = 'https://megabackend.ddns.net/api/v1/users/register/google';
-      // const url = 'http://192.168.1.3:5001/api/v1/users/register/google';
-      final result = await FlutterWebAuth2.authenticate(
-        url: url,
-        callbackUrlScheme: "myapp",
+  Future _registerWithGoogle(BuildContext context) async {
+
+final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+
+  try {
+    await _googleSignIn.initialize(
       );
-
-      print('✅ OAuth result URL: $result');
-
-      final uri = Uri.parse(result);
-      final success = uri.queryParameters['success'] == 'true';
-      final email = uri.queryParameters['email'];
-      final token = uri.queryParameters['token'];
-      final error = uri.queryParameters['error'];
-
-      if (!context.mounted) return;
-
-      if (success && token != null) {
-        // Save token to secure storage
-        // await secureStorage.write(key: 'auth_token', value: token);
-
-        // Navigate to home
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoute.home,
-          (route) => false,
-        );
-
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Welcome! Logged in as $email')));
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error ?? 'Registration failed')));
-      }
-    } catch (e) {
-      print('❌ Authentication cancelled: $e');
-    } catch (e) {
-      print('❌ Error: $e');
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Authentication failed')));
-      }
+    final user = await _googleSignIn.authenticate();
+    final code = user.authentication.idToken;
+    print("code $user");
+    if (code != null) {
+      // Send this 'code' securely to your backend (HTTPS)
+      await ApiService().get('http://192.168.1.8:5001/api/v1/users/google/register?code=$code');
+     // await sendCodeToBackend(code);
+    } else {
+      throw Exception('No serverAuthCode received');
     }
+  } catch (e) {
+    print('Google Sign-In failed: $e');
+  }
   }
 
   @override
@@ -160,7 +136,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: Text(
                           "Create an account!",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -302,19 +278,29 @@ class _SignUpPageState extends State<SignUpPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Already have an account? "),
-                      GestureDetector(
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoute.login),
-                        child: const Text(
-                          "Sign In",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
-                            decorationThickness: 2,
+                      const Text("Already have an account? ", style: TextStyle(fontWeight: FontWeight.w600),),
+                       GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, AppRoute.login),
+                          child: Stack(
+                            children: [
+                              Text(
+                                "Sign In",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 1, // move the underline lower
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  height: 2, // thickness of underline
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ]
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ],

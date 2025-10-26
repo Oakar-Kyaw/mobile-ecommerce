@@ -1,8 +1,8 @@
-import 'package:ecommerce_mobile/src/app_route.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/src/home.dart';
 import 'package:ecommerce_mobile/src/login.dart';
 import 'package:ecommerce_mobile/src/promotion.dart';
-import 'package:ecommerce_mobile/src/sign_up.dart';
+import 'package:ecommerce_mobile/src/sign-up.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
