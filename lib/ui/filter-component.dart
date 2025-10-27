@@ -14,7 +14,7 @@ class _FilterState extends State<Filter> {
     final colorScheme = ShadTheme.of(context).colorScheme;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20 , vertical: 8),
+      margin: EdgeInsets.only(right: 5),
       decoration: BoxDecoration(color: colorScheme.background),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -23,7 +23,7 @@ class _FilterState extends State<Filter> {
           const Row(
             children: [
               Text("512,344+", style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(width: 2),
+              SizedBox(width: 4),
               Text("items"),
             ],
           ),
@@ -35,11 +35,10 @@ class _FilterState extends State<Filter> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                       decoration: BoxDecoration(
                         color: Colors.white, // background color
-                        borderRadius: BorderRadius.circular(3), // optional rounded corners
+                        borderRadius: BorderRadius.circular(5), // optional rounded corners
                         boxShadow: [
                           BoxShadow(
-                            color: const Color.fromARGB(255, 163, 160, 160).withValues(), // shadow color
-                           // spreadRadius: 0.2, // how far it spreads
+                            color: const Color.fromARGB(255, 214, 213, 213).withValues(), 
                             blurRadius: 6, // how soft the shadow looks
                            offset: const Offset(1, 2), // move shadow down a bit
                           ),
@@ -52,7 +51,7 @@ class _FilterState extends State<Filter> {
                             "Sort",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
-                          const SizedBox(width: 2,),
+                          const SizedBox(width: 4,),
                           Icon(LucideIcons.arrowDownUp, size: 14,)
                         ],
                       ),
@@ -63,10 +62,10 @@ class _FilterState extends State<Filter> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                       decoration: BoxDecoration(
                         color: Colors.white, // background color
-                        borderRadius: BorderRadius.circular(3), // optional rounded corners
+                        borderRadius: BorderRadius.circular(5), // optional rounded corners
                         boxShadow: [
                           BoxShadow(
-                            color: const Color.fromARGB(255, 163, 160, 160).withValues(), // shadow color
+                            color: const Color.fromARGB(255, 214, 213, 213).withValues(), // shadow color
                            // spreadRadius: 0.2, // how far it spreads
                             blurRadius: 6, // how soft the shadow looks
                            offset: const Offset(1, 2), // move shadow down a bit
@@ -80,8 +79,8 @@ class _FilterState extends State<Filter> {
                             "Filter",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
-                          const SizedBox(width: 2,),
-                          Icon(Icons.filter, size: 14,)
+                          const SizedBox(width: 4,),
+                          Icon(Icons.filter_list_alt, size: 14,)
                         ],
                       ),
                     ),

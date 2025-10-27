@@ -77,6 +77,9 @@ flutter:
     - assets/google_fonts/
     - assets/images/shirt.jpg
     - assets/images/
+    - assets/images/smartphone.jpg
+    - assets/images/sneaker.jpg
+    - assets/images/headphone.jpg
   fonts:
     - family: Poppins
       fonts:

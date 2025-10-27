@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //debugPaintSizeEnabled = true; 
   // await Firebase.initializeApp(
   //   // options: FirebaseOptions(apiKey: apiKey, appId: appId, messagingSenderId: messagingSenderId, projectId: projectId)
   //   options: FirebaseOptions(apiKey: "AIzaSyASfbzwMvS8_12u5ViMpiAm2xga-wkE5tM", appId: "1:566223411513:android:5a5412fea0a1ecde4cb0e8", messagingSenderId: "566223411513", projectId: "megasmartcart-771d3"),
@@ -66,7 +69,7 @@ class MyApp extends StatelessWidget {
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white, // ✅ AppBar background color
               foregroundColor: Colors.black, // text/icons color
-              elevation: 0, // optional: remove shadow
+              //elevation: 5, // optional: remove shadow
             ),
             textTheme: Theme.of(context).textTheme
                 .apply(

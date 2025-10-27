@@ -16,10 +16,10 @@ class CategoryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = ShadTheme.of(context).colorScheme;
-
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 7),
       child: ShadButton.outline(
+        width: 15,
         decoration: ShadDecoration(
           color: isSelected
               ? colorScheme.secondary.withOpacity(0.2)
@@ -32,7 +32,7 @@ class CategoryButton extends StatelessWidget {
         ),
         onPressed: onTap,
         child: Text(
-          title,
+          "Myanmar",
           style: TextStyle(
             color: isSelected ? colorScheme.primary : colorScheme.foreground,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,

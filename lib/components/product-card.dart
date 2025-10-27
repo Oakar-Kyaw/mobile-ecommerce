@@ -3,7 +3,9 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ProductCard extends StatelessWidget {
   final String title;
-  final String price;
+  final num price;
+  final String currency;
+  final num? discountPrice;
   final String imageUrl;
   final String? description;
   final bool isFavorite;
@@ -13,7 +15,9 @@ class ProductCard extends StatelessWidget {
     required this.title,
     required this.imageUrl,
     required this.price,
+    this.currency = "MMK",
     this.description,
+    this.discountPrice,
     this.isFavorite = false,
   }) : super(key: key);
 
@@ -22,12 +26,11 @@ class ProductCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 🖼️ Image with favorite icon overlay
         Stack(
           children: [
             SizedBox(
-              width: 150,
-              height: 200,
+              width: 170,
+              height: 185,
               child: Image.asset(
                 imageUrl,
                 fit: BoxFit.cover,
@@ -37,7 +40,7 @@ class ProductCard extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.all(4), // space around the icon
+                  padding: const EdgeInsets.all(6), // space around the icon
                   decoration: BoxDecoration(
                     color: Colors.grey[300], // background color
                     shape: BoxShape.circle,   // make it circular
@@ -49,10 +52,29 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
+              // The promotion badge
+            if(discountPrice != null) Positioned(
+              top: 15,
+              left: -30,
+              child: Transform.rotate(
+                angle: -0.785398, // -45 degrees in radians
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 30),
+                  color: const Color.fromRGBO(254, 248, 12,1),
+                  child: Text(
+                    '10% OFF',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: 2),
 
         // 🧱 Product info card
         ShadCard(
@@ -70,7 +92,7 @@ class ProductCard extends StatelessWidget {
               title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis, // Trim long titles
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
           ),
           description: Padding(
@@ -82,12 +104,26 @@ class ProductCard extends StatelessWidget {
               style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ),
-          footer: Text(
-            price,
-            style: const TextStyle(
-             // color: Colors.green,
-              fontWeight: FontWeight.bold,
-            ),
+          footer: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (discountPrice != null)
+                Text(
+                  "$discountPrice $currency",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14
+                  ),
+                ),  
+              Text(
+                "$price $currency",
+                style: TextStyle(
+                  fontSize: 14,
+                  decoration: discountPrice != null ? TextDecoration.lineThrough : TextDecoration.none,
+                ),
+              ),
+            ],
           ),
         ),
       ],

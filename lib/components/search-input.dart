@@ -17,7 +17,6 @@ class _SearchInputState extends State<SearchInput> {
 
     return Container(
       height: 42,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       alignment: Alignment.center, // 👈 keeps content vertically centered
       child: ShadInput(
         controller: _controller, // 👈 fix misalignment

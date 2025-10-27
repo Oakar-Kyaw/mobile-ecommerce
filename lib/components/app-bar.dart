@@ -20,8 +20,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: AppBar(
-        elevation: 0,
         automaticallyImplyLeading: false,
+        shadowColor: Color.fromRGBO(106, 103, 103, 0.3),
         titleSpacing: 0,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

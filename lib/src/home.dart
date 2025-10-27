@@ -3,10 +3,11 @@ import 'package:ecommerce_mobile/components/bottom-navigation-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/components/swiper.dart';
-import 'package:ecommerce_mobile/ui/horizontal-scrollable-brand.dart';
+import 'package:ecommerce_mobile/ui/horizontal-scroll-avatar.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
-import 'package:ecommerce_mobile/ui/horizontal-scrollable-product-item.dart';
+import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:flutter/material.dart';
+import 'package:ecommerce_mobile/components/product-card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -62,31 +63,36 @@ class _HomePageState extends State<HomePage> {
     "title": "Classic White Shirt",
     "imageUrl": "assets/images/menshirt.jpg",
     "description": "Soft cotton white shirt, perfect for casual or formal wear.",
-    "price": "40,000 MMK"
+    "price": 40000,
+    "currency": "MMK"
   },
   {
     "title": "Denim Jeans",
     "imageUrl": "assets/images/jean.jpg",
     "description": "Slim fit denim jeans with stretchable fabric.",
-    "price": "55,000 MMK"
+    "price": 55000,
+    "currency": "MMK"
   },
   {
     "title": "Leather Jacket",
     "imageUrl": "assets/images/jacket.jpg",
     "description": "Premium black leather jacket with inner lining.",
-    "price": "120,000 MMK"
+    "price": 120000,
+    "currency": "MMK"
   },
   {
     "title": "Sneakers",
     "imageUrl": "assets/images/sneaker.jpg",
     "description": "Comfortable and lightweight sneakers for everyday use.",
-    "price": "65,000 MMK"
+    "price": 65000,
+    "currency": "MMK"
   },
   {
     "title": "Smart Watch",
     "imageUrl": "assets/images/smartwatch.jpg",
     "description": "Waterproof smartwatch with heart rate and sleep tracking.",
-    "price": "85,000 MMK"
+    "price": 850000,
+    "currency": "MMK"
   },
 ];
 
@@ -100,6 +106,7 @@ class _HomePageState extends State<HomePage> {
         child: CustomAppBar(leading: Icons.menu, lastIcon: Icons.message, imageUrl: "assets/images/logo.png", trailing: Icons.shopping_cart),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -108,7 +115,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: SearchInput(),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 20),
     
             // Promotions
             TitleWidget('Promotions', isExistedIcon: false),
@@ -138,7 +145,18 @@ class _HomePageState extends State<HomePage> {
             TitleWidget("Trending Items"),
             SizedBox(
               height: 320,
-              child: HorizontalScrollableItem(product: products),
+              child: HorizontalScrollableList<Map<String, dynamic>>(
+                items: products,
+                itemBuilder: (context, product, index) {
+                  return ProductCard(
+                    title: product["title"],
+                    imageUrl: product["imageUrl"],
+                    description: product["description"],
+                    price: product["price"],
+                    currency: product["currency"],
+                  );
+                },
+              )
             ),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -147,7 +165,18 @@ class _HomePageState extends State<HomePage> {
             TitleWidget("New Arrivals"),
             SizedBox(
               height: 320,
-              child: HorizontalScrollableItem(product: products),
+              child: HorizontalScrollableList<Map<String, dynamic>>(
+                items: products,
+                itemBuilder: (context, product, index) {
+                  return ProductCard(
+                    title: product["title"],
+                    imageUrl: product["imageUrl"],
+                    description: product["description"],
+                    price: product["price"],
+                    currency: product["currency"],
+                  );
+                },
+              )
             ),
             Padding(
               padding: const EdgeInsets.all(20),
