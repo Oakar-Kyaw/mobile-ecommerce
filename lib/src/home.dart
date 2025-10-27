@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppBar(title: 'home'),
+        child: CustomAppBar(leading: Icons.menu, lastIcon: Icons.message, imageUrl: "assets/images/logo.png", trailing: Icons.shopping_cart),
       ),
       body: SingleChildScrollView(
         child: Column(

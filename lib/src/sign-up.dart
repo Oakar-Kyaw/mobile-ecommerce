@@ -1,15 +1,8 @@
 import 'dart:async';
-
-import 'package:ecommerce_mobile/api/api_service.dart';
+import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
-import 'package:ecommerce_mobile/src/app-route.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -59,54 +52,33 @@ class _SignUpPageState extends State<SignUpPage> {
       'password': password.text.trim(),
       'role': 'CUSTOMER',
     };
-    Map<String, dynamic> responseData = await ApiService().post(
-      "http://192.168.1.6:5001",
-      body,
-    );
-    debugPrint('response is: ${responseData['data']}');
-  }
-
-  //   Future<void> _registerWithGoogle(BuildContext context) async {
-  //   //const url = 'https://megabackend.ddns.net/api/v1/users/register/google';
-  //   const url = 'http://192.168.1.3:5001/api/v1/users/register/google';
-  //   try {
-  //     final result = await FlutterWebAuth2.authenticate(
-  //       url: url,
-  //       callbackUrlScheme: "myapp"
-  //     );
-
-  //     if (!context.mounted) return;
-
-  //     print('✅ OAuth result URL: $result');
-  //     Navigator.pushNamed(context, AppRoute.register);
-  //   } catch (e) {
-  //     if (context.mounted) {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text('❌ Google Sign-in failed: $e')));
-  //     }
-  //   }
-  // }
-
-  Future _registerWithGoogle(BuildContext context) async {
-
-final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-
-  try {
-    await _googleSignIn.initialize(
+    register(body).then((result) {
+      final success = result['success'] as bool;
+      final message = result['message'] as String;
+      final snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: success ? Colors.green : Colors.red,
       );
-    final user = await _googleSignIn.authenticate();
-    final code = user.authentication.idToken;
-    print("code $user");
-    if (code != null) {
-      // Send this 'code' securely to your backend (HTTPS)
-      await ApiService().get('http://192.168.1.8:5001/api/v1/users/google/register?code=$code');
-     // await sendCodeToBackend(code);
-    } else {
-      throw Exception('No serverAuthCode received');
-    }
-  } catch (e) {
-    print('Google Sign-In failed: $e');
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (success) {
+        Navigator.pushReplacementNamed(context, AppRoute.login);
+      }
+    });
   }
+
+Future _registerWithGoogle(BuildContext context) async {
+       userRegisterWithGoogleApi().then((result) {
+        final success = result['success'] as bool;
+        final message = result['message'] as String;
+        final snackBar = SnackBar(
+          content: Text(message),
+          backgroundColor: success ? Colors.green : Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        if (success) {
+          Navigator.pushReplacementNamed(context, AppRoute.login);
+        }
+      });
   }
 
   @override
@@ -117,7 +89,7 @@ final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: ShadForm(
               key: _formKey,
               child: Column(
@@ -268,9 +240,9 @@ final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
                         onTap: () => _registerWithGoogle(context),
                         child: _buildSocialButton('assets/images/google.png'),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 25),
                       _buildSocialButton('assets/images/facebook.png'),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 25),
                       _buildSocialButton('assets/images/apple.png'),
                     ],
                   ),

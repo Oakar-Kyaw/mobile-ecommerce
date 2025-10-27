@@ -1,4 +1,4 @@
-import 'package:ecommerce_mobile/api/api_service.dart';
+import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
 import 'package:flutter/material.dart';
@@ -27,23 +27,29 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signIn() async {
-    Navigator.pushReplacementNamed(context, AppRoute.home);
-    // final url = dotenv.env['BACKEND_URL'] ?? "";
-    // if (!_formKey.currentState!.saveAndValidate()) return;
+    final url = dotenv.env['AUTH_URL'] ?? "";
+    if (!_formKey.currentState!.saveAndValidate()) return;
 
-    // Map<String, dynamic> body = {'password': password.text.trim()};
-    // if (isValidEmail(emailORPhone.text.trim())) {
-    //   body['email'] = emailORPhone.text.trim();
-    // } else {
-    //   body['phone'] = emailORPhone.text.trim();
-    // }
+    Map<String, dynamic> body = {'password': password.text.trim()};
+    if (isValidEmail(emailORPhone.text.trim())) {
+      body['email'] = emailORPhone.text.trim();
+    } else {
+      body['phone'] = emailORPhone.text.trim();
+    }
 
-    // print('body is : $body');
-    // Map<String, dynamic> responseData = await ApiService().post(url, body);
-    // debugPrint('response is: ${responseData['data']}');
-    // if (responseData['success']) {
-    //   Navigator.pushReplacementNamed(context, AppRoute.home);
-    // }
+    print('body is : $body');
+    loginUser(body).then((result){
+      final success = result['success'] as bool;
+      final message = result['message'] as String;
+      final snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: success ? Colors.green : Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (success) {
+        Navigator.pushReplacementNamed(context, AppRoute.home);
+      }
+    });
   }
 
   @override
@@ -54,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: ShadForm(
               key: _formKey,
               child: Column(
