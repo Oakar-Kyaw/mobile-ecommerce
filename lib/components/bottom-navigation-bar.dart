@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class CustomerBottomNavigationBar extends StatelessWidget {
@@ -31,13 +32,13 @@ class CustomerBottomNavigationBar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFF2C2C2C) : Colors.transparent,
+              color: isSelected ? LightModeColors.textPrimary : Colors.transparent,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
               icon,
-              color: isSelected ? Colors.white : Colors.grey,
+              color: isSelected ? LightModeColors.background : LightModeColors.textSecondary,
               size: 24,
             ),
           ),
@@ -46,7 +47,7 @@ class CustomerBottomNavigationBar extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 12,
-              color: isSelected ? Colors.black : Colors.grey,
+              color: isSelected ? LightModeColors.textPrimary : LightModeColors.textSecondary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
@@ -59,10 +60,10 @@ class CustomerBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: LightModeColors.background,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: LightModeColors.shadowColor,
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -3),

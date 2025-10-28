@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalScrollableBrand extends StatelessWidget {
@@ -36,13 +37,13 @@ class HorizontalScrollableBrand extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: isCheckBorderRadius
-                        ? Border.all(color: Color.fromARGB(255, 189, 189, 189), width: 0.5)
+                        ? Border.all(color: LightModeColors.textSecondary, width: 0.5)
                         : null,
                   ),
                   child: CircleAvatar(
                     radius: 28,
                     backgroundImage: AssetImage(imageUrl),
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: LightModeColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),

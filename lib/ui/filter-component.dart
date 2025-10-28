@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -34,11 +35,11 @@ class _FilterState extends State<Filter> {
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                       decoration: BoxDecoration(
-                        color: Colors.white, // background color
+                        color: LightModeColors.background, // background color
                         borderRadius: BorderRadius.circular(5), // optional rounded corners
                         boxShadow: [
                           BoxShadow(
-                            color: const Color.fromARGB(255, 214, 213, 213).withValues(), 
+                            color: LightModeColors.textSecondary, 
                             blurRadius: 6, // how soft the shadow looks
                            offset: const Offset(1, 2), // move shadow down a bit
                           ),
@@ -61,11 +62,11 @@ class _FilterState extends State<Filter> {
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                       decoration: BoxDecoration(
-                        color: Colors.white, // background color
+                        color: LightModeColors.background, // background color
                         borderRadius: BorderRadius.circular(5), // optional rounded corners
                         boxShadow: [
                           BoxShadow(
-                            color: const Color.fromARGB(255, 214, 213, 213).withValues(), // shadow color
+                            color: LightModeColors.textSecondary, // shadow color
                            // spreadRadius: 0.2, // how far it spreads
                             blurRadius: 6, // how soft the shadow looks
                            offset: const Offset(1, 2), // move shadow down a bit

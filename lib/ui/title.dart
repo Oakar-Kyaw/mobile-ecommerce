@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class TitleWidget extends StatelessWidget {
@@ -27,7 +28,7 @@ class TitleWidget extends StatelessWidget {
                   if (isExistedIcon)
                     IconButton(
                       onPressed: onTap,
-                      icon: const Icon(Icons.arrow_forward, color: Colors.black,),
+                      icon: const Icon(Icons.arrow_forward, color: LightModeColors.primary,),
                       tooltip: 'Arrow Forward',
                     ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -24,6 +25,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(
@@ -42,12 +44,12 @@ class ProductCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(6), // space around the icon
                   decoration: BoxDecoration(
-                    color: Colors.grey[300], // background color
+                    color: LightModeColors.favoriteIconBackground, // background color
                     shape: BoxShape.circle,   // make it circular
                   ),
                   child: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.black,
+                    color: isFavorite ? LightModeColors.error : LightModeColors.primary,
                     size: 18,
                   ),
                 ),
@@ -60,7 +62,7 @@ class ProductCard extends StatelessWidget {
                 angle: -0.785398, // -45 degrees in radians
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 4, horizontal: 30),
-                  color: const Color.fromRGBO(254, 248, 12,1),
+                  color: LightModeColors.secondary,
                   child: Text(
                     '10% OFF',
                     style: TextStyle(
@@ -74,15 +76,16 @@ class ProductCard extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 2),
+        //const SizedBox(height: 2),
 
         // 🧱 Product info card
         ShadCard(
           rowCrossAxisAlignment: CrossAxisAlignment.start,
           columnMainAxisAlignment: MainAxisAlignment.start,
-          width: 150,
+          width: 170,
           padding: const EdgeInsets.all(8),
           border: ShadBorder.none,
+          radius: BorderRadius.zero,
           shadows: const [
             BoxShadow(color: Colors.transparent),
           ],
@@ -101,7 +104,7 @@ class ProductCard extends StatelessWidget {
               description ?? "No description",
               maxLines: 2,
               overflow: TextOverflow.ellipsis, // Trim long descriptions
-              style: const TextStyle(fontSize: 13, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: LightModeColors.textSecondary),
             ),
           ),
           footer: Column(

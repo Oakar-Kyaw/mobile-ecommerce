@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class Avatar extends StatelessWidget {
@@ -25,7 +26,7 @@ class Avatar extends StatelessWidget {
         padding: EdgeInsets.all(paddingSize),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
-          border: Border.all(color: const Color(0xFFdbd5d7)),
+          border: Border.all(color: LightModeColors.background),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(100),

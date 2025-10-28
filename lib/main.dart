@@ -1,10 +1,12 @@
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/src/route-generator.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/rendering.dart';
+//import 'package:firebase_core/firebase_core.dart';
+//import 'package:flutter/rendering.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +16,7 @@ void main() async {
   //   options: FirebaseOptions(apiKey: "AIzaSyASfbzwMvS8_12u5ViMpiAm2xga-wkE5tM", appId: "1:566223411513:android:5a5412fea0a1ecde4cb0e8", messagingSenderId: "566223411513", projectId: "megasmartcart-771d3"),
   // );
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 
@@ -44,38 +46,37 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
 
       // 🌕 Light Theme
-      theme: ShadThemeData(
-        brightness: Brightness.light,
-        colorScheme: const ShadSlateColorScheme.light(),
-        textTheme: globalShadTextTheme,
-      ),
+      // theme: ShadThemeData(
+      //   brightness: Brightness.light,
+      //   colorScheme: const ShadSlateColorScheme.light(),
+      //   textTheme: globalShadTextTheme,
+      // ),
 
-      // 🌑 Dark Theme
-      darkTheme: ShadThemeData(
-        brightness: Brightness.dark,
-        colorScheme: const ShadSlateColorScheme.dark(),
-        textTheme: globalShadTextTheme,
-      ),
+      // // 🌑 Dark Theme
+      // darkTheme: ShadThemeData(
+      //   brightness: Brightness.dark,
+      //   colorScheme: const ShadSlateColorScheme.dark(),
+      //   textTheme: globalShadTextTheme,
+      // ),
 
       appBuilder: (context) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoute.home,
-
           // 🩵 Apply same global style for Material widgets
           theme: ThemeData(
             fontFamily: 'Poppins',
-            scaffoldBackgroundColor: Colors.white,
+            scaffoldBackgroundColor: LightModeColors.background,
             appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.white, // ✅ AppBar background color
-              foregroundColor: Colors.black, // text/icons color
+              backgroundColor: LightModeColors.background, // ✅ AppBar background color
+              foregroundColor: LightModeColors.primary, // text/icons color
               //elevation: 5, // optional: remove shadow
             ),
             textTheme: Theme.of(context).textTheme
                 .apply(
                   fontFamily: 'Poppins',
-                  bodyColor: Colors.black,
-                  displayColor: Colors.black,
+                  bodyColor: LightModeColors.primary,
+                  displayColor: LightModeColors.primary,
                 )
                 .copyWith(
                   bodyLarge: globalTextStyle,

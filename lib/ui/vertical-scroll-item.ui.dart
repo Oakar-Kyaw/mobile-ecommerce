@@ -16,8 +16,8 @@ class VerticalScrollItem extends StatelessWidget {
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+          crossAxisSpacing: 0,
+          mainAxisSpacing: 0,
           childAspectRatio: 0.5,
         ),
         delegate: SliverChildBuilderDelegate(

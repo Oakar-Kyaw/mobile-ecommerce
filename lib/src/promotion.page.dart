@@ -4,6 +4,7 @@ import 'package:ecommerce_mobile/ui/filter-component.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/vertical-scroll-item.ui.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart'; 
 
@@ -85,59 +86,61 @@ class _PromotionPageState extends State<PromotionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
-        lastIcon: Icon(Icons.shopping_cart), 
-        title: "Promotions"
-      ),
-      body: CustomScrollView(
-       slivers: [
-            // Fixed Categories + Search
-      SliverPersistentHeader(
-        pinned: true,
-        delegate: FixedHeader(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              // Horizontal categories
-              SizedBox(
-                height: 40,
-                child: HorizontalScrollableList(
-                  spacing: 10,
-                  items: categories,
-                  itemBuilder: (context, categories, index) {
-                    return OutlinedButton( 
-                      onPressed: () {
-                        
-                      },
-                    child: Text(categories['name'], style: TextStyle(fontSize: 14, color: Colors.black)));
-                  },
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(
+          leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
+          lastIcon: Icon(Icons.shopping_cart), 
+          title: "Promotions"
+        ),
+        body: CustomScrollView(
+         slivers: [
+              // Fixed Categories + Search
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: FixedHeader(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                // Horizontal categories
+                SizedBox(
+                  height: 40,
+                  child: HorizontalScrollableList(
+                    spacing: 10,
+                    items: categories,
+                    itemBuilder: (context, categories, index) {
+                      return OutlinedButton( 
+                        onPressed: () {
+                          
+                        },
+                      child: Text(categories['name'], style: TextStyle(fontSize: 14, color: LightModeColors.primary)));
+                    },
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Search input
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SearchInput(),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Filter component
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Filter(),
-              ),
-            ],
+      
+                const SizedBox(height: 20),
+      
+                // Search input
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SearchInput(),
+                ),
+      
+                const SizedBox(height: 20),
+      
+                // Filter component
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Filter(),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-          VerticalScrollItem(product: products),
-        ],
+            VerticalScrollItem(product: products),
+          ],
+        ),
       ),
     );
   }

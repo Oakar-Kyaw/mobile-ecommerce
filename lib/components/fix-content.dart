@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class FixedHeader extends SliverPersistentHeaderDelegate {
@@ -9,7 +10,7 @@ class FixedHeader extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white
+        color: LightModeColors.background
       ),
     //  padding: const EdgeInsets.only(bottom: 5),
       child: child,

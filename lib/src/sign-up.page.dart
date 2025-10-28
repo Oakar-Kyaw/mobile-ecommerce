@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -57,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
       final message = result['message'] as String;
       final snackBar = SnackBar(
         content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
+        backgroundColor: success ? LightModeColors.success : LightModeColors.error,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       if (success) {
@@ -72,7 +73,7 @@ Future _registerWithGoogle(BuildContext context) async {
         final message = result['message'] as String;
         final snackBar = SnackBar(
           content: Text(message),
-          backgroundColor: success ? Colors.green : Colors.red,
+          backgroundColor: success ? LightModeColors.success : LightModeColors.error,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         if (success) {
@@ -211,7 +212,7 @@ Future _registerWithGoogle(BuildContext context) async {
                   ),
                   const SizedBox(height: 40),
                   ShadButton(
-                    backgroundColor: const Color(0xFF222222),
+                    backgroundColor: LightModeColors.primary,
                     decoration: ShadDecoration(
                       border: ShadBorder(radius: BorderRadius.circular(30.0)),
                     ),
@@ -227,7 +228,7 @@ Future _registerWithGoogle(BuildContext context) async {
                       Expanded(child: Divider(thickness: 1)),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Or", style: TextStyle(color: Colors.grey)),
+                        child: Text("Or", style: TextStyle(color: LightModeColors.textSecondary)),
                       ),
                       Expanded(child: Divider(thickness: 1)),
                     ],
@@ -267,7 +268,7 @@ Future _registerWithGoogle(BuildContext context) async {
                                 right: 0,
                                 child: Container(
                                   height: 2, // thickness of underline
-                                  color: Colors.black,
+                                  color: LightModeColors.textSecondary,
                                 ),
                               ),
                             ]
@@ -291,7 +292,7 @@ Future _registerWithGoogle(BuildContext context) async {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(100)),
-        border: Border.all(color: const Color(0xFFdbd5d7)),
+        border: Border.all(color: LightModeColors.background),
       ),
       child: Image.asset(asset, fit: BoxFit.contain),
     );

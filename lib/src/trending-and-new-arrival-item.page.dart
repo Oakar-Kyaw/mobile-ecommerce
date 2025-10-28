@@ -2,6 +2,7 @@ import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/fix-content.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/vertical-scroll-item.ui.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class TrendingAndNewArrivalItemPage extends StatefulWidget {
@@ -86,56 +87,58 @@ class _TrendingAndNewArrivalItemPageState extends State<TrendingAndNewArrivalIte
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
-        lastIcon: Icon(Icons.search),
-        title: widget.title
-      ),
-      body: CustomScrollView(
-       slivers: [
-            // Fixed Categories + Search
-      SliverPersistentHeader(
-        pinned: true,
-        delegate: FixedHeader(
-          height: 80,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              // Horizontal categories
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height: 40,
-                child: HorizontalScrollableList(
-                  spacing: 20,
-                  items: categories,
-                  itemBuilder: (context, categories, index) {
-                    print("categories: $index");
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(onTap: () => selectCategory(index), child: Text(categories['name'], style: TextStyle(fontSize: 14, color: selectedCategoryIndex == index ? Colors.black : const Color.fromARGB(255, 103, 101, 101)))),
-                        SizedBox(height: 5),
-                        selectedCategoryIndex == index ? Container(
-                          height: 5,
-                          width: 5,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color.fromARGB(255, 184, 169, 27),
-                          ),
-                        ) : const SizedBox(height:5)
-                      ],
-                    );
-                  },
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(
+          leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
+          lastIcon: Icon(Icons.search),
+          title: widget.title
+        ),
+        body: CustomScrollView(
+         slivers: [
+              // Fixed Categories + Search
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: FixedHeader(
+            height: 80,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                // Horizontal categories
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  height: 40,
+                  child: HorizontalScrollableList(
+                    spacing: 20,
+                    items: categories,
+                    itemBuilder: (context, categories, index) {
+                      print("categories: $index");
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(onTap: () => selectCategory(index), child: Text(categories['name'], style: TextStyle(fontSize: 14, color: selectedCategoryIndex == index ? LightModeColors.primary : LightModeColors.textSecondary))),
+                          SizedBox(height: 5),
+                          selectedCategoryIndex == index ? Container(
+                            height: 5,
+                            width: 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: LightModeColors.secondary,
+                            ),
+                          ) : const SizedBox(height:5)
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-          VerticalScrollItem(product: products),
-        ],
+            VerticalScrollItem(product: products),
+          ],
+        ),
       ),
     );
   }

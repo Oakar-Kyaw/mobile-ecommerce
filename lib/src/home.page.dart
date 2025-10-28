@@ -7,6 +7,7 @@ import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-avatar.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_mobile/components/product-card.dart';
 
@@ -101,14 +102,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: LightModeColors.background,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(leading: Icon(Icons.menu), lastIcon: Icon(Icons.message), imageUrl: "assets/images/logo.png", trailing: Icon(Icons.shopping_cart)),
       ),
-      body: SingleChildScrollView(
+      body: ListView.builder(
         padding: const EdgeInsets.only(top: 20),
-        child: Column(
+
+        itemBuilder:(BuildContext context, index){ 
+         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search input
@@ -176,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: const Color.fromARGB(255, 189, 189, 189)),
+              child: Container(width: double.infinity, height: 1, color: LightModeColors.textSecondary),
             ),
             // FutureBuilder(
             //   future: Future.delayed(const Duration(seconds: 2)),
@@ -211,18 +214,19 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: const Color.fromARGB(255, 189, 189, 189)),
+              child: Container(width: double.infinity, height: 1, color: LightModeColors.textSecondary),
             ),
             SizedBox(height: 40)
 
           ],
-        ),
+        );} ,
+        itemCount: 1,
       ),
       bottomNavigationBar: CustomerBottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        activeColor: Colors.black,
-        inactiveColor: Colors.grey,
+        activeColor: LightModeColors.primary,
+        inactiveColor: LightModeColors.textSecondary,
       ),
     );
   }

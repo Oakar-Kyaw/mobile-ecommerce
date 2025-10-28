@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -30,7 +31,7 @@ class SwiperCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.black.withOpacity(0.4),
+                        const Color.fromARGB(255, 129, 127, 127).withValues(alpha: 0.3),
                         Colors.transparent,
                       ],
                       begin: Alignment.centerLeft,
@@ -51,7 +52,7 @@ class SwiperCard extends StatelessWidget {
                         const Text(
                           "40–50% OFF",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: LightModeColors.background,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.2,
@@ -61,7 +62,7 @@ class SwiperCard extends StatelessWidget {
                         const Text(
                           "Now in Shirts",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: LightModeColors.background,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -70,7 +71,7 @@ class SwiperCard extends StatelessWidget {
                         const Text(
                           "All Colours",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: LightModeColors.background,
                             fontSize: 14,
                           ),
                         ),
@@ -86,13 +87,13 @@ class SwiperCard extends StatelessWidget {
                               const Text(
                                 "Shop Now",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: LightModeColors.background,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
                               ),
                               SizedBox(width: 10,),
-                              const Icon(Icons.arrow_forward, color: Colors.white)
+                              const Icon(Icons.arrow_forward, color: LightModeColors.background)
                             ],
                           ),
                         ),
@@ -111,8 +112,8 @@ class SwiperCard extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           margin: EdgeInsets.only(bottom: 0),
           builder: DotSwiperPaginationBuilder(
-            color: Colors.grey,
-            activeColor: Colors.black,
+            color: LightModeColors.textSecondary,
+            activeColor: LightModeColors.textPrimary,
             size: 8.0,
             activeSize: 10.0,
           ),

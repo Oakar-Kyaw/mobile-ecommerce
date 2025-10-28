@@ -1,6 +1,7 @@
 import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
+import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       final message = result['message'] as String;
       final snackBar = SnackBar(
         content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
+        backgroundColor: success ? LightModeColors.success : LightModeColors.error,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       if (success) {
@@ -134,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                   // const Spacer(),
                   const SizedBox(height: 40),
                   ShadButton(
-                    backgroundColor: const Color(0xFF222222),
+                    backgroundColor: LightModeColors.primary,
                     decoration: ShadDecoration(
                       border: ShadBorder(radius: BorderRadius.circular(30.0)),
                     ),
@@ -150,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(child: Divider(thickness: 1)),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Or", style: TextStyle(color: Colors.grey)),
+                        child: Text("Or", style: TextStyle(color: LightModeColors.textSecondary)),
                       ),
                       Expanded(child: Divider(thickness: 1)),
                     ],
@@ -187,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                               right: 0,
                               child: Container(
                                 height: 2, // thickness of underline
-                                color: Colors.black,
+                                color: LightModeColors.textSecondary,
                               ),
                             ),
                           ],
@@ -211,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(100)),
-        border: Border.all(color: const Color(0xFFdbd5d7)),
+        border: Border.all(color: LightModeColors.background),
       ),
       child: Image.asset(asset, fit: BoxFit.contain),
     );
