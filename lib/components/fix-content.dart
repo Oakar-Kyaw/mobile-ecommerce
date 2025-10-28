@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class FixedHeader extends SliverPersistentHeaderDelegate {
   final Widget child;
-  FixedHeader({required this.child});
+  final double height;
+  FixedHeader({required this.child, this.height = 200});
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -16,9 +17,9 @@ class FixedHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 200; // adjust based on child height
+  double get maxExtent => height; // adjust based on child height
   @override
-  double get minExtent => 200; // same as maxExtent to keep fixed
+  double get minExtent => height; // same as maxExtent to keep fixed
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => false;

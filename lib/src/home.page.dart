@@ -3,6 +3,7 @@ import 'package:ecommerce_mobile/components/bottom-navigation-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/components/swiper.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-avatar.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppBar(leading: Icons.menu, lastIcon: Icons.message, imageUrl: "assets/images/logo.png", trailing: Icons.shopping_cart),
+        child: CustomAppBar(leading: Icon(Icons.menu), lastIcon: Icon(Icons.message), imageUrl: "assets/images/logo.png", trailing: Icon(Icons.shopping_cart)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 20),
@@ -142,7 +143,22 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 25),
             const DoubleLineTriangleDivider(),
-            TitleWidget("Trending Items"),
+            // FutureBuilder(
+            //   future: Future.delayed(const Duration(seconds: 2)),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.done) {
+            //       return TitleWidget(
+            //         "Trending Items",
+            //         onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
+            //       );
+            //     }
+            //     return const SizedBox.shrink();
+            //   },
+            // ),
+            TitleWidget(
+                    "Trending Items",
+                    onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
+            ),
             SizedBox(
               height: 320,
               child: HorizontalScrollableList<Map<String, dynamic>>(
@@ -162,7 +178,22 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(20),
               child: Container(width: double.infinity, height: 1, color: const Color.fromARGB(255, 189, 189, 189)),
             ),
-            TitleWidget("New Arrivals"),
+            // FutureBuilder(
+            //   future: Future.delayed(const Duration(seconds: 2)),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.done) {
+            //       return TitleWidget(
+            //         "New Arrivals",
+            //         onTap: () => Navigator.pushNamed(context, AppRoute.newArrivals),
+            //       );
+            //     }
+            //     return const SizedBox.shrink();
+            //   },
+            // ),
+             TitleWidget(
+                    "New Arrivals",
+                    onTap: () => Navigator.pushNamed(context, AppRoute.newArrivals),
+                  ),
             SizedBox(
               height: 320,
               child: HorizontalScrollableList<Map<String, dynamic>>(

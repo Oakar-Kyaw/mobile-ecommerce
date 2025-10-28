@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final IconData leading;
-  final IconData lastIcon;
+  final Widget leading;
+  final Widget lastIcon;
   final String? title;
   final String? imageUrl;
-  final IconData? trailing;
+  final Widget? trailing;
 
   const CustomAppBar({
     Key? key,
@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(leading),
+                    icon: leading,
                   ),
                   const SizedBox(width: 10),
                   if (title != null)
@@ -60,11 +60,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   if (trailing != null)
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(trailing),
+                      icon: trailing!,
                     ),
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(lastIcon),
+                    icon: lastIcon,
                   ),
                 ],
               ),

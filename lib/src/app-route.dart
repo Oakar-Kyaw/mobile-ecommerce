@@ -5,4 +5,11 @@ class AppRoute {
   static const String promotion = '/promotion';
   static const String search = '/search';
   static const String order = '/order';
+  static const String trendingItems = '/trending-items';
+  static const String newArrivals = '/new-arrivals';
+  static const String notifications = '/notifications';
+  static const String profile = '/profile';
+  static const String cart = '/cart';
+  static const String checkout = '/checkout';
+  static const String productDetails = '/product-details';
 }

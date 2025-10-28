@@ -1,25 +1,57 @@
 import 'package:ecommerce_mobile/src/app-route.dart';
-import 'package:ecommerce_mobile/src/home.dart';
+import 'package:ecommerce_mobile/src/home.page.dart';
 import 'package:ecommerce_mobile/src/login.dart';
-import 'package:ecommerce_mobile/src/promotion.dart';
-import 'package:ecommerce_mobile/src/sign-up.dart';
+import 'package:ecommerce_mobile/src/promotion.page.dart';
+import 'package:ecommerce_mobile/src/sign-up.page.dart';
+import 'package:ecommerce_mobile/src/trending-and-new-arrival-item.page.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    print(settings);
     switch (settings.name) {
       case AppRoute.home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return _buildPageRoute(const HomePage());
       case AppRoute.register:
-        return MaterialPageRoute(builder: (_) => const SignUpPage());
+        return _buildPageRoute(const SignUpPage());
       case AppRoute.login:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
+        return _buildPageRoute(const LoginPage());
       case AppRoute.promotion:
-        return MaterialPageRoute(builder: (_) => const PromotionPage());
-
+        return _buildPageRoute(const PromotionPage());
+      case AppRoute.trendingItems:
+        return _buildPageRoute(
+          const TrendingAndNewArrivalItemPage(
+            type: 'trending_items',
+            title: "Trending Items",
+          ),
+        );
+      case AppRoute.newArrivals:
+        return _buildPageRoute(
+          const TrendingAndNewArrivalItemPage(
+            type: 'new_arrival_items',
+            title: "New Arrivals",
+          ),
+        );
       default:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
+        return _buildPageRoute(const LoginPage());
     }
+  }
+
+  /// 🔥 Custom global transition (slide from right to left)
+  static PageRouteBuilder _buildPageRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0); // from right
+        const end = Offset.zero;
+        final tween = Tween(begin: begin, end: end)
+            .chain(CurveTween(curve: Curves.easeInOut));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 }
