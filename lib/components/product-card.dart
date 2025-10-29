@@ -1,6 +1,7 @@
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:intl/intl.dart';
 
 class ProductCard extends StatelessWidget {
   final String title;
@@ -25,13 +26,13 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      //crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Stack(
           children: [
             SizedBox(
-              width: 170,
+              width: 180,
               height: 185,
               child: Image.asset(
                 imageUrl,
@@ -113,14 +114,14 @@ class ProductCard extends StatelessWidget {
             children: [
               if (discountPrice != null)
                 Text(
-                  "$discountPrice $currency",
+                  "${NumberFormat('#,###').format(discountPrice)} $currency",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14
                   ),
                 ),  
               Text(
-                "$price $currency",
+                "${NumberFormat('#,###').format(price)} $currency",
                 style: TextStyle(
                   fontSize: 14,
                   decoration: discountPrice != null ? TextDecoration.lineThrough : TextDecoration.none,

@@ -89,7 +89,7 @@ class _PromotionPageState extends State<PromotionPage> {
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
-          leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
+          leading: GestureDetector(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
           lastIcon: Icon(Icons.shopping_cart), 
           title: "Promotions"
         ),

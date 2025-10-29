@@ -32,6 +32,7 @@ class LightModeColors {
   static const Color primary = Color.fromARGB(255, 23, 23, 23);
   static const Color secondary = Color.fromARGB(255, 226, 196, 7);
   static const Color background = Colors.white;
+  //static const Color background = Color.fromARGB(255, 17, 15, 15);
   static const Color textPrimary = Color.fromARGB(255, 41, 36, 36);
   static const Color textSecondary = Color.fromARGB(255, 131, 126, 126);
   static const Color success = Color.fromARGB(255, 57, 160, 8);
