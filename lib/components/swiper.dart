@@ -1,16 +1,19 @@
 import 'package:card_swiper/card_swiper.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class SwiperCard extends StatelessWidget {
+class SwiperCard extends ConsumerWidget {
   final double height;
 
   const SwiperCard({super.key, this.height = 300});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return SizedBox(
       height: height,
       child: Swiper(
@@ -49,29 +52,29 @@ class SwiperCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                         Text(
                           "40–50% OFF",
                           style: TextStyle(
-                            color: LightModeColors.background,
+                            color: config.background,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.2,
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
+                        Text(
                           "Now in Shirts",
                           style: TextStyle(
-                            color: LightModeColors.background,
+                            color: config.background,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
+                        Text(
                           "All Colours",
                           style: TextStyle(
-                            color: LightModeColors.background,
+                            color: config.background,
                             fontSize: 14,
                           ),
                         ),
@@ -84,16 +87,16 @@ class SwiperCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 "Shop Now",
                                 style: TextStyle(
-                                  color: LightModeColors.background,
+                                  color: config.background,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
                               ),
                               SizedBox(width: 10,),
-                              const Icon(Icons.arrow_forward, color: LightModeColors.background)
+                              Icon(Icons.arrow_forward, color: config.background)
                             ],
                           ),
                         ),
@@ -108,12 +111,12 @@ class SwiperCard extends StatelessWidget {
         itemCount: 3,
 
         // ✅ Pagination dots
-        pagination: const SwiperPagination(
+        pagination: SwiperPagination(
           alignment: Alignment.bottomCenter,
           margin: EdgeInsets.only(bottom: 0),
           builder: DotSwiperPaginationBuilder(
-            color: LightModeColors.textSecondary,
-            activeColor: LightModeColors.textPrimary,
+            color: config.textSecondary,
+            activeColor: config.textPrimary,
             size: 8.0,
             activeSize: 10.0,
           ),

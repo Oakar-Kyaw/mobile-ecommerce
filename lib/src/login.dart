@@ -1,19 +1,21 @@
 import 'package:ecommerce_mobile/api/user-api.service.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<ShadFormState>();
   final emailORPhone = TextEditingController();
   final password = TextEditingController();
@@ -27,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Future<void> _signIn() async {
+  Future<void> _signIn(IAppColorAbstract config) async {
     final url = dotenv.env['AUTH_URL'] ?? "";
     if (!_formKey.currentState!.saveAndValidate()) return;
 
@@ -44,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       final message = result['message'] as String;
       final snackBar = SnackBar(
         content: Text(message),
-        backgroundColor: success ? LightModeColors.success : LightModeColors.error,
+        backgroundColor: success ? config.success : config.error,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       if (success) {
@@ -55,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false, // prevents keyboard from pushing content
       body: SafeArea(
@@ -135,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                   // const Spacer(),
                   const SizedBox(height: 40),
                   ShadButton(
-                    backgroundColor: LightModeColors.primary,
+                    backgroundColor: config.primary,
                     decoration: ShadDecoration(
                       border: ShadBorder(radius: BorderRadius.circular(30.0)),
                     ),
@@ -143,15 +146,15 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     height: 40,
                     child: const Text("Sign in"),
-                    onPressed: _signIn,
+                    onPressed:() =>  _signIn(config),
                   ),
                   const SizedBox(height: 24),
-                  const Row(
+                  Row(
                     children: [
                       Expanded(child: Divider(thickness: 1)),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Or", style: TextStyle(color: LightModeColors.textSecondary)),
+                        child: Text("Or", style: TextStyle(color: config.textSecondary)),
                       ),
                       Expanded(child: Divider(thickness: 1)),
                     ],
@@ -160,11 +163,11 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildSocialButton('assets/images/google.png'),
+                      _buildSocialButton('assets/images/google.png', config),
                       const SizedBox(width: 10),
-                      _buildSocialButton('assets/images/facebook.png'),
+                      _buildSocialButton('assets/images/facebook.png', config),
                       const SizedBox(width: 10),
-                      _buildSocialButton('assets/images/apple.png'),
+                      _buildSocialButton('assets/images/apple.png', config),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -188,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                               right: 0,
                               child: Container(
                                 height: 2, // thickness of underline
-                                color: LightModeColors.textSecondary,
+                                color: config.textSecondary,
                               ),
                             ),
                           ],
@@ -205,14 +208,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSocialButton(String asset) {
+  Widget _buildSocialButton(String asset, IAppColorAbstract config) {
     return Container(
       width: 60,
       height: 60,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(100)),
-        border: Border.all(color: LightModeColors.background),
+        border: Border.all(color: config.background),
       ),
       child: Image.asset(asset, fit: BoxFit.contain),
     );

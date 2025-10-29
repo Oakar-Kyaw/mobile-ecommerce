@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/src/route-generator.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
@@ -20,7 +21,7 @@ void main() async {
 }
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // Define your global text style once
@@ -41,23 +42,24 @@ class MyApp extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return ShadApp.custom(
       themeMode: ThemeMode.light,
 
       // 🌕 Light Theme
-      // theme: ShadThemeData(
-      //   brightness: Brightness.light,
-      //   colorScheme: const ShadSlateColorScheme.light(),
-      //   textTheme: globalShadTextTheme,
-      // ),
+      theme: ShadThemeData(
+        brightness: Brightness.light,
+        colorScheme: const ShadSlateColorScheme.light(),
+        textTheme: globalShadTextTheme,
+      ),
 
-      // // 🌑 Dark Theme
-      // darkTheme: ShadThemeData(
-      //   brightness: Brightness.dark,
-      //   colorScheme: const ShadSlateColorScheme.dark(),
-      //   textTheme: globalShadTextTheme,
-      // ),
+      // 🌑 Dark Theme
+      darkTheme: ShadThemeData(
+        brightness: Brightness.dark,
+        colorScheme: const ShadSlateColorScheme.dark(),
+        textTheme: globalShadTextTheme,
+      ),
 
       appBuilder: (context) {
         return MaterialApp(
@@ -66,17 +68,17 @@ class MyApp extends StatelessWidget {
           // 🩵 Apply same global style for Material widgets
           theme: ThemeData(
             fontFamily: 'Poppins',
-            scaffoldBackgroundColor: LightModeColors.background,
-            appBarTheme: const AppBarTheme(
-              backgroundColor: LightModeColors.background, // ✅ AppBar background color
-              foregroundColor: LightModeColors.primary, // text/icons color
+            scaffoldBackgroundColor: config.background,
+            appBarTheme:  AppBarTheme(
+              backgroundColor: config.background, // ✅ AppBar background color
+              foregroundColor: config.primary, // text/icons color
               //elevation: 5, // optional: remove shadow
             ),
             textTheme: Theme.of(context).textTheme
                 .apply(
                   fontFamily: 'Poppins',
-                  bodyColor: LightModeColors.primary,
-                  displayColor: LightModeColors.primary,
+                  bodyColor: config.primary,
+                  displayColor: config.primary,
                 )
                 .copyWith(
                   bodyLarge: globalTextStyle,

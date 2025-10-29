@@ -1,5 +1,3 @@
-// lib/components/divider.dart
-import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class DoubleLineTriangleDivider extends StatelessWidget {
@@ -12,7 +10,7 @@ class DoubleLineTriangleDivider extends StatelessWidget {
 
   const DoubleLineTriangleDivider({
     Key? key,
-    this.color = LightModeColors.textSecondary,
+    required this.color,
     this.thickness = 1,
     this.triangleSize = 10,
     this.gap = 0,

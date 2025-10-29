@@ -1,7 +1,9 @@
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Avatar extends StatelessWidget {
+class Avatar extends ConsumerWidget {
   final String asset; // The image asset path
   final double size; // Avatar size
   final double paddingSize;
@@ -16,7 +18,9 @@ class Avatar extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
+
     return InkWell(
       borderRadius: BorderRadius.circular(100),
       onTap: onTap,
@@ -26,7 +30,7 @@ class Avatar extends StatelessWidget {
         padding: EdgeInsets.all(paddingSize),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
-          border: Border.all(color: LightModeColors.background),
+          border: Border.all(color: config.background),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(100),

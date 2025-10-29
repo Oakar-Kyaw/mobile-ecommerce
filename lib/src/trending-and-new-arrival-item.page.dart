@@ -1,20 +1,22 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/fix-content.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/vertical-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TrendingAndNewArrivalItemPage extends StatefulWidget {
+class TrendingAndNewArrivalItemPage extends ConsumerStatefulWidget {
   final String type;
   final String title;
   const TrendingAndNewArrivalItemPage({super.key, required this.type, required this.title});
 
   @override
-  State<TrendingAndNewArrivalItemPage> createState() => _TrendingAndNewArrivalItemPageState();
+  ConsumerState<TrendingAndNewArrivalItemPage> createState() => _TrendingAndNewArrivalItemPageState();
 }
 
-class _TrendingAndNewArrivalItemPageState extends State<TrendingAndNewArrivalItemPage> {
+class _TrendingAndNewArrivalItemPageState extends ConsumerState<TrendingAndNewArrivalItemPage> {
   final List<Map<String, dynamic>> categories = [
   {"id": 1, "name": "All"},
   {"id": 2, "name": "Electronics"},
@@ -87,6 +89,7 @@ class _TrendingAndNewArrivalItemPageState extends State<TrendingAndNewArrivalIte
 
   @override
   Widget build(BuildContext context) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -100,6 +103,7 @@ class _TrendingAndNewArrivalItemPageState extends State<TrendingAndNewArrivalIte
         SliverPersistentHeader(
           pinned: true,
           delegate: FixedHeader(
+            config: config,
             height: 80,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,14 +121,14 @@ class _TrendingAndNewArrivalItemPageState extends State<TrendingAndNewArrivalIte
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          InkWell(onTap: () => selectCategory(index), child: Text(categories['name'], style: TextStyle(fontSize: 14, color: selectedCategoryIndex == index ? LightModeColors.primary : LightModeColors.textSecondary))),
+                          InkWell(onTap: () => selectCategory(index), child: Text(categories['name'], style: TextStyle(fontSize: 14, color: selectedCategoryIndex == index ? config.primary : config.textSecondary))),
                           SizedBox(height: 5),
                           selectedCategoryIndex == index ? Container(
                             height: 5,
                             width: 5,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: LightModeColors.secondary,
+                              color: config.secondary,
                             ),
                           ) : const SizedBox(height:5)
                         ],

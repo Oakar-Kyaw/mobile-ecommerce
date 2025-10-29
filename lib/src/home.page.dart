@@ -3,6 +3,8 @@ import 'package:ecommerce_mobile/components/bottom-navigation-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/components/swiper.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
+import 'package:ecommerce_mobile/riverpod/theme-provider.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-avatar.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
@@ -10,15 +12,16 @@ import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_mobile/components/product-card.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   int _selectedIndex = 0; // Tracks the currently selected tab
 
   void _onItemTapped(int index) {
@@ -101,11 +104,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+   
+    final IAppColorAbstract config = ref.watch(appColorProvider);
+    final currentTheme = ref.watch(themeModeProvider);
+    print("Current Theme in Home Page: $currentTheme, $themeModeProvider");
     return Scaffold(
-      backgroundColor: LightModeColors.background,
+      backgroundColor: config.background,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppBar(leading: Icon(Icons.menu), lastIcon: Icon(Icons.message), imageUrl: "assets/images/logo.png", trailing: Icon(Icons.shopping_cart)),
+        child: CustomAppBar(leading: GestureDetector(onTap: () {
+          final newTheme = currentTheme == 'light' ? 'dark' : 'light';
+          ref.read(themeModeProvider.notifier).setTheme(newTheme);
+        },child: Icon(Icons.menu)), lastIcon: Icon(Icons.message), imageUrl: "assets/images/logo.png", trailing: Icon(Icons.shopping_cart)),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.only(top: 20),
@@ -135,7 +145,7 @@ class _HomePageState extends State<HomePage> {
             ),
     
             const SizedBox(height: 25),
-            const DoubleLineTriangleDivider(),
+            DoubleLineTriangleDivider(color: config.lineColor),
     
             // Categories section
             TitleWidget('Categories'),
@@ -145,7 +155,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 25),
-            const DoubleLineTriangleDivider(),
+            DoubleLineTriangleDivider(color: config.lineColor),
             // FutureBuilder(
             //   future: Future.delayed(const Duration(seconds: 2)),
             //   builder: (context, snapshot) {
@@ -179,7 +189,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: LightModeColors.textSecondary),
+              child: Container(width: double.infinity, height: 1, color: config.textSecondary),
             ),
             // FutureBuilder(
             //   future: Future.delayed(const Duration(seconds: 2)),
@@ -214,7 +224,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: LightModeColors.textSecondary),
+              child: Container(width: double.infinity, height: 1, color: config.textSecondary),
             ),
             SizedBox(height: 40)
 
@@ -225,8 +235,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: CustomerBottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        activeColor: LightModeColors.primary,
-        inactiveColor: LightModeColors.textSecondary,
+        activeColor: config.primary,
+        inactiveColor: config.textSecondary,
       ),
     );
   }

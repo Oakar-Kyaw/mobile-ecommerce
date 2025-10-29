@@ -1,9 +1,11 @@
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:intl/intl.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends ConsumerWidget {
   final String title;
   final num price;
   final String currency;
@@ -24,7 +26,8 @@ class ProductCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return Column(
       mainAxisSize: MainAxisSize.max,
       //crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -45,12 +48,12 @@ class ProductCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(6), // space around the icon
                   decoration: BoxDecoration(
-                    color: LightModeColors.favoriteIconBackground, // background color
+                    color: config.favoriteIconBackground, // background color
                     shape: BoxShape.circle,   // make it circular
                   ),
                   child: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? LightModeColors.error : LightModeColors.primary,
+                    color: isFavorite ? config.error : config.primary,
                     size: 18,
                   ),
                 ),
@@ -63,7 +66,7 @@ class ProductCard extends StatelessWidget {
                 angle: -0.785398, // -45 degrees in radians
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 4, horizontal: 30),
-                  color: LightModeColors.secondary,
+                  color: config.secondary,
                   child: Text(
                     '10% OFF',
                     style: TextStyle(
@@ -83,7 +86,7 @@ class ProductCard extends StatelessWidget {
         ShadCard(
           rowCrossAxisAlignment: CrossAxisAlignment.start,
           columnMainAxisAlignment: MainAxisAlignment.start,
-          width: 170,
+          width: 180,
           padding: const EdgeInsets.all(8),
           border: ShadBorder.none,
           radius: BorderRadius.zero,
@@ -105,7 +108,7 @@ class ProductCard extends StatelessWidget {
               description ?? "No description",
               maxLines: 2,
               overflow: TextOverflow.ellipsis, // Trim long descriptions
-              style: const TextStyle(fontSize: 13, color: LightModeColors.textSecondary),
+              style: TextStyle(fontSize: 13, color: config.textSecondary),
             ),
           ),
           footer: Column(

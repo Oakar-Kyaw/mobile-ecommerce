@@ -1,7 +1,9 @@
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final Widget leading;
   final Widget lastIcon;
   final String? title;
@@ -18,12 +20,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return SafeArea(
       child: AppBar(
         automaticallyImplyLeading: false,
         scrolledUnderElevation: 0,
-        shadowColor: LightModeColors.shadowColor,
+        shadowColor: config.shadowColor,
         titleSpacing: 0,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

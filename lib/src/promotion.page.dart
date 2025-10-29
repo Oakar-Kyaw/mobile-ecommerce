@@ -1,21 +1,22 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/fix-content.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/ui/filter-component.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/vertical-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:shadcn_ui/shadcn_ui.dart'; 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PromotionPage extends StatefulWidget {
+class PromotionPage extends ConsumerStatefulWidget {
   const PromotionPage({super.key});
 
   @override
-  State<PromotionPage> createState() => _PromotionPageState();
+  ConsumerState<PromotionPage> createState() => _PromotionPageState();
 }
 
-class _PromotionPageState extends State<PromotionPage> {
+class _PromotionPageState extends ConsumerState<PromotionPage> {
   final List<Map<String, dynamic>> categories = [
   {"id": 1, "name": "All"},
   {"id": 2, "name": "Electronics"},
@@ -86,6 +87,7 @@ class _PromotionPageState extends State<PromotionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -99,6 +101,7 @@ class _PromotionPageState extends State<PromotionPage> {
         SliverPersistentHeader(
           pinned: true,
           delegate: FixedHeader(
+            config: config,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -114,7 +117,7 @@ class _PromotionPageState extends State<PromotionPage> {
                         onPressed: () {
                           
                         },
-                      child: Text(categories['name'], style: TextStyle(fontSize: 14, color: LightModeColors.primary)));
+                      child: Text(categories['name'], style: TextStyle(fontSize: 14, color: config.primary)));
                     },
                   ),
                 ),

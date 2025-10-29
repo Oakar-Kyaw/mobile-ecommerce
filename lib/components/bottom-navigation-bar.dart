@@ -1,7 +1,9 @@
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomerBottomNavigationBar extends StatelessWidget {
+class CustomerBottomNavigationBar extends ConsumerWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final Color activeColor;
@@ -16,6 +18,7 @@ class CustomerBottomNavigationBar extends StatelessWidget {
   }) : super(key: key);
 
   Widget _buildNavItem({
+    required config,
     required IconData icon,
     required String label,
     required int index,
@@ -32,13 +35,13 @@ class CustomerBottomNavigationBar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
             decoration: BoxDecoration(
-              color: isSelected ? LightModeColors.textPrimary : Colors.transparent,
+              color: isSelected ? config.textPrimary : Colors.transparent,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
               icon,
-              color: isSelected ? LightModeColors.background : LightModeColors.textSecondary,
+              color: isSelected ? config.background : config.textSecondary,
               size: 24,
             ),
           ),
@@ -47,7 +50,7 @@ class CustomerBottomNavigationBar extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 12,
-              color: isSelected ? LightModeColors.textPrimary : LightModeColors.textSecondary,
+              color: isSelected ? config.textPrimary : config.textSecondary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
@@ -57,13 +60,14 @@ class CustomerBottomNavigationBar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return Container(
       decoration: BoxDecoration(
-        color: LightModeColors.background,
+        color: config.background,
         boxShadow: [
           BoxShadow(
-            color: LightModeColors.shadowColor,
+            color: config.shadowColor,
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -3),
@@ -76,15 +80,16 @@ class CustomerBottomNavigationBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(icon: Icons.home, label: 'Home', index: 0),
-              _buildNavItem(icon: Icons.history, label: 'Orders', index: 1),
-              _buildNavItem(icon: Icons.search, label: 'Search', index: 2),
+              _buildNavItem(config: config, icon: Icons.home, label: 'Home', index: 0),
+              _buildNavItem(config: config, icon: Icons.history, label: 'Orders', index: 1),
+              _buildNavItem(config: config, icon: Icons.search, label: 'Search', index: 2),
               _buildNavItem(
+                config: config,
                 icon: Icons.favorite_border,
                 label: 'Favorites',
                 index: 3,
               ),
-              _buildNavItem(icon: Icons.settings, label: 'Setting', index: 4),
+              _buildNavItem(config: config, icon: Icons.settings, label: 'Setting', index: 4),
             ],
           ),
         ),

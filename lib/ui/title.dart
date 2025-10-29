@@ -1,7 +1,9 @@
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TitleWidget extends StatelessWidget {
+class TitleWidget extends ConsumerWidget {
   final String text;
   final VoidCallback? onTap;
   final bool isExistedIcon;
@@ -14,7 +16,9 @@ class TitleWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
+
     return Padding(
               padding: const EdgeInsets.only(left: 20, right: 10),
               child: Row(
@@ -28,7 +32,7 @@ class TitleWidget extends StatelessWidget {
                   if (isExistedIcon)
                     IconButton(
                       onPressed: onTap,
-                      icon: const Icon(Icons.arrow_forward, color: LightModeColors.primary,),
+                      icon: Icon(Icons.arrow_forward, color: config.primary),
                       tooltip: 'Arrow Forward',
                     ),
                 ],

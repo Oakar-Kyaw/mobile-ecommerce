@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'package:ecommerce_mobile/api/user-api.service.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _formKey = GlobalKey<ShadFormState>();
   final firstName = TextEditingController();
   final lastName = TextEditingController();
@@ -40,7 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return RegExp(r'^\+?[\d\s-]{8,15}$').hasMatch(value);
   }
 
-  Future<void> _register() async {
+  Future<void> _register(IAppColorAbstract config) async {
     if (!_formKey.currentState!.saveAndValidate()) {
       return;
     }
@@ -58,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> {
       final message = result['message'] as String;
       final snackBar = SnackBar(
         content: Text(message),
-        backgroundColor: success ? LightModeColors.success : LightModeColors.error,
+        backgroundColor: success ? config.success : config.error,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       if (success) {
@@ -67,13 +69,13 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-Future _registerWithGoogle(BuildContext context) async {
+Future _registerWithGoogle(BuildContext context, IAppColorAbstract config) async {
        userRegisterWithGoogleApi().then((result) {
         final success = result['success'] as bool;
         final message = result['message'] as String;
         final snackBar = SnackBar(
           content: Text(message),
-          backgroundColor: success ? LightModeColors.success : LightModeColors.error,
+          backgroundColor: success ? config.success : config.error,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         if (success) {
@@ -84,6 +86,7 @@ Future _registerWithGoogle(BuildContext context) async {
 
   @override
   Widget build(BuildContext context) {
+    final IAppColorAbstract config = ref.watch(appColorProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -212,7 +215,7 @@ Future _registerWithGoogle(BuildContext context) async {
                   ),
                   const SizedBox(height: 40),
                   ShadButton(
-                    backgroundColor: LightModeColors.primary,
+                    backgroundColor: config.primary,
                     decoration: ShadDecoration(
                       border: ShadBorder(radius: BorderRadius.circular(30.0)),
                     ),
@@ -220,15 +223,15 @@ Future _registerWithGoogle(BuildContext context) async {
                     width: double.infinity,
                     height: 40,
                     child: Text("Create account"),
-                    onPressed: _register,
+                    onPressed: () => _register(config),
                   ),
                   const SizedBox(height: 20),
-                  const Row(
+                  Row(
                     children: [
                       Expanded(child: Divider(thickness: 1)),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Or", style: TextStyle(color: LightModeColors.textSecondary)),
+                        child: Text("Or", style: TextStyle(color: config.textSecondary)),
                       ),
                       Expanded(child: Divider(thickness: 1)),
                     ],
@@ -238,13 +241,13 @@ Future _registerWithGoogle(BuildContext context) async {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () => _registerWithGoogle(context),
-                        child: _buildSocialButton('assets/images/google.png'),
+                        onTap: () => _registerWithGoogle(context, config),
+                        child: _buildSocialButton('assets/images/google.png', config),
                       ),
                       const SizedBox(width: 25),
-                      _buildSocialButton('assets/images/facebook.png'),
+                      _buildSocialButton('assets/images/facebook.png', config),
                       const SizedBox(width: 25),
-                      _buildSocialButton('assets/images/apple.png'),
+                      _buildSocialButton('assets/images/apple.png', config),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -268,7 +271,7 @@ Future _registerWithGoogle(BuildContext context) async {
                                 right: 0,
                                 child: Container(
                                   height: 2, // thickness of underline
-                                  color: LightModeColors.textSecondary,
+                                  color: config.textSecondary,
                                 ),
                               ),
                             ]
@@ -285,14 +288,14 @@ Future _registerWithGoogle(BuildContext context) async {
     );
   }
 
-  Widget _buildSocialButton(String asset) {
+  Widget _buildSocialButton(String asset, IAppColorAbstract config) {
     return Container(
       width: 60,
       height: 60,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(100)),
-        border: Border.all(color: LightModeColors.background),
+        border: Border.all(color: config.background),
       ),
       child: Image.asset(asset, fit: BoxFit.contain),
     );
