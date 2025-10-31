@@ -1,34 +1,37 @@
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CustomerBottomNavigationBar extends ConsumerWidget {
   final int currentIndex;
-  final ValueChanged<int> onTap;
   final Color activeColor;
   final Color inactiveColor;
+  final IAppColorAbstract config;
 
   const CustomerBottomNavigationBar({
     Key? key,
     this.currentIndex = 0,
-    required this.onTap,
+    required this.config,
     this.activeColor = Colors.blue,
     this.inactiveColor = Colors.grey,
   }) : super(key: key);
 
   Widget _buildNavItem({
+    required BuildContext context,
     required config,
     required IconData icon,
     required String label,
     required int index,
+    required String route
   }) {
     final isSelected = currentIndex == index;
     print(
       'isSelected: $isSelected for index: $index (currentIndex: $currentIndex)',
     );
     return GestureDetector(
-      onTap: () => onTap(index),
+      onTap: () =>  Navigator.pushNamed(context, route),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -61,7 +64,6 @@ class CustomerBottomNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IAppColorAbstract config = ref.watch(appColorProvider);
     return Container(
       decoration: BoxDecoration(
         color: config.background,
@@ -80,16 +82,18 @@ class CustomerBottomNavigationBar extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(config: config, icon: Icons.home, label: 'Home', index: 0),
-              _buildNavItem(config: config, icon: Icons.history, label: 'Orders', index: 1),
-              _buildNavItem(config: config, icon: Icons.search, label: 'Search', index: 2),
+              _buildNavItem(context: context, config: config, icon: Icons.home, label: 'Home', index: 0, route: AppRoute.home),
+              _buildNavItem(context: context,config: config, icon: Icons.history, label: 'Orders', index: 1, route: AppRoute.favorite ),
+              _buildNavItem(context: context,config: config, icon: Icons.search, label: 'Search', index: 2, route: AppRoute.search),
               _buildNavItem(
+                context: context,
                 config: config,
                 icon: Icons.favorite_border,
                 label: 'Favorites',
                 index: 3,
+                route: AppRoute.favorite
               ),
-              _buildNavItem(config: config, icon: Icons.settings, label: 'Setting', index: 4),
+              _buildNavItem(context: context,config: config, icon: Icons.settings, label: 'Setting', index: 4, route: AppRoute.setting),
             ],
           ),
         ),

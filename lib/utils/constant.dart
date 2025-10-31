@@ -12,3 +12,9 @@ abstract class IAppColorAbstract {
   Color get shadowColor;
   Color get lineColor;
 }
+
+abstract class IAppFontSizeAbstract {
+  double get small;
+  double get medium;
+  double get large;
+}

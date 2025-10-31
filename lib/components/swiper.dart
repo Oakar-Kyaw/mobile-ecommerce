@@ -7,13 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SwiperCard extends ConsumerWidget {
-  final double height;
+  final double height; 
+  final IAppColorAbstract config;
 
-  const SwiperCard({super.key, this.height = 300});
+  const SwiperCard({super.key, this.height = 300, required this.config});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IAppColorAbstract config = ref.watch(appColorProvider);
     return SizedBox(
       height: height,
       child: Swiper(

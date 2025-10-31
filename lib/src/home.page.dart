@@ -10,6 +10,7 @@ import 'package:ecommerce_mobile/ui/horizontal-scroll-avatar.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
+import 'package:ecommerce_mobile/utils/system-configuration-constant.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_mobile/components/product-card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,12 +24,6 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int _selectedIndex = 0; // Tracks the currently selected tab
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   // List of brand logos
   final List<Map<String, dynamic>> brandAssets = [
@@ -107,12 +102,16 @@ class _HomePageState extends ConsumerState<HomePage> {
    
     final IAppColorAbstract config = ref.watch(appColorProvider);
     final currentTheme = ref.watch(themeModeProvider);
-    print("Current Theme in Home Page: $currentTheme, $themeModeProvider");
+    final fontConfig = FontSizeConfiguration.appFontSize(context);
+    print("Current Theme in Home Page: $currentTheme, $themeModeProvider, ScreenWidth: $fontConfig, ScreenHeight: $fontConfig");
+
     return Scaffold(
       backgroundColor: config.background,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppBar(leading: GestureDetector(onTap: () {
+        child: CustomAppBar(
+          config: config,
+          leading: GestureDetector(onTap: () {
           final newTheme = currentTheme == 'light' ? 'dark' : 'light';
           ref.read(themeModeProvider.notifier).setTheme(newTheme);
         },child: Icon(Icons.menu)), lastIcon: Icon(Icons.message), imageUrl: "assets/images/logo.png", trailing: Icon(Icons.shopping_cart)),
@@ -126,7 +125,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           children: [
             // Search input
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: SearchInput(),
             ),
             const SizedBox(height: 20),
@@ -134,7 +133,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             // Promotions
             TitleWidget('Promotions', isExistedIcon: false),
             const SizedBox(height: 10),
-            SwiperCard(),
+            SwiperCard(config: config),
             const SizedBox(height: 5),
     
             // Brands section
@@ -156,18 +155,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
             const SizedBox(height: 25),
             DoubleLineTriangleDivider(color: config.lineColor),
-            // FutureBuilder(
-            //   future: Future.delayed(const Duration(seconds: 2)),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.done) {
-            //       return TitleWidget(
-            //         "Trending Items",
-            //         onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
-            //       );
-            //     }
-            //     return const SizedBox.shrink();
-            //   },
-            // ),
+
             TitleWidget(
                     "Trending Items",
                     onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
@@ -178,6 +166,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 items: products,
                 itemBuilder: (context, product, index) {
                   return ProductCard(
+                    config: config,
                     title: product["title"],
                     imageUrl: product["imageUrl"],
                     description: product["description"],
@@ -191,18 +180,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               padding: const EdgeInsets.all(20),
               child: Container(width: double.infinity, height: 1, color: config.textSecondary),
             ),
-            // FutureBuilder(
-            //   future: Future.delayed(const Duration(seconds: 2)),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.done) {
-            //       return TitleWidget(
-            //         "New Arrivals",
-            //         onTap: () => Navigator.pushNamed(context, AppRoute.newArrivals),
-            //       );
-            //     }
-            //     return const SizedBox.shrink();
-            //   },
-            // ),
              TitleWidget(
                     "New Arrivals",
                     onTap: () => Navigator.pushNamed(context, AppRoute.newArrivals),
@@ -213,6 +190,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 items: products,
                 itemBuilder: (context, product, index) {
                   return ProductCard(
+                    config: config,
                     title: product["title"],
                     imageUrl: product["imageUrl"],
                     description: product["description"],
@@ -233,8 +211,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         itemCount: 1,
       ),
       bottomNavigationBar: CustomerBottomNavigationBar(
+        config: config,
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
         activeColor: config.primary,
         inactiveColor: config.textSecondary,
       ),

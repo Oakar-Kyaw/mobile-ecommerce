@@ -1,22 +1,21 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/fix-content.dart';
-import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
-import 'package:ecommerce_mobile/ui/filter-component.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
+import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/vertical-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PromotionPage extends ConsumerStatefulWidget {
-  const PromotionPage({super.key});
+class FavoritePage extends ConsumerStatefulWidget {
+  const FavoritePage({super.key});
 
   @override
-  ConsumerState<PromotionPage> createState() => _PromotionPageState();
+  ConsumerState<FavoritePage> createState() => _FavoritePageState();
 }
 
-class _PromotionPageState extends ConsumerState<PromotionPage> {
+class _FavoritePageState extends ConsumerState<FavoritePage> {
   final List<Map<String, dynamic>> categories = [
   {"id": 1, "name": "All"},
   {"id": 2, "name": "Electronics"},
@@ -31,35 +30,39 @@ class _PromotionPageState extends ConsumerState<PromotionPage> {
 
 
   String selectedCategory = "All";
+  int selectedCategoryIndex = 0;
+
+  void selectCategory(int index) {
+    setState(() {
+      selectedCategoryIndex = index;
+      selectedCategory = categories[index]['name'] as String;
+    });
+  }
   
   final List<Map<String, dynamic>> products = [
     {
       'title': 'Smartphone',
       'imageUrl': 'assets/images/smartphone.jpg',
       'description': 'Latest model smartphone with advanced features.',
-      'price': 699.99,
-      'discountPrice': 649.99,
+      'price': 699.99
     },
     {
       'title': 'Running Shoes',
       'imageUrl': 'assets/images/sneaker.jpg',
       'description': 'Comfortable and durable running shoes.',
-      'price': 89.99,
-      'discountPrice': 79.99,
+      'price': 89.99
     },
     {
       'title': 'Wireless Headphones',
       'imageUrl': 'assets/images/headphone.jpg',
       'description': 'Noise-cancelling over-ear headphone.jpg',
-      'price': 199.99,
-      'discountPrice': 149.99,
+      'price': 199.99
     },
     {
       'title': 'Smartwatch',
       'imageUrl': 'assets/images/smartwatch.jpg',
       'description': 'Track your fitness and stay connected.',
-      'price': 149.99,
-      'discountPrice': 129.99,
+      'price': 149.99
     },
     {
       "title": "Denim Jeans",
@@ -67,15 +70,13 @@ class _PromotionPageState extends ConsumerState<PromotionPage> {
       "description": "Slim fit denim jeans with stretchable fabric.",
       "price": 55000,
       "currency": "MMK",
-      "discountPrice": 50000
     },
     {
       "title": "Leather Jacket",
       "imageUrl": "assets/images/jacket.jpg",
       "description": "Premium black leather jacket with inner lining.",
       "price": 120000,
-      "currency": "MMK",
-      "discountPrice": 110000
+      "currency": "MMK"
     }
   ];
 
@@ -88,16 +89,12 @@ class _PromotionPageState extends ConsumerState<PromotionPage> {
   @override
   Widget build(BuildContext context) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    print("ScreenWidth: $screenWidth, ScreenHeight: $screenHeight");
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
           config: config,
-          leading: GestureDetector(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
-          lastIcon: Icon(Icons.shopping_cart), 
-          title: "Promotions"
+          leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
+          title: "My Favorites"
         ),
         body: CustomScrollView(
          slivers: [
@@ -105,47 +102,25 @@ class _PromotionPageState extends ConsumerState<PromotionPage> {
         SliverPersistentHeader(
           pinned: true,
           delegate: FixedHeader(
+            height: 130,
             config: config,
+            //height: 40,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                // Horizontal categories
-                SizedBox(
-                  height: 40,
-                  child: HorizontalScrollableList(
-                    spacing: 10,
-                    items: categories,
-                    itemBuilder: (context, categories, index) {
-                      return OutlinedButton( 
-                        onPressed: () {
-                          
-                        },
-                      child: Text(categories['name'], style: TextStyle(fontSize: 14, color: config.primary)));
-                    },
-                  ),
-                ),
-      
-                const SizedBox(height: 20),
-      
-                // Search input
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(20),
+                  child: Text("Items (5)"),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: SearchInput(),
-                ),
-      
-                const SizedBox(height: 20),
-      
-                // Filter component
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Filter(),
                 ),
               ],
             ),
           ),
         ),
-            VerticalScrollItem(config: config, product: products),
+            VerticalScrollItem(config: config,product: products, isFavorite: true),
           ],
         ),
       ),

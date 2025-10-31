@@ -8,10 +8,12 @@ class Avatar extends ConsumerWidget {
   final double size; // Avatar size
   final double paddingSize;
   final VoidCallback? onTap; // Optional tap action
+  final IAppColorAbstract config;
 
   const Avatar({
     Key? key,
     required this.asset,
+    required this.config,
     this.paddingSize = 0,
     this.size = 40,
     this.onTap,
@@ -19,7 +21,6 @@ class Avatar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IAppColorAbstract config = ref.watch(appColorProvider);
 
     return InkWell(
       borderRadius: BorderRadius.circular(100),

@@ -37,20 +37,6 @@ class _SearchInputState extends State<SearchInput> {
           color: colorScheme.mutedForeground,
           size: 18,
         ),
-        // trailing: _controller.text.isNotEmpty
-        //     ? IconButton(
-        //         //padding: EdgeInsets.zero, // 👈 avoid expanding vertically
-        //         //constraints: const BoxConstraints(),
-        //         icon: Icon(
-        //           Icons.close,
-        //           color: colorScheme.mutedForeground,
-        //           // size: 16,
-        //         ),
-        //         onPressed: () {
-        //           setState(() => _controller.clear());
-        //         },
-        //       )
-        //     : null,
         onChanged: (value) {
           setState(() {});
           print("Search query: $value");

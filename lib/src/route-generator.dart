@@ -1,7 +1,9 @@
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/src/favorite.page.dart';
 import 'package:ecommerce_mobile/src/home.page.dart';
 import 'package:ecommerce_mobile/src/login.dart';
 import 'package:ecommerce_mobile/src/promotion.page.dart';
+import 'package:ecommerce_mobile/src/setting.page.dart';
 import 'package:ecommerce_mobile/src/sign-up.page.dart';
 import 'package:ecommerce_mobile/src/trending-and-new-arrival-item.page.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,10 @@ class RouteGenerator {
         return _buildPageRoute(const LoginPage());
       case AppRoute.promotion:
         return _buildPageRoute(const PromotionPage());
+      case AppRoute.favorite:
+        return _buildPageRoute(const FavoritePage());
+      case AppRoute.setting:
+        return _buildPageRoute(const SettingPage());
       case AppRoute.trendingItems:
         return _buildPageRoute(
           const TrendingAndNewArrivalItemPage(

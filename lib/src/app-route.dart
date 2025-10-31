@@ -3,8 +3,10 @@ class AppRoute {
   static const String login = '/login';
   static const String register = '/register';
   static const String promotion = '/promotion';
+  static const String favorite = '/favorite';
   static const String search = '/search';
   static const String order = '/order';
+  static const String setting = '/setting';
   static const String trendingItems = '/trending-items';
   static const String newArrivals = '/new-arrivals';
   static const String notifications = '/notifications';

@@ -3,7 +3,6 @@ import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:intl/intl.dart';
 
 class ProductCard extends ConsumerWidget {
   final String title;
@@ -13,9 +12,11 @@ class ProductCard extends ConsumerWidget {
   final String imageUrl;
   final String? description;
   final bool isFavorite;
+  final IAppColorAbstract config;
 
   const ProductCard({
     Key? key,
+    required this.config,
     required this.title,
     required this.imageUrl,
     required this.price,
@@ -27,7 +28,6 @@ class ProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IAppColorAbstract config = ref.watch(appColorProvider);
     return Column(
       mainAxisSize: MainAxisSize.max,
       //crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,7 +53,7 @@ class ProductCard extends ConsumerWidget {
                   ),
                   child: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? config.error : config.primary,
+                    color: isFavorite ? config.primary : config.primary,
                     size: 18,
                   ),
                 ),

@@ -11,45 +11,57 @@ class AppPadding {
   static const EdgeInsets verticalOnly = EdgeInsets.symmetric(vertical: 20);
 }
 
-class SmallAppFontSize {
-  static const double small = 10.0;
-  static const double medium = 12.0;
-  static const double large = 14.0;
+class SmallAppFontSize implements IAppFontSizeAbstract {
+  @override
+  double get small =>  10.0;
+
+  @override
+  double get medium => 12.0;
+
+  @override
+  double get large => 14.0;
 }
 
-class MediumAppFontSize {
-  static const double small = 12.0;
-  static const double medium = 14.0;
-  static const double large = 16.0;
+class MediumAppFontSize implements IAppFontSizeAbstract {
+  @override
+  double get small =>  12.0;
+
+  @override
+  double get medium => 14.0;
+
+  @override
+  double get large => 16.0;
 }
 
-class TabletAppFontSize {
-  static const double small = 14.0;
-  static const double medium = 16.0;
-  static const double large = 18.0;
+class TabletAppFontSize implements IAppFontSizeAbstract {
+  // @override
+  // double get small =>  14.0;
+
+  // @override
+  // double get medium => 16.0;
+
+  // @override
+  // double get large => 18.0;
+  @override
+  double get small =>  30.0;
+
+  @override
+  double get medium => 40.0;
+
+  @override
+  double get large => 50.0;
 }
 
-// const Map<String, Color> lightModeColors = {
-//   'primary': Color.fromARGB(255, 23, 23, 23),
-//   'secondary': Color.fromARGB(255, 226, 196, 7),
-//   'background': Colors.white,
-//   'textPrimary': Color.fromARGB(255, 41, 36, 36),
-//   'textSecondary': Color.fromARGB(255, 131, 126, 126),
-//   'success': Color.fromARGB(255, 57, 160, 8),
-//   'error': Color.fromARGB(255, 255, 0, 0),
-//   'favoriteIconBackground': Color.fromARGB(255, 244, 241, 241),
-//   'shadowColor': Color.fromARGB(255, 206, 203, 203),
-// };
+class DesktopAppFontSize implements IAppFontSizeAbstract {
+  @override
+  double get small =>  16.0;
 
-// const Map<String, Color> darkModeColors = {
-//   'primary': Color(0xFFBB86FC),
-//   'secondary': Color(0xFF03DAC6),
-//   'background': Color(0xFF121212),
-//   'textPrimary': Color(0xFFFFFFFF),
-//   'textSecondary': Color(0xFFB3B3B3),
-//   'success': Color(0xFF00C853),
-//   'error': Color(0xFFFF5252),
-// };
+  @override
+  double get medium => 18.0;
+
+  @override
+  double get large => 20.0;
+}
 
 class LightAppColors implements IAppColorAbstract {
   @override
@@ -113,4 +125,36 @@ class DarkAppColors implements IAppColorAbstract {
 
   @override
   Color get lineColor => const Color.fromARGB(255, 219, 215, 215);
+}
+
+class FontSizeConfiguration {
+  
+  static isMobileScreen(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth < 600;
+  }
+
+  static isTabletScreen(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth >= 600 && screenWidth < 1200;
+  }
+
+  static isDesktopScreen(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth >= 1200;
+  }
+
+  static IAppFontSizeAbstract appFontSize(BuildContext context) {
+    print("Determining font size for screen width: ${isMobileScreen(context) ? 'Mobile' : isTabletScreen(context) ? 'Tablet' : isDesktopScreen(context) ? 'Desktop' : 'Unknown'}");
+    switch (true) {
+      case true when isMobileScreen(context):
+        return MediumAppFontSize();
+      case true when isTabletScreen(context):
+        return TabletAppFontSize();
+      case true when isDesktopScreen(context):
+        return DesktopAppFontSize();
+      default:  
+        return MediumAppFontSize();
+    }
+}
 }

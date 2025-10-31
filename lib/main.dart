@@ -2,48 +2,28 @@ import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/src/route-generator.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
+import 'package:ecommerce_mobile/utils/system-configuration-constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-//import 'package:firebase_core/firebase_core.dart';
-//import 'package:flutter/rendering.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //debugPaintSizeEnabled = true; 
-  // await Firebase.initializeApp(
-  //   // options: FirebaseOptions(apiKey: apiKey, appId: appId, messagingSenderId: messagingSenderId, projectId: projectId)
-  //   options: FirebaseOptions(apiKey: "AIzaSyASfbzwMvS8_12u5ViMpiAm2xga-wkE5tM", appId: "1:566223411513:android:5a5412fea0a1ecde4cb0e8", messagingSenderId: "566223411513", projectId: "megasmartcart-771d3"),
-  // );
   await dotenv.load(fileName: ".env");
-  runApp(ProviderScope(child: const MyApp()));
-}
 
+  runApp(const ProviderScope(child: MyApp()));
+}
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  // Define your global text style once
-  static const globalTextStyle = TextStyle(fontFamily: 'Poppins', fontSize: 16);
-
-  // Reusable Shad text theme
-  static final globalShadTextTheme = ShadTextTheme(
-    family: 'Poppins',
-    p: globalTextStyle,
-    small: globalTextStyle,
-    large: globalTextStyle,
-    lead: globalTextStyle,
-    muted: globalTextStyle,
-    h1: globalTextStyle,
-    h2: globalTextStyle,
-    h3: globalTextStyle,
-    h4: globalTextStyle,
-  );
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IAppColorAbstract config = ref.watch(appColorProvider);
+    // 🎨 Theme & Font Configurations
+    final IAppColorAbstract colors = ref.watch(appColorProvider);
+    final fontConfig = FontSizeConfiguration.appFontSize(context);
+
     return ShadApp.custom(
       themeMode: ThemeMode.light,
 
@@ -51,52 +31,52 @@ class MyApp extends ConsumerWidget {
       theme: ShadThemeData(
         brightness: Brightness.light,
         colorScheme: const ShadSlateColorScheme.light(),
-        textTheme: globalShadTextTheme,
+        textTheme: ShadTextTheme(family: 'Poppins'),
       ),
 
       // 🌑 Dark Theme
       darkTheme: ShadThemeData(
         brightness: Brightness.dark,
         colorScheme: const ShadSlateColorScheme.dark(),
-        textTheme: globalShadTextTheme,
+        textTheme: ShadTextTheme(family: 'Poppins'),
       ),
 
+      // 🏗️ Wrap MaterialApp inside ShadApp
       appBuilder: (context) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoute.home,
-          // 🩵 Apply same global style for Material widgets
+          onGenerateRoute: RouteGenerator.generateRoute,
+
           theme: ThemeData(
             fontFamily: 'Poppins',
-            scaffoldBackgroundColor: config.background,
-            appBarTheme:  AppBarTheme(
-              backgroundColor: config.background, // ✅ AppBar background color
-              foregroundColor: config.primary, // text/icons color
-              //elevation: 5, // optional: remove shadow
+            scaffoldBackgroundColor: colors.background,
+            appBarTheme: AppBarTheme(
+              backgroundColor: colors.background,
+              foregroundColor: colors.primary,
             ),
             textTheme: Theme.of(context).textTheme
                 .apply(
                   fontFamily: 'Poppins',
-                  bodyColor: config.primary,
-                  displayColor: config.primary,
+                  bodyColor: colors.primary,
+                  displayColor: colors.primary,
                 )
                 .copyWith(
-                  bodyLarge: globalTextStyle,
-                  bodyMedium: globalTextStyle,
-                  bodySmall: globalTextStyle,
+                  bodyLarge:
+                      TextStyle(fontSize: fontConfig.large, fontFamily: 'Poppins'),
+                  bodyMedium:
+                      TextStyle(fontSize: fontConfig.medium, fontFamily: 'Poppins'),
+                  bodySmall:
+                      TextStyle(fontSize: fontConfig.small, fontFamily: 'Poppins'),
                 ),
           ),
 
-          onGenerateRoute: RouteGenerator.generateRoute,
-          builder: (context, child) {
-            // Optional: scale text globally (e.g. for accessibility)
-            return MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: const TextScaler.linear(1.0)),
-              child: child!,
-            );
-          },
+          // 🧠 Optional: Prevents text auto-scaling for consistent UI
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(1.0)),
+            child: child!,
+          ),
         );
       },
     );

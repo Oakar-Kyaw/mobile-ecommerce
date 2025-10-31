@@ -93,6 +93,7 @@ class _TrendingAndNewArrivalItemPageState extends ConsumerState<TrendingAndNewAr
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
+          config: config,
           leading: InkWell(child: Icon(Icons.arrow_back), onTap: () => Navigator.pop(context)), 
           lastIcon: Icon(Icons.search),
           title: widget.title
@@ -140,7 +141,7 @@ class _TrendingAndNewArrivalItemPageState extends ConsumerState<TrendingAndNewAr
             ),
           ),
         ),
-            VerticalScrollItem(product: products),
+            VerticalScrollItem(config: config,product: products),
           ],
         ),
       ),

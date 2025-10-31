@@ -1,19 +1,20 @@
-import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final Widget leading;
-  final Widget lastIcon;
+  final Widget? lastIcon;
   final String? title;
   final String? imageUrl;
   final Widget? trailing;
+  final IAppColorAbstract config;
 
   const CustomAppBar({
     Key? key,
+    required this.config,
     required this.leading,
-    required this.lastIcon,
+    this.lastIcon,
     this.trailing,
     this.title,
     this.imageUrl,
@@ -21,7 +22,6 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IAppColorAbstract config = ref.watch(appColorProvider);
     return SafeArea(
       child: AppBar(
         automaticallyImplyLeading: false,
@@ -67,9 +67,9 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       onPressed: () {},
                       icon: trailing!,
                     ),
-                  IconButton(
+                  if(lastIcon != null) IconButton(
                     onPressed: () {},
-                    icon: lastIcon,
+                    icon: lastIcon!,
                   ),
                 ],
               ),
