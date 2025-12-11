@@ -41,6 +41,7 @@ Future userRegisterWithGoogleApi() async {
 Future loginUser(body) async{
    try {
   final url = "${dotenv.env['AUTH_URL']}/api/auth/login";
+  print("url $url");
   Map<String, dynamic> responseData = await ApiService().post(url, body);
   return {
      "success": responseData["success"],

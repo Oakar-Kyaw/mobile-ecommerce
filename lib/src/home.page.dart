@@ -114,7 +114,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           leading: GestureDetector(onTap: () {
           final newTheme = currentTheme == 'light' ? 'dark' : 'light';
           ref.read(themeModeProvider.notifier).setTheme(newTheme);
-        },child: Icon(Icons.menu)), lastIcon: Icon(Icons.message), imageUrl: "assets/images/logo.png", trailing: Icon(Icons.shopping_cart)),
+        },child: Icon(Icons.menu)), lastIcon: Icon(Icons.notifications), imageUrl: "assets/images/megasmart.png", trailing: Icon(Icons.shopping_cart)),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.only(top: 20),

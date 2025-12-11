@@ -1,11 +1,15 @@
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/src/chat.page.dart';
+import 'package:ecommerce_mobile/src/checkout.page.dart';
 import 'package:ecommerce_mobile/src/favorite.page.dart';
 import 'package:ecommerce_mobile/src/home.page.dart';
 import 'package:ecommerce_mobile/src/login.dart';
+import 'package:ecommerce_mobile/src/order.page.dart';
 import 'package:ecommerce_mobile/src/promotion.page.dart';
 import 'package:ecommerce_mobile/src/setting.page.dart';
 import 'package:ecommerce_mobile/src/sign-up.page.dart';
 import 'package:ecommerce_mobile/src/trending-and-new-arrival-item.page.dart';
+import 'package:ecommerce_mobile/src/product-detail.page.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
@@ -37,6 +41,22 @@ class RouteGenerator {
             title: "New Arrivals",
           ),
         );
+      case AppRoute.productDetail:
+        return _buildPageRoute(
+           const ProductDetailPage(),
+        );
+      case AppRoute.order:
+        return _buildPageRoute(
+           const OrderPage(),
+        );
+      case AppRoute.checkout:
+        return _buildPageRoute(
+           const CheckoutPage(),
+        );
+      case AppRoute.chat:
+        return _buildPageRoute(
+           const ChatPage(),
+        );
       default:
         return _buildPageRoute(const LoginPage());
     }
@@ -46,7 +66,7 @@ class RouteGenerator {
   static PageRouteBuilder _buildPageRoute(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const Duration(milliseconds: 100),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0); // from right
         const end = Offset.zero;

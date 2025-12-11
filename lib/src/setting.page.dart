@@ -4,8 +4,6 @@ import 'package:ecommerce_mobile/ui/setting-content.ui.dart';
 import 'package:ecommerce_mobile/components/setting-header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
-// import 'package:shadcn_flutter/shadcn_flutter.dart' hide Scaffold;
 
 class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});

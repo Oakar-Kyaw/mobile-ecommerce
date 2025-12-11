@@ -1,3 +1,5 @@
+//import 'package:ecommerce_mobile/utils/animate-single-letter.dart';
+import 'package:ecommerce_mobile/utils/animate-single-letter.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,12 +54,38 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
               // Center section: optional logo/image
               if (imageUrl != null)
-                Image.asset(
-                  imageUrl!,
-                  fit: BoxFit.contain,
-                  width: 50,
-                  height: 50,
-                ),
+                AnimatedText(text: "Burma Sphere", textStyle:  TextStyle(
+                      fontSize: 1,
+                       fontWeight: FontWeight.bold,
+                       color: config.clickColor,
+               ), imageUrl: imageUrl),
+                // Row(
+                //   children: [
+                //     Image.asset(
+                //     imageUrl!,
+                //     fit: BoxFit.contain,
+                //     width: 60,
+                //     height: 80,
+                //   ),
+                //   AnimatedText(
+                //       text: "Burma Sphere",
+                //       textStyle: TextStyle(
+                //         fontSize: 1,
+                //         fontWeight: FontWeight.bold,
+                //         color: config.clickColor,
+                //       ),
+                //   ),
+                  // AnimatedSingleLetterText(
+                  //   text: "Burma Sphere",
+                  //   textStyle: TextStyle(
+                  //     fontSize: 12,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: config.clickColor,
+                  //   ),
+                  //   speed: Duration(milliseconds: 3000), // change for faster/slower speed
+                  // ),
+                //   ],
+                // ),
 
               // Right section: trailing and last icon
               Row(

@@ -11,6 +11,10 @@ abstract class IAppColorAbstract {
   Color get favoriteIconBackground;
   Color get shadowColor;
   Color get lineColor;
+  Color get clickColor;
+  Color get promotionBadgeColor;
+  Color get buttonBackgroundPrimary;
+  Color get starColor;
 }
 
 abstract class IAppFontSizeAbstract {

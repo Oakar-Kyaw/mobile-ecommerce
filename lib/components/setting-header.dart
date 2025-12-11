@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -39,7 +40,9 @@ class SettingHeader extends ConsumerWidget {
                   ),
                   backgroundColor: Color.fromRGBO(240, 240, 240, 1),
                   child: const Text("Sign In", style: TextStyle(fontWeight: FontWeight.bold),),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoute.login);
+                  },
                 ),
                 const SizedBox(width: 10),
                 ShadButton.outline(

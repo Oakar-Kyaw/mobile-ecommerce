@@ -93,6 +93,18 @@ class LightAppColors implements IAppColorAbstract {
 
   @override
   Color get lineColor => const Color.fromARGB(255, 219, 215, 215);
+
+  @override
+  Color get clickColor => const Color.fromRGBO(55, 114, 175, 0.8);
+
+  @override
+  Color get promotionBadgeColor => const Color.fromRGBO(234, 245, 254, 1);
+
+  @override
+  Color get buttonBackgroundPrimary => const Color.fromRGBO(241, 243, 245, 1);
+
+  @override
+  Color get starColor => const Color.fromRGBO(254, 149, 34, 1);
 }
 
 class DarkAppColors implements IAppColorAbstract {
@@ -125,6 +137,18 @@ class DarkAppColors implements IAppColorAbstract {
 
   @override
   Color get lineColor => const Color.fromARGB(255, 219, 215, 215);
+
+  @override
+  Color get clickColor => const Color.fromRGBO(55, 114, 175, 0.8);
+
+  @override
+  Color get promotionBadgeColor => const Color.fromRGBO(234, 245, 254, 1);
+
+  @override
+  Color get buttonBackgroundPrimary => const Color.fromRGBO(241, 243, 245, 1);
+
+  @override
+  Color get starColor => const Color.fromRGBO(254, 149, 34, 1);
 }
 
 class FontSizeConfiguration {

@@ -145,7 +145,7 @@ class _PromotionPageState extends ConsumerState<PromotionPage> {
             ),
           ),
         ),
-            VerticalScrollItem(config: config, product: products),
+        VerticalScrollItem(config: config, product: products, isFavorite: false,),
           ],
         ),
       ),

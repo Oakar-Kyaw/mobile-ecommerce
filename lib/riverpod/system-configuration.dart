@@ -38,3 +38,9 @@ final appColorProvider = Provider<IAppColorAbstract>((ref) {
       return LightAppColors();
   }
 });
+
+
+final appFontSizeProvider = Provider<IAppFontSizeAbstract>((ref) {
+  
+  return MediumAppFontSize();
+});

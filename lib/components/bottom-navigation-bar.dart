@@ -38,7 +38,7 @@ class CustomerBottomNavigationBar extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
             decoration: BoxDecoration(
-              color: isSelected ? config.textPrimary : Colors.transparent,
+              color: isSelected ? config.clickColor : Colors.transparent,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(16),
             ),
@@ -83,8 +83,8 @@ class CustomerBottomNavigationBar extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(context: context, config: config, icon: Icons.home, label: 'Home', index: 0, route: AppRoute.home),
-              _buildNavItem(context: context,config: config, icon: Icons.history, label: 'Orders', index: 1, route: AppRoute.favorite ),
-              _buildNavItem(context: context,config: config, icon: Icons.search, label: 'Search', index: 2, route: AppRoute.search),
+              _buildNavItem(context: context,config: config, icon: Icons.history, label: 'Orders', index: 1, route: AppRoute.order ),
+              _buildNavItem(context: context,config: config, icon: Icons.chat, label: 'Chat', index: 2, route: AppRoute.chat),
               _buildNavItem(
                 context: context,
                 config: config,
