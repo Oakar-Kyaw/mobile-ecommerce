@@ -53,6 +53,27 @@ dependencies:
   intl: ^0.20.2
   animated_text_kit: ^4.3.0
   flutter_rating: ^2.0.2
+  flutter_launcher_icons: ^0.14.4
+
+#app icon
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/appicon.jpeg"
+  # Optional: Add adaptive icon support for Android 8.0+
+  # adaptive_icon_background: "#ffffff"
+  # adaptive_icon_foreground: "assets/icon/my_foreground.png"
+  web:
+    generate: true
+    image_path: "assets/images/appicon.jpeg"
+  windows:
+    generate: true
+    image_path: "assets/images/appicon.jpeg"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/appicon.jpeg"
+
 
 dev_dependencies:
   flutter_test:

@@ -105,6 +105,9 @@ class LightAppColors implements IAppColorAbstract {
 
   @override
   Color get starColor => const Color.fromRGBO(254, 149, 34, 1);
+
+  @override
+  Color get greyColor => const Color.fromRGBO(241, 243, 245, 1);
 }
 
 class DarkAppColors implements IAppColorAbstract {
@@ -149,6 +152,9 @@ class DarkAppColors implements IAppColorAbstract {
 
   @override
   Color get starColor => const Color.fromRGBO(254, 149, 34, 1);
+
+  @override
+  Color get greyColor => const Color.fromRGBO(189, 194, 202, 1);
 }
 
 class FontSizeConfiguration {

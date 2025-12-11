@@ -120,7 +120,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
             ),
           ),
         ),
-            VerticalScrollItem(config: config,product: products, isFavorite: true),
+        VerticalScrollItem(config: config,product: products, isFavorite: true),
           ],
         ),
       ),

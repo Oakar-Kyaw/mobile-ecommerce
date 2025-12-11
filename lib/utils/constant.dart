@@ -15,6 +15,7 @@ abstract class IAppColorAbstract {
   Color get promotionBadgeColor;
   Color get buttonBackgroundPrimary;
   Color get starColor;
+  Color get greyColor;
 }
 
 abstract class IAppFontSizeAbstract {
