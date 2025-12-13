@@ -1,9 +1,11 @@
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/src/cart.page.dart';
 import 'package:ecommerce_mobile/src/chat.page.dart';
 import 'package:ecommerce_mobile/src/checkout.page.dart';
 import 'package:ecommerce_mobile/src/favorite.page.dart';
 import 'package:ecommerce_mobile/src/home.page.dart';
 import 'package:ecommerce_mobile/src/login.dart';
+import 'package:ecommerce_mobile/src/notification.page.dart';
 import 'package:ecommerce_mobile/src/order.page.dart';
 import 'package:ecommerce_mobile/src/promotion.page.dart';
 import 'package:ecommerce_mobile/src/setting.page.dart';
@@ -56,6 +58,14 @@ class RouteGenerator {
       case AppRoute.chat:
         return _buildPageRoute(
            const ChatPage(),
+        );
+      case AppRoute.notifications:
+        return _buildPageRoute(
+           const NotificationPage(),
+        );
+      case AppRoute.cart:
+        return _buildPageRoute(
+           const CartPage(),
         );
       default:
         return _buildPageRoute(const LoginPage());

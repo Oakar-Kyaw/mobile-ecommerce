@@ -27,6 +27,7 @@ class _SearchInputState extends State<SearchInput> {
         decoration: ShadDecoration(
           color: colorScheme.background,
           focusedBorder: null,
+          secondaryFocusedBorder: ShadBorder.none,
           border: ShadBorder.all(
             color: colorScheme.border,
             radius: BorderRadius.circular(10),

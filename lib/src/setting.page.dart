@@ -20,7 +20,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Text("Account Settings", style: TextStyle(fontWeight: FontWeight.bold),),
     ),
-    SettingContent(title: Text('Devliver to'), leading: Icon(Icons.delivery_dining_outlined) , isShowDivider: true, content: "Myanmar", trailing: SizedBox(width: 20, height:20, child: Image.asset("assets/images/myanmar.jpg")), lastIcon: Icon(Icons.arrow_forward_ios, size: 15,)),
+    SettingContent(title: Text('Deliver to'), leading: Icon(Icons.delivery_dining_outlined) , isShowDivider: true, content: "Myanmar", trailing: SizedBox(width: 20, height:20, child: Image.asset("assets/images/myanmar.jpg")), lastIcon: Icon(Icons.arrow_forward_ios, size: 15,)),
     SettingContent(title: Text('Currency'), leading: Icon(Icons.money) , isShowDivider: true, content: "MMK", lastIcon: Icon(Icons.arrow_forward_ios, size: 15,)),
     SettingContent(title: Text('Language'), leading: Icon(Icons.language) , isShowDivider: true, content: "English", lastIcon: Icon(Icons.arrow_forward_ios, size: 15,)),// {"title": "Account Settings", "isShowDivider": false, "lastIcon": null},
     SettingContent(title: Text('Notification'), leading: Icon(Icons.money) , isShowDivider: true, lastIcon: Icon(Icons.arrow_forward_ios, size: 15,)),

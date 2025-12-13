@@ -108,6 +108,12 @@ class LightAppColors implements IAppColorAbstract {
 
   @override
   Color get greyColor => const Color.fromRGBO(241, 243, 245, 1);
+
+  @override
+  Color get readColor => const Color.fromARGB(255, 1, 68, 135);
+
+  @override
+  Color get chatMessageColor => const Color.fromARGB(255, 5, 104, 202);
 }
 
 class DarkAppColors implements IAppColorAbstract {
@@ -155,6 +161,12 @@ class DarkAppColors implements IAppColorAbstract {
 
   @override
   Color get greyColor => const Color.fromRGBO(189, 194, 202, 1);
+
+  @override
+  Color get readColor => const Color.fromARGB(255, 1, 68, 135);
+
+  @override
+  Color get chatMessageColor => const Color.fromARGB(255, 5, 104, 202);
 }
 
 class FontSizeConfiguration {

@@ -59,20 +59,24 @@ dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/appicon.jpeg"
+  #image_path: "assets/images/appicon.jpeg"
+  image_path: "assets/images/megasmart.png"
   # Optional: Add adaptive icon support for Android 8.0+
   # adaptive_icon_background: "#ffffff"
   # adaptive_icon_foreground: "assets/icon/my_foreground.png"
   web:
     generate: true
-    image_path: "assets/images/appicon.jpeg"
+    image_path: "assets/images/megasmart.png"
+    #image_path: "assets/images/appicon.jpeg"
   windows:
     generate: true
-    image_path: "assets/images/appicon.jpeg"
+    image_path: "assets/images/megasmart.png"
+    #image_path: "assets/images/appicon.jpeg"
     icon_size: 48
   macos:
     generate: true
-    image_path: "assets/images/appicon.jpeg"
+    image_path: "assets/images/megasmart.png"
+    #image_path: "assets/images/appicon.jpeg"
 
 
 dev_dependencies:

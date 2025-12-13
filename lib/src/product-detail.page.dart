@@ -3,11 +3,11 @@ import 'package:ecommerce_mobile/components/product-card.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
+import 'package:ecommerce_mobile/ui/product-tab-bar.ui.dart';
 import 'package:ecommerce_mobile/ui/review-component.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/utils/review.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating/flutter_rating.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -81,8 +81,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   late TabController tabController;
 
   String _tabValue = "description";
-  double _starRating = 1;
-  int _visibleReviews = 2; 
 
   Color hexToColor(String code) {
   // Remove # if present
@@ -99,9 +97,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   @override
   void initState(){
     tabController = TabController(length: 2, vsync: this);
-    tabController.addListener(() {
-      setState(() {});
-    });
     super.initState();
   }
 
@@ -110,10 +105,16 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
      tabController.dispose();
      super.dispose();
   }
+  
+  //change tab bar
+  void handleTabBar (int value){
+    setState(() {
+      _tabValue = value == 0 ? 'description' : 'reviews';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(_starRating);
     final IAppColorAbstract config = ref.watch(appColorProvider);
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -279,7 +280,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                     ),
 
                     const SizedBox(height: 10),
-                    Divider(color: config.textSecondary, thickness: 1),
+                    Divider(color: config.lineColor, thickness: 1),
 
                     const SizedBox(height: 10),
 
@@ -300,7 +301,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                     ),
 
                     const SizedBox(height: 10),
-                    Divider(color: config.textSecondary, thickness: 1),
+                    Divider(color: config.lineColor, thickness: 1),
 
                     const SizedBox(height: 10),
 
@@ -359,7 +360,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Divider(color: config.textSecondary, thickness: 1),
+                    Divider(color: config.lineColor, thickness: 1),
                     //branch name and data
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,58 +387,40 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Divider(color: config.textSecondary, thickness: 1),
+                    Divider(color: config.lineColor, thickness: 1),
                     //tab bar
-                    TabBar(
-                      isScrollable: true,
-                      tabAlignment: TabAlignment.start,
-                      labelColor: config.primary,
-                      labelPadding: EdgeInsets.zero,
-                      indicatorColor: config.primary,
-                      indicatorPadding: _tabValue == "reviews" ? EdgeInsetsGeometry.only(left: 20): EdgeInsetsGeometry.zero,
-                      dividerColor: config.textSecondary,
-                      controller: tabController,
-                      onTap: (value) {
-                        setState(() {
-                          _tabValue = value == 0 ? 'description' : 'reviews';
-                        });
-                      },
-                      tabs: [
-                        Tab(
-                          child: Text('Description')
-                        ),
-                        Tab(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Reviews'),
-                                const SizedBox(width: 5),
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: config.textSecondary
-                                  ),
-                                  child: Text("${reviews.length}", style: TextStyle(color: config.background),)
-                                )
-                              ],
-                            ),
+                    ProductTabBar(config: config, tabValue: _tabValue, reviewLength: reviews.length, tabController: tabController, handleTabBar: handleTabBar ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: 0,
+                        maxHeight: double.infinity, // let it expand naturally
+                      ),
+                       child:TabBarView(
+                       physics: NeverScrollableScrollPhysics(),
+                       controller: tabController,
+                       children: [
+                         Padding(
+                          padding: const EdgeInsets.symmetric(vertical:15.0),
+                          child: const Text("That dress is for you to feel confident, express your style, suit the occasion (casual, formal, work), provide comfort/protection, or even for a specific cause like charity, depending on its style, your personality, and the context—it's a form of self-expression and social signaling. ",
+                         // style: TextStyle(letterSpacing: 2),
                           ),
-                        ),
-                      ],
+                         ),
+                        ReviewUI(reviews: reviews, starColor: config.starColor, textSecondary: config.textSecondary, clickColor: config.clickColor, background: config.background),
+                      ]),
                     ),
-                    _tabValue =='description' ?
-                    //description tab
-                    Padding(
-                        padding: const EdgeInsets.symmetric(vertical:15.0),
-                        child: const Text("That dress is for you to feel confident, express your style, suit the occasion (casual, formal, work), provide comfort/protection, or even for a specific cause like charity, depending on its style, your personality, and the context—it's a form of self-expression and social signaling. ",
-                        style: TextStyle(letterSpacing: 2),
-                        ),
-                    ):
-                    //review tab 
-                    ReviewUI(reviews: reviews, starColor: config.starColor, textSecondary: config.textSecondary, clickColor: config.clickColor, background: config.background),
+                    //change tab bar
+                    // _tabValue =='description' ?
+                    // //description tab
+                    // Padding(
+                    //     padding: const EdgeInsets.symmetric(vertical:15.0),
+                    //     child: const Text("That dress is for you to feel confident, express your style, suit the occasion (casual, formal, work), provide comfort/protection, or even for a specific cause like charity, depending on its style, your personality, and the context—it's a form of self-expression and social signaling. ",
+                    //    // style: TextStyle(letterSpacing: 2),
+                    //     ),
+                    // ):
+                    // //review tab 
+                    // ReviewUI(reviews: reviews, starColor: config.starColor, textSecondary: config.textSecondary, clickColor: config.clickColor, background: config.background),
+                    
+                    ///end of change tab bar
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

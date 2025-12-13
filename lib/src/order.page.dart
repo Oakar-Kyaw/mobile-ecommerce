@@ -15,8 +15,8 @@ class OrderPage extends ConsumerWidget {
     final IAppColorAbstract config = ref.watch(appColorProvider);
     // Example order items
     final orders = [
-      {"name": "T-shirt", "brandName":"Shein", "price": 25900000, "quantity": 2, "status":"processing", "imageUrl": "assets/images/shirtimagebg.jpg", "date":"2024-04-20"},
-      {"name": "Big Shirt", "brandName":"Shein", "price": 25.0, "quantity": 2, "status":"delivered", "imageUrl": "assets/images/shirtimagebg.jpg", "date":"2024-04-20"},
+      {"name": "T-shirt", "brandName":"Shein", "price": 25900000, "quantity": 2, "status":"Processing", "imageUrl": "assets/images/shirtimagebg.jpg", "date":"2024-04-20"},
+      {"name": "Big Shirt", "brandName":"Shein", "price": 25.0, "quantity": 2, "status":"Delivered", "imageUrl": "assets/images/shirtimagebg.jpg", "date":"2024-04-20"},
     ];
 
     return Scaffold(

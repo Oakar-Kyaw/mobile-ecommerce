@@ -114,7 +114,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           leading: GestureDetector(onTap: () {
           final newTheme = currentTheme == 'light' ? 'dark' : 'light';
           ref.read(themeModeProvider.notifier).setTheme(newTheme);
-        },child: Icon(Icons.menu)), lastIcon: Icon(Icons.notifications), imageUrl: "assets/images/megasmart.png", trailing: Icon(Icons.shopping_cart)),
+        },child: Icon(Icons.menu)), lastIcon: GestureDetector(onTap: () => Navigator.pushNamed(context, AppRoute.notifications) , child: Icon(Icons.notifications)), imageUrl: "assets/images/megasmart.png", trailing: GestureDetector(onTap: () => Navigator.pushNamed(context, AppRoute.cart) ,child: Icon(Icons.shopping_cart))),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.only(top: 20),
@@ -178,7 +178,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: config.textSecondary),
+              child: Container(width: double.infinity, height: 1, color: config.lineColor),
             ),
              TitleWidget(
                     "New Arrivals",
@@ -202,7 +202,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: config.textSecondary),
+              child: Container(width: double.infinity, height: 1, color: config.lineColor),
             ),
             SizedBox(height: 40)
 

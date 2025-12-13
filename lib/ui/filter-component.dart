@@ -43,8 +43,8 @@ class _FilterState extends ConsumerState<Filter> {
                         boxShadow: [
                           BoxShadow(
                             color: config.textSecondary, 
-                            blurRadius: 6, // how soft the shadow looks
-                           offset: const Offset(1, 2), // move shadow down a bit
+                            blurRadius: 2, // how soft the shadow looks
+                           offset: const Offset(0, 0.1), // move shadow down a bit
                           ),
                         ],
                       ),
@@ -71,8 +71,8 @@ class _FilterState extends ConsumerState<Filter> {
                           BoxShadow(
                             color: config.textSecondary, // shadow color
                            // spreadRadius: 0.2, // how far it spreads
-                            blurRadius: 6, // how soft the shadow looks
-                           offset: const Offset(1, 2), // move shadow down a bit
+                            blurRadius: 2, // how soft the shadow looks
+                           offset: const Offset(0, 0.1), // move shadow down a bit
                           ),
                         ],
                       ),

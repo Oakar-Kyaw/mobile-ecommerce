@@ -57,7 +57,9 @@ class SettingHeader extends ConsumerWidget {
                     "Sign Up",
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoute.register);
+                  },
                 ),
               ],
             ),

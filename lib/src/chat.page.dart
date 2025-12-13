@@ -16,40 +16,48 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final Set<String> shownDates = {};
 
   final List<Map<String, dynamic>> _messages = [
     {
       "from": 1,
       "message": "Hello",
-      "read": true,
+      "status": "read" ,
       "to": 3,
       "date": "2024-02-19T00:05:30Z"
     },
     {
       "from": 3,
       "message": "Tell me please. What can I help you?",
-      "read": true,
+      "status": "read",
       "to": 1,
       "date": "2024-02-19T01:15:30Z"
     },
     {
       "from": 1,
       "message": "https://i.pinimg.com/1200x/96/5d/73/965d736b0612ba8d0e7145a487df1cc7.jpg",
-      "read": true,
+      "status": "read" ,
       "to": 3,
       "date": "2024-02-20T10:00:30Z"
     },
     {
       "from": 1,
       "message": "Instock?",
-      "read": true,
+      "status": "read" ,
       "to": 3,
       "date": "2024-02-20T10:05:30Z"
     },
     {
       "from": 3,
       "message": "Let me check",
-      "read": false,
+      "status": "delivered",
+      "to": 1,
+      "date": "2024-02-20T11:00:30Z"
+    },
+    {
+      "from": 3,
+      "message": "Still Instock",
+      "status": "sent",
       "to": 1,
       "date": "2024-02-20T11:00:30Z"
     },
@@ -80,27 +88,33 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   String _formatDate(String isoDate) {
     final date = DateTime.parse(isoDate).toLocal();
-    return DateFormat('EEE dd/MM/yyyy').format(date); // Sat 11/07
+    // Short month name, day, weekday abbreviation, yeaar
+    final formatted = DateFormat("MMM d (EEE), y").format(date);
+    return formatted; // example = Dec 11 (Mon), 2024 
   }
 
   String _formatTime(String isoDate) {
     final date = DateTime.parse(isoDate).toLocal();
-    return DateFormat('HH:mm:ss').format(date); // 14:23:05
+    return DateFormat('HH:mm').format(date); // 14:23:05
   }
 
   Widget _buildMessage(Map<String, dynamic> message, IAppColorAbstract config, {bool showDate = false}) {
     final bool isMe = message["from"] == 3;
     final bool isImage = message["message"].toString().startsWith("http");
+    final messageDate = _formatDate(message["date"]);
+    var sameDate = false;
+
+    showDate && !shownDates.contains(messageDate) ? shownDates.add(messageDate) : sameDate = true;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showDate)
+        if (showDate && !sameDate)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Center(
               child: Text(
-                _formatDate(message["date"]),
+                messageDate,
                 style: TextStyle(color: config.textSecondary, fontWeight: FontWeight.bold),
               ),
             ),
@@ -112,7 +126,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             margin: const EdgeInsets.symmetric(vertical: 4),
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
             decoration: BoxDecoration(
-              color: isMe ? config.clickColor : config.greyColor,
+              color: isMe ? config.chatMessageColor : config.greyColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: isImage
@@ -137,7 +151,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                           ),
                           const SizedBox(width: 5),
                           if (isMe)
-                            message["read"] == true
+                            message["status"] == "read"
+                                ? Icon(Icons.done_all, size: 14, color: config.readColor)
+                                : message["status"] == "delivered" 
                                 ? Icon(Icons.done_all, size: 14, color: config.background)
                                 : Icon(Icons.done, size: 14, color: config.background),
                         ],
@@ -170,26 +186,27 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               controller: _scrollController,
               padding: const EdgeInsets.all(20),
               itemCount: _messages.length,
-              reverse: true,
               itemBuilder: (context, index) {
-                final message = _messages[_messages.length - 1 - index];
+                //final message = _messages[_messages.length - 1 - index];
+                final message = _messages[index];
+                final formattedDate = _formatDate(message["date"]);
                 bool showDate = false;
-
+                print("date format is $formattedDate and $message");
                 // Always show for the first message
-                if (index == 0) {
-                  showDate = true;
-                } else {
-                  final prevMessage = _messages[_messages.length - index];
-                  final prevDate = DateTime.parse(prevMessage["date"]).toLocal();
-                  final currDate = DateTime.parse(message["date"]).toLocal();
+                  final msgDate = DateTime.parse(message["date"]).toLocal();
+                  final today = DateTime.now().toLocal();
 
-                  if (prevDate.day != currDate.day ||
-                      prevDate.month != currDate.month ||
-                      prevDate.year != currDate.year) {
-                    showDate = true; // Show date for new day
+                  if (msgDate.day != today.day ||
+                      msgDate.month != today.month ||
+                      msgDate.year != today.year) {
+                       showDate = true;
+                       print("shownDate is: ${shownDates}");
+                        // Show date only once per day
+                      //  if (!shownDates.contains(formattedDate)) {
+                      //     showDate = true;
+                      //     shownDates.add(formattedDate);
+                      //   }
                   }
-                }
-
                 return _buildMessage(message, config, showDate: showDate);
               },
             ),

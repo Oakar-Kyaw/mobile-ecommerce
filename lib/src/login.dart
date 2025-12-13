@@ -1,6 +1,7 @@
 import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/ui/social-button.ui.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Row(
                     children: [
                       Image.asset(
-                        'assets/images/logo.png',
+                        'assets/images/megasmart.png',
                         fit: BoxFit.cover,
                         width: 79,
                         height: 57,
@@ -138,7 +139,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   // const Spacer(),
                   const SizedBox(height: 40),
                   ShadButton(
-                    backgroundColor: config.primary,
+                    backgroundColor: config.clickColor,
                     decoration: ShadDecoration(
                       border: ShadBorder(radius: BorderRadius.circular(30.0)),
                     ),
@@ -163,11 +164,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildSocialButton('assets/images/google.png', config),
+                      SocialButton(asset: 'assets/images/google.png', config: config),
                       const SizedBox(width: 10),
-                      _buildSocialButton('assets/images/facebook.png', config),
+                      SocialButton(asset: 'assets/images/facebook.png', config: config),
                       const SizedBox(width: 10),
-                      _buildSocialButton('assets/images/apple.png', config),
+                      SocialButton(asset: 'assets/images/apple.png', config: config),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -205,19 +206,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSocialButton(String asset, IAppColorAbstract config) {
-    return Container(
-      width: 60,
-      height: 60,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(100)),
-        border: Border.all(color: config.background),
-      ),
-      child: Image.asset(asset, fit: BoxFit.contain),
     );
   }
 }
