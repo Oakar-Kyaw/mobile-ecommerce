@@ -18,6 +18,7 @@ abstract class IAppColorAbstract {
   Color get greyColor;
   Color get readColor;
   Color get  chatMessageColor;
+  Color get redColor;
 }
 
 abstract class IAppFontSizeAbstract {

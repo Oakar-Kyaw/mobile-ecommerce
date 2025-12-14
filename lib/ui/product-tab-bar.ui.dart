@@ -35,6 +35,7 @@ class ProductTabBar extends StatelessWidget {
               dividerColor: config.lineColor,
               controller: tabController,
               onTap: (value) => handleTabBar(value),
+              onFocusChange: (value, index) => handleTabBar(value),
               tabs: [
               Tab(
                 child: Text('Description')

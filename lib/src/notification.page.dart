@@ -2,6 +2,7 @@ import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
+import 'package:ecommerce_mobile/ui/notification-content.ui.dart';
 import 'package:ecommerce_mobile/ui/notification-tab-bar.ui.dart';
 import 'package:ecommerce_mobile/ui/social-button.ui.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
@@ -24,6 +25,105 @@ class _NotificationPageState
     with SingleTickerProviderStateMixin {
 
   late TabController tabController;
+  final List<Map<String, dynamic>> allNoti = [
+      {
+        "title": "Your order is pending",
+        "time": "Wednesday 10 PM, 2024",
+        "imageUrl": "assets/images/chris.jpg",
+        "isUnread": true,
+      },
+      {
+        "title": "Order shipped successfully",
+        "time": "Tuesday 3:45 PM, 2024",
+        "imageUrl": "assets/images/chris.jpg",
+        "isUnread": false,
+      },
+      {
+        "title": "Payment received",
+        "time": "Monday 9:12 AM, 2024",
+        "imageUrl": "assets/images/chris.jpg",
+        "isUnread": true,
+      },
+      {
+        "title": "Your order was delivered",
+        "time": "Sunday 6:30 PM, 2024",
+        "imageUrl": "assets/images/chris.jpg",
+        "isUnread": false,
+      },
+      {
+        "title": "New promotion available",
+        "time": "Saturday 11:00 AM, 2024",
+        "imageUrl": "assets/images/chris.jpg",
+        "isUnread": true,
+      },
+    ];
+
+  final List<Map<String, dynamic>> unreadNoti = [
+    {
+      "title": "Your order is pending",
+      "time": "Wednesday 10 PM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": true,
+    },
+    {
+      "title": "Payment received",
+      "time": "Monday 9:12 AM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": true,
+    },
+    {
+      "title": "New promotion available",
+      "time": "Saturday 11:00 AM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": true,
+    },
+    {
+      "title": "Order confirmation received",
+      "time": "Friday 2:30 PM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": true,
+    },
+    {
+      "title": "Price dropped on item you viewed",
+      "time": "Thursday 8:15 AM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": true,
+    },
+  ];
+
+  final List<Map<String, dynamic>> readNoti = [
+    {
+      "title": "Order shipped successfully",
+      "time": "Tuesday 3:45 PM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": false,
+    },
+    {
+      "title": "Your order was delivered",
+      "time": "Sunday 6:30 PM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": false,
+    },
+    {
+      "title": "Refund processed successfully",
+      "time": "Friday 4:00 PM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": false,
+    },
+    {
+      "title": "Password changed successfully",
+      "time": "Thursday 1:10 PM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": false,
+    },
+    {
+      "title": "Welcome to our store!",
+      "time": "Monday 8:00 AM, 2024",
+      "imageUrl": "assets/images/chris.jpg",
+      "isUnread": false,
+    },
+  ];
+
 
   @override
   void initState() {
@@ -49,6 +149,16 @@ class _NotificationPageState
           onTap: () => Navigator.pop(context),
         ),
         title: "Notification",
+        lastIcon: ShadButton(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          backgroundColor: config.greyColor,
+          decoration: ShadDecoration(
+            border: ShadBorder.all(
+              radius: BorderRadius.circular(20)
+            )
+          ),
+          child: Text("Mark all as undread", style: TextStyle(color: config.primary, fontSize: 12),),
+        ),
       ),
       body: Column(
         children: [
@@ -59,10 +169,10 @@ class _NotificationPageState
           Expanded(
             child: TabBarView(
               controller: tabController,
-              children: const [
-                Center(child: Text("All Notifications")),
-                Center(child: Text("Unread Notifications")),
-                Center(child: Text("Read Notifications")),
+              children: [
+                NotificationContent(config: config, notiList: allNoti),
+                NotificationContent(config: config, notiList: unreadNoti),
+                NotificationContent(config: config, notiList: readNoti)
               ],
             ),
           ),

@@ -15,4 +15,7 @@ class AppRoute {
   static const String checkout = '/checkout';
   static const String productDetail = '/product-detail';
   static const String chat = "/chat";
+  static const String shippingInfo = "/shipping-info";
+  static const String orderConfirm = "/order-confirm";
+  static const String orderHistory = "/order-history";
 }

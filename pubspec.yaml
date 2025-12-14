@@ -54,6 +54,7 @@ dependencies:
   animated_text_kit: ^4.3.0
   flutter_rating: ^2.0.2
   flutter_launcher_icons: ^0.14.4
+  country_code_picker: ^3.4.1
 
 #app icon
 flutter_launcher_icons:

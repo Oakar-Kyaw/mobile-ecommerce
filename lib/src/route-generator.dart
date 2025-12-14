@@ -9,6 +9,7 @@ import 'package:ecommerce_mobile/src/notification.page.dart';
 import 'package:ecommerce_mobile/src/order.page.dart';
 import 'package:ecommerce_mobile/src/promotion.page.dart';
 import 'package:ecommerce_mobile/src/setting.page.dart';
+import 'package:ecommerce_mobile/src/shipping-info.page.dart';
 import 'package:ecommerce_mobile/src/sign-up.page.dart';
 import 'package:ecommerce_mobile/src/trending-and-new-arrival-item.page.dart';
 import 'package:ecommerce_mobile/src/product-detail.page.dart';
@@ -66,6 +67,10 @@ class RouteGenerator {
       case AppRoute.cart:
         return _buildPageRoute(
            const CartPage(),
+        );
+      case AppRoute.shippingInfo:
+        return _buildPageRoute(
+           const ShippingInfoPage(),
         );
       default:
         return _buildPageRoute(const LoginPage());

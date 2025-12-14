@@ -22,43 +22,12 @@ class ProductDetailPage extends ConsumerStatefulWidget {
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with SingleTickerProviderStateMixin {
 
   final List<Map<String, dynamic>> products = [
-  {
-    "title": "Classic White Shirt",
-    "imageUrl": "assets/images/menshirt.jpg",
-    "description": "Soft cotton white shirt, perfect for casual or formal wear.",
-    "price": 40000,
-    "currency": "MMK"
-  },
-  {
-    "title": "Denim Jeans",
-    "imageUrl": "assets/images/jean.jpg",
-    "description": "Slim fit denim jeans with stretchable fabric.",
-    "price": 55000,
-    "currency": "MMK"
-  },
-  {
-    "title": "Leather Jacket",
-    "imageUrl": "assets/images/jacket.jpg",
-    "description": "Premium black leather jacket with inner lining.",
-    "price": 120000,
-    "currency": "MMK"
-  },
-  {
-    "title": "Sneakers",
-    "imageUrl": "assets/images/sneaker.jpg",
-    "description": "Comfortable and lightweight sneakers for everyday use.",
-    "price": 65000,
-    "currency": "MMK"
-  },
-  {
-    "title": "Smart Watch",
-    "imageUrl": "assets/images/smartwatch.jpg",
-    "description": "Waterproof smartwatch with heart rate and sleep tracking.",
-    "price": 850000,
-    "currency": "MMK"
-  },
- ];
-
+    {"title": "Classic White Shirt","imageUrl": "assets/images/menshirt.jpg","description": "Soft cotton white shirt, perfect for casual or formal wear.","price": 40000,"currency": "MMK"},
+    {"title": "Denim Jeans","imageUrl": "assets/images/jean.jpg","description": "Slim fit denim jeans with stretchable fabric.","price": 55000,"currency": "MMK"},
+    {"title": "Leather Jacket","imageUrl": "assets/images/jacket.jpg","description": "Premium black leather jacket with inner lining.","price": 120000,"currency": "MMK"},
+    {"title": "Sneakers","imageUrl": "assets/images/sneaker.jpg","description": "Comfortable and lightweight sneakers for everyday use.","price": 65000,"currency": "MMK"},
+    {"title": "Smart Watch","imageUrl": "assets/images/smartwatch.jpg","description": "Waterproof smartwatch with heart rate and sleep tracking.","price": 850000,"currency": "MMK"},
+  ];
 
   final List<String> images = [
     "assets/images/white-shirt.jpg",
@@ -70,44 +39,49 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   final List<String> sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
   final List<String> colorHex = [
-    "#FF0000", // Red
-    "#00FF00", // Green
-    "#0000FF", // Blue
-    "#FFFF00", // Yellow
-    "#FFA500", // Orange
-    "#800080", // Purple
+    "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FFA500", "#800080",
   ];
 
   late TabController tabController;
+  late double _tabContentHeight = 100;
 
   String _tabValue = "description";
 
   Color hexToColor(String code) {
-  // Remove # if present
     code = code.replaceAll("#", "");
-    // Add opacity if missing
-    if (code.length == 6) {
-      code = "FF$code"; // full opacity
-    }
+    if (code.length == 6) code = "FF$code";
     return Color(int.parse(code, radix: 16));
   }
 
-  int quantity = 2; // 🧮 for quantity buttons
+  int quantity = 2;
 
   @override
-  void initState(){
-    tabController = TabController(length: 2, vsync: this);
+  void initState() {
     super.initState();
+    tabController = TabController(length: 2, vsync: this);
+
+    // Listen for swipe or tap changes
+    tabController.addListener(() {
+      // Only run when animation is completed
+      if (!tabController.indexIsChanging) {
+        setState(() {
+          _tabValue = tabController.index == 0 ? 'description' : 'reviews';
+
+          // Update dynamic height
+          _tabContentHeight = _tabValue == 'description' ? 100 : 600;
+        });
+      }
+    });
   }
+
 
   @override
   void dispose() {
-     tabController.dispose();
-     super.dispose();
+    tabController.dispose();
+    super.dispose();
   }
   
-  //change tab bar
-  void handleTabBar (int value){
+  void handleTabBar(int value) {
     setState(() {
       _tabValue = value == 0 ? 'description' : 'reviews';
     });
@@ -116,7 +90,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   @override
   Widget build(BuildContext context) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
 
     return SafeArea(
       child: Scaffold(
@@ -131,11 +104,10 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
         ),
         body: CustomScrollView(
           slivers: [
-            /// 🟩 Main product image
+            // Main Product Image
             SliverToBoxAdapter(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
@@ -177,7 +149,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
               ),
             ),
 
-            /// 🟦 Thumbnail images
+            // Thumbnail Images
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 80,
@@ -200,7 +172,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
               ),
             ),
 
-            /// 🟨 Product details
+            // Product Details
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -208,71 +180,29 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-
-                    const Text(
-                      "Shirt T (Sis-Burma)",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold),
-                    ),
-
+                    const Text("Shirt T (Sis-Burma)", style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
-
-                    const Text(
-                      "\$50",
-                      style: TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        color: Colors.grey,
-                      ),
-                    ),
-
+                    const Text("\$50", style: TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey)),
                     const SizedBox(height: 5),
 
-                    // 🟢 Price + quantity control
+                    // Price + Quantity
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
-                          "\$29.99",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
+                        const Text("\$29.99", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (quantity > 1) quantity--;
-                                });
-                              },
-                              child: circleWidget(
-                                colorData: config.textSecondary,
-                                widgetData:
-                                    const Icon(Icons.remove, size: 16),
-                                height: 28,
-                                width: 28
-                              ),
+                              onTap: () => setState(() { if(quantity > 1) quantity--; }),
+                              child: circleWidget(colorData: config.textSecondary, widgetData: const Icon(Icons.remove, size: 16), height: 28, width: 28),
                             ),
                             const SizedBox(width: 10),
-                            Text(
-                              "$quantity",
-                              style: const TextStyle(fontSize: 16),
-                            ),
+                            Text("$quantity", style: const TextStyle(fontSize: 16)),
                             const SizedBox(width: 10),
                             GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  quantity++;
-                                });
-                              },
-                              child: circleWidget(
-                                colorData: config.textPrimary,
-                                widgetData: const Icon(Icons.add, size: 16),
-                                height: 28,
-                                width: 28
-                              ),
+                              onTap: () => setState(() { quantity++; }),
+                              child: circleWidget(colorData: config.textPrimary, widgetData: const Icon(Icons.add, size: 16), height: 28, width: 28),
                             ),
                           ],
                         ),
@@ -281,37 +211,17 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
 
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
-
                     const SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text("Color: White"),
-                        Text("Availability: In Stock"),
-                      ],
-                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [Text("Color: White"), Text("Availability: In Stock")]),
                     const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text("Weight: 0.5kg"),
-                        Text("Category: T-shirt"),
-                      ],
-                    ),
-
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [Text("Weight: 0.5kg"), Text("Category: T-shirt")]),
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
-
+                    const SizedBox(height: 10),
+                    const Text("Size Chart", style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
 
-                    const Text(
-                      "Size Chart",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // 🟣 Size selector
+                    // Size selector
                     SizedBox(
                       height: 50,
                       child: HorizontalScrollableList(
@@ -319,25 +229,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                         spacing: 8,
                         items: sizes,
                         itemBuilder: (context, size, index) {
-                          return circleWidget(
-                            colorData: config.textSecondary,
-                            widgetData: Text(size,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold
-                                )),
-                            height: 40,
-                            width: 40
-                          );
+                          return circleWidget(colorData: config.textSecondary, widgetData: Text(size, style: const TextStyle(fontWeight: FontWeight.bold)), height: 40, width: 40);
                         },
                       ),
                     ),
                     const SizedBox(height: 10),
-                    //Color
-                    const Text(
-                      "Color",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    const Text("Color", style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
+
                     SizedBox(
                       height: 50,
                       child: HorizontalScrollableList(
@@ -345,126 +244,87 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                         spacing: 8,
                         items: colorHex,
                         itemBuilder: (context, hex, index) {
-                          return circleWidget(
-                            colorData: config.textSecondary,
-                            widgetData: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: hexToColor(hex),
-                              ),
-                            ),
-                            height: 40,
-                            width: 40
-                          );
+                          return circleWidget(colorData: config.textSecondary, widgetData: Container(decoration: BoxDecoration(shape: BoxShape.circle, color: hexToColor(hex))), height: 40, width: 40);
                         },
                       ),
                     ),
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
-                    //branch name and data
+
+                    // Branch info
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                         Row(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            circleWidget(colorData: Colors.transparent, widgetData: Image.asset("assets/images/bmw.jpg", fit: BoxFit.cover,), height: 60, width: 60),
+                            circleWidget(colorData: Colors.transparent, widgetData: Image.asset("assets/images/bmw.jpg", fit: BoxFit.cover), height: 60, width: 60),
                             const SizedBox(width: 10),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("BMW Car (Branch Code)", style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text("BMW Car (Branch Code)", style: TextStyle(fontWeight: FontWeight.bold)),
                                 Text("99% positive feedback")
                               ],
                             )
                           ],
-                         ),
-                         GestureDetector(
-                           child: Icon(Icons.message),
-                         )
+                        ),
+                        GestureDetector(child: Icon(Icons.message))
                       ],
                     ),
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
-                    //tab bar
-                    ProductTabBar(config: config, tabValue: _tabValue, reviewLength: reviews.length, tabController: tabController, handleTabBar: handleTabBar ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: 0,
-                        maxHeight: double.infinity, // let it expand naturally
-                      ),
-                       child:TabBarView(
-                       physics: NeverScrollableScrollPhysics(),
-                       controller: tabController,
-                       children: [
-                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical:15.0),
-                          child: const Text("That dress is for you to feel confident, express your style, suit the occasion (casual, formal, work), provide comfort/protection, or even for a specific cause like charity, depending on its style, your personality, and the context—it's a form of self-expression and social signaling. ",
-                         // style: TextStyle(letterSpacing: 2),
+
+                    // TabBar + TabBarView
+                    ProductTabBar(config: config, tabValue: _tabValue, reviewLength: reviews.length, tabController: tabController, handleTabBar: handleTabBar),
+
+                    // ✅ Fixed TabBarView for dynamic content height
+                    SizedBox(
+                      height: _tabContentHeight,
+                      child: TabBarView(
+                        controller: tabController,
+                        children: [
+                          SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child:  const Text(
+                              'A product description is persuasive marketing copy explaining what a product is, its features, benefits, and why a customer should buy it, often using vivid language to help buyers visualize it and feel an emotional connection, ultimately driving sales. It\'s more than just specs; it tells a story, highlights unique selling points (USPs), and uses SEO-friendly language to attract the right audience and answer potential questions, according to resources from Shopify and ClearVoice. Key elements to include: Features & Specs: Dimensions, materials, technical details, colors, weight. Benefits: How the product solves problems or improves the customer\'s life (focus on benefits over just features). Unique Selling Points (USPs): What makes it special or different.A product description is persuasive marketing copy explaining what a product is, its features, benefits, and why a customer should buy it, often using vivid language to help buyers visualize it and feel an emotional connection, ultimately driving sales. It is more than just specs; it tells a story, highlights unique selling points (USPs), and uses SEO-friendly language to attract the right audience and answer potential questions, according to resources from',
+                              style: TextStyle(fontSize: 14),
+                            ),
                           ),
-                         ),
-                        ReviewUI(reviews: reviews, starColor: config.starColor, textSecondary: config.textSecondary, clickColor: config.clickColor, background: config.background),
-                      ]),
+                          SingleChildScrollView(
+                            child: ReviewUI(
+                              reviews: reviews,
+                              starColor: config.starColor,
+                              textSecondary: config.textSecondary,
+                              clickColor: config.clickColor,
+                              background: config.background,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    //change tab bar
-                    // _tabValue =='description' ?
-                    // //description tab
-                    // Padding(
-                    //     padding: const EdgeInsets.symmetric(vertical:15.0),
-                    //     child: const Text("That dress is for you to feel confident, express your style, suit the occasion (casual, formal, work), provide comfort/protection, or even for a specific cause like charity, depending on its style, your personality, and the context—it's a form of self-expression and social signaling. ",
-                    //    // style: TextStyle(letterSpacing: 2),
-                    //     ),
-                    // ):
-                    // //review tab 
-                    // ReviewUI(reviews: reviews, starColor: config.starColor, textSecondary: config.textSecondary, clickColor: config.clickColor, background: config.background),
-                    
-                    ///end of change tab bar
+
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          child: CircleAvatar(
-                            backgroundColor: config.buttonBackgroundPrimary,
-                            child: Icon(Icons.home, color: config.primary)
-                          )
+                          child: CircleAvatar(backgroundColor: config.buttonBackgroundPrimary, child: Icon(Icons.home, color: config.primary))
                         ),
                         ShadButton(
                           backgroundColor: config.buttonBackgroundPrimary,
-                          onPressed: () {
-                            // Action when button is pressed
-                            print("Button pressed!");
-                          },
-                          leading: Icon(Icons.shopping_cart, color: config.textPrimary,),
-                          decoration: ShadDecoration(
-                            border: ShadBorder.all(
-                              radius: BorderRadius.circular(20)
-                            )
-                          ),
-                          child: const Text(
-                            "Add to Cart",
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: () { print("Button pressed!"); },
+                          leading: Icon(Icons.shopping_cart, color: config.textPrimary),
+                          decoration: ShadDecoration(border: ShadBorder.all(radius: BorderRadius.circular(20))),
+                          child: const Text("Add to Cart", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                         ),
                         ShadButton(
                           backgroundColor: config.clickColor,
-                          onPressed: () {
-                            // Action when button is pressed
-                            print("Button pressed!");
-                          },
-                          decoration: ShadDecoration(
-                            border: ShadBorder.all(
-                              radius: BorderRadius.circular(20)
-                            )
-                          ),
-                          child: const Text(
-                            "Order Now",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
+                          onPressed: () { print("Button pressed!"); },
+                          decoration: ShadDecoration(border: ShadBorder.all(radius: BorderRadius.circular(20))),
+                          child: const Text("Order Now", style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -473,30 +333,29 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                 ),
               ),
             ),
+
+            // Related Products
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  TitleWidget(
-                        "Related Product",
-                        onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
-                    ),
+                  TitleWidget("Related Product", onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems)),
                   const SizedBox(height: 10),
                   SizedBox(
-                      height: 320,
-                      child: HorizontalScrollableList<Map<String, dynamic>>(
-                        items: products,
-                        itemBuilder: (context, product, index) {
-                          return ProductCard(
-                            config: config,
-                            title: product["title"],
-                            imageUrl: product["imageUrl"],
-                            description: product["description"],
-                            price: product["price"],
-                            currency: product["currency"],
-                          );
-                        },
-                      )
+                    height: 320,
+                    child: HorizontalScrollableList<Map<String, dynamic>>(
+                      items: products,
+                      itemBuilder: (context, product, index) {
+                        return ProductCard(
+                          config: config,
+                          title: product["title"],
+                          imageUrl: product["imageUrl"],
+                          description: product["description"],
+                          price: product["price"],
+                          currency: product["currency"],
+                        );
+                      },
                     ),
+                  ),
                 ],
               ),
             )
