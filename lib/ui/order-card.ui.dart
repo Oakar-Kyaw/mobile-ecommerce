@@ -6,12 +6,17 @@ import 'package:ecommerce_mobile/utils/constant.dart';
 class OrderCard extends StatelessWidget {
   final IAppColorAbstract config;
   final bool existCheckBox;
+  final bool existColorField;
+  final bool existSizeField;
+  final bool existQuantityButton;
   final String name;
   final String brand;
   final double price;
   final String imageUrl;
   final int quantity;
   final int? realQuantity;
+  final String? size;
+  final String? color;
   final bool isChecked;
   final void Function(int)? onQuantityChanged;
   final void Function(bool?)? onChecked;
@@ -19,6 +24,9 @@ class OrderCard extends StatelessWidget {
   const OrderCard({
     super.key,
     this.existCheckBox = true,
+    this.existColorField = false,
+    this.existSizeField = false,
+    this.existQuantityButton = true,
     this.realQuantity,
     required this.config,
     required this.name,
@@ -26,6 +34,8 @@ class OrderCard extends StatelessWidget {
     required this.price,
     required this.imageUrl,
     this.quantity = 1,
+    this.size,
+    this.color,
     this.isChecked = false,
     this.onQuantityChanged,
     this.onChecked,
@@ -46,7 +56,7 @@ class OrderCard extends StatelessWidget {
          if(existCheckBox)
            const SizedBox(width: 10),
           Container(
-            height: 100,
+            height: 120,
             width: 100,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -62,7 +72,7 @@ class OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(name),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Row(
                 children: [
                   Text("${price.toString()} MMK", style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -70,11 +80,20 @@ class OrderCard extends StatelessWidget {
                   if(realQuantity != null) Text("( ${realQuantity.toString()} pc )")
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Text(brand, style: const TextStyle(fontSize: 12)),
-              const SizedBox(height: 10),
-              Row(
-                children: [
+              const SizedBox(height: 5),
+              //check color
+              if(existColorField)
+                Text("Color: ${color}"),
+                SizedBox(height: 5,),
+              //check size
+              if(existSizeField)
+                Text("Size: $size"),
+              //check on quantity button
+              if(existQuantityButton)
+                Row(
+                 children: [
                   GestureDetector(
                     onTap: () {
                       // if (onQuantityChanged != null && quantity > 1) {
@@ -92,7 +111,7 @@ class OrderCard extends StatelessWidget {
                   Text(quantity.toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(width: 15),
                   GestureDetector(
-                    onTap: () {
+                     onTap: () {
                       // if (onQuantityChanged != null) {
                       //   onQuantityChanged!(quantity + 1);
                       // }

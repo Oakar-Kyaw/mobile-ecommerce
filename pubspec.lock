@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  credit_card_flag_detector:
+    dependency: "direct main"
+    description:
+      name: credit_card_flag_detector
+      sha256: f3b3eb04441062f14c3a799979f369bb97ad70e133c2c4f32bb42c981b385b8a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+6"
   cross_file:
     dependency: transitive
     description:
@@ -358,6 +366,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.1.0"
+  flutter_credit_card:
+    dependency: "direct main"
+    description:
+      name: flutter_credit_card
+      sha256: a31154e62667e6e1f089ea357941e9285e4b42b9cb699392e55c978e19f864a0
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   flutter_dotenv:
     dependency: "direct main"
     description:

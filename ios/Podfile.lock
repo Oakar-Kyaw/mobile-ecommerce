@@ -43,6 +43,8 @@ PODS:
   - FirebaseCoreInternal (12.4.0):
     - "GoogleUtilities/NSData+zlib (~> 8.1)"
   - Flutter (1.0.0)
+  - flutter_credit_card (0.0.1):
+    - Flutter
   - flutter_web_auth_2 (3.0.0):
     - Flutter
   - google_sign_in_ios (0.0.1):
@@ -107,6 +109,7 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - flutter_credit_card (from `.symlinks/plugins/flutter_credit_card/ios`)
   - flutter_web_auth_2 (from `.symlinks/plugins/flutter_web_auth_2/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - irondash_engine_context (from `.symlinks/plugins/irondash_engine_context/ios`)
@@ -142,6 +145,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  flutter_credit_card:
+    :path: ".symlinks/plugins/flutter_credit_card/ios"
   flutter_web_auth_2:
     :path: ".symlinks/plugins/flutter_web_auth_2/ios"
   google_sign_in_ios:
@@ -171,6 +176,7 @@ SPEC CHECKSUMS:
   FirebaseCoreExtension: 7e1f7118ee970e001a8013719fb90950ee5e0018
   FirebaseCoreInternal: d7f5a043c2cd01a08103ab586587c1468047bca6
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_credit_card: 75489579678755891ccb1ddcc13415defcea4f01
   flutter_web_auth_2: 5c8d9dcd7848b5a9efb086d24e7a9adcae979c80
   google_sign_in_ios: 00dfa94252eb10278b64828c81bcb7158a81a53a
   GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77

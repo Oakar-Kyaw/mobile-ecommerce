@@ -311,18 +311,19 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, AppRoute.home),
                           child: CircleAvatar(backgroundColor: config.buttonBackgroundPrimary, child: Icon(Icons.home, color: config.primary))
                         ),
                         ShadButton(
                           backgroundColor: config.buttonBackgroundPrimary,
-                          onPressed: () { print("Button pressed!"); },
+                          onPressed: () => Navigator.pushNamed(context, AppRoute.cart),
                           leading: Icon(Icons.shopping_cart, color: config.textPrimary),
                           decoration: ShadDecoration(border: ShadBorder.all(radius: BorderRadius.circular(20))),
                           child: const Text("Add to Cart", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                         ),
                         ShadButton(
                           backgroundColor: config.clickColor,
-                          onPressed: () { print("Button pressed!"); },
+                          onPressed: () => Navigator.pushNamed(context, AppRoute.checkout),
                           decoration: ShadDecoration(border: ShadBorder.all(radius: BorderRadius.circular(20))),
                           child: const Text("Order Now", style: TextStyle(fontWeight: FontWeight.bold)),
                         ),

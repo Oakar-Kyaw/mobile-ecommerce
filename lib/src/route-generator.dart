@@ -6,6 +6,8 @@ import 'package:ecommerce_mobile/src/favorite.page.dart';
 import 'package:ecommerce_mobile/src/home.page.dart';
 import 'package:ecommerce_mobile/src/login.dart';
 import 'package:ecommerce_mobile/src/notification.page.dart';
+import 'package:ecommerce_mobile/src/order-confirm.page.dart';
+import 'package:ecommerce_mobile/src/order-history.page.dart';
 import 'package:ecommerce_mobile/src/order.page.dart';
 import 'package:ecommerce_mobile/src/promotion.page.dart';
 import 'package:ecommerce_mobile/src/setting.page.dart';
@@ -51,6 +53,14 @@ class RouteGenerator {
       case AppRoute.order:
         return _buildPageRoute(
            const OrderPage(),
+        );
+      case AppRoute.orderConfirm:
+        return _buildPageRoute(
+           const OrderConfirmPage(),
+        );
+      case AppRoute.orderHistory:
+        return _buildPageRoute(
+           const OrderHistoryPage(),
         );
       case AppRoute.checkout:
         return _buildPageRoute(

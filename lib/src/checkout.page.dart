@@ -230,7 +230,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                       )
                     ),
                     child: Text("Place order", style: TextStyle(fontWeight: FontWeight.bold),),
-                    onPressed: () => print("place order"),
+                    onPressed: () => Navigator.pushNamed(context, AppRoute.orderConfirm),
                   )
                 ],
               ),
