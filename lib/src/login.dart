@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/social-button.ui.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
+import 'package:ecommerce_mobile/utils/secure-storage.dart';
+import 'package:ecommerce_mobile/utils/top-toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -30,32 +34,68 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
-  Future<void> _signIn(IAppColorAbstract config) async {
-    final url = dotenv.env['AUTH_URL'] ?? "";
-    if (!_formKey.currentState!.saveAndValidate()) return;
+ Future<void> _signIn(IAppColorAbstract config) async {
+  if (!_formKey.currentState!.saveAndValidate()) return;
 
-    Map<String, dynamic> body = {'password': password.text.trim()};
-    if (isValidEmail(emailORPhone.text.trim())) {
-      body['email'] = emailORPhone.text.trim();
-    } else {
-      body['phone'] = emailORPhone.text.trim();
-    }
-
-    print('body is : $body');
-    loginUser(body).then((result){
-      final success = result['success'] as bool;
-      final message = result['message'] as String;
-      final snackBar = SnackBar(
-        content: Text(message),
-        backgroundColor: success ? config.success : config.error,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      if (success) {
-        Navigator.pushReplacementNamed(context, AppRoute.home);
-      }
-    });
+  Map<String, dynamic> body = {'password': password.text.trim()};
+  if (isValidEmail(emailORPhone.text.trim())) {
+    body['email'] = emailORPhone.text.trim();
+  } else {
+    body['phone'] = emailORPhone.text.trim();
   }
 
+  setState(() => isLoading = true);
+
+  try {
+    final loginResponse = await loginUser(body);
+    print("Login Response: $loginResponse");
+
+    if (loginResponse["success"]) {
+      final token = loginResponse["data"]["token"];
+      final userId = loginResponse["data"]["id"];
+      print("userId: $userId");
+      // Call user API after login
+      final userResponse = await getUserData(userId, token: token);
+
+      print("userResponse: $userResponse");
+      
+      if (userResponse != null && userResponse['success'] == true) {
+        // Save the full user data in secure storage
+        await storage.write(
+          key: "userFullData",
+          value: jsonEncode(userResponse['data']), // <- access with ['data']
+        );
+        print("User data saved in secure storage");
+      } else {
+        print("Failed to get user data or success is false");
+      }
+
+      TopToast.show(
+        context: context,
+        title: "Login Successful",
+        description: "Welcome back!",
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoute.home,
+          (route) => false, // 🔥 removes ALL previous routes
+        );
+      });
+    } else {
+      final snackBar = SnackBar(
+        content: Text(loginResponse['message']),
+        backgroundColor: config.error,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  } catch (error) {
+    print("Error during login: $error");
+  } finally {
+    setState(() => isLoading = false);
+  }
+}
+ 
   @override
   Widget build(BuildContext context) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
@@ -96,6 +136,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     id: 'emailORPhone',
                     controller: emailORPhone,
                     label: const Text('Email or phone'),
+                    decoration: ShadDecoration(
+                      secondaryFocusedBorder: ShadBorder.none
+                    ),
                     placeholder: const Text('Enter your email or phone number'),
                     validator: (v) {
                       if (v.isEmpty) return "Email or Phone is required";
@@ -110,6 +153,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     id: 'password',
                     controller: password,
                     label: const Text('Password'),
+                    decoration: ShadDecoration(
+                      secondaryFocusedBorder: ShadBorder.none
+                    ),
                     placeholder: const Text('Enter your password'),
                     obscureText: obscure,
                     trailing: GestureDetector(

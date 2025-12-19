@@ -1,16 +1,19 @@
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HorizontalScrollableBrand extends ConsumerWidget {
-  final List<Map<String, dynamic>> brands;
+  final bool isCheckBorderRadius;
+  final List<Map<String, dynamic>> datas;
+  final String type;
   final void Function(int)? onTap;
-  final bool isCheckBorderRadius; // new flag
 
   const HorizontalScrollableBrand({
     super.key,
-    required this.brands,
+    required this.type,
+    required this.datas,
     this.onTap,
     this.isCheckBorderRadius = false, // default false
   });
@@ -24,19 +27,24 @@ class HorizontalScrollableBrand extends ConsumerWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 25),
-        itemCount: brands.length,
+        itemCount: datas.length,
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
-          final brand = brands[index];
-          final imageUrl = brand['imageUrl'];
-          final title = brand['title'];
+          final data = datas[index];
+          final String? photoUrl = data['photoUrl'];
+          final Image image = (photoUrl != null && photoUrl.isNotEmpty)
+                            ? Image.network(photoUrl, fit: BoxFit.cover)
+                            : Image.asset("assets/images/default.jpg", fit: BoxFit.cover);
+          final title = type == "brand" ? data['name'] : data["title"];
 
           return GestureDetector(
-            onTap: () => onTap?.call(index),
+            onTap: () => Navigator.pushNamed(context, AppRoute.brandDetail),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
+                  width: 70,
+                  height: 70,
                  // padding: const EdgeInsets.all(2), // space for border
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -44,11 +52,10 @@ class HorizontalScrollableBrand extends ConsumerWidget {
                         ? Border.all(color: config.textSecondary, width: 0.5)
                         : null,
                   ),
-                  child: CircleAvatar(
-                    radius: 28,
-                    backgroundImage: AssetImage(imageUrl),
-                    backgroundColor: config.textSecondary,
-                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(100),
+                    child: image,
+                  )
                 ),
                 const SizedBox(height: 4),
                 SizedBox(

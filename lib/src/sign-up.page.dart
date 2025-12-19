@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:ecommerce_mobile/api/user-api.service.dart';
+import 'package:ecommerce_mobile/riverpod/sign-up.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/social-button.ui.dart';
@@ -43,12 +44,39 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     return RegExp(r'^\+?[\d\s-]{8,15}$').hasMatch(value);
   }
 
-  Future<void> _register(IAppColorAbstract config) async {
+  // Future<void> _register(IAppColorAbstract config) async {
+  //   if (!_formKey.currentState!.saveAndValidate()) {
+  //     return;
+  //   }
+
+  //   Map<String, dynamic> body = {
+  //     'firstName': firstName.text.trim(),
+  //     'lastName': lastName.text.trim(),
+  //     'email': email.text.trim(),
+  //     'phone': phone.text.trim(),
+  //     'password': password.text.trim(),
+  //     'role': 'CUSTOMER',
+  //   };
+  //   register(body).then((result) {
+  //     final success = result['success'] as bool;
+  //     final message = result['message'] as String;
+  //     final snackBar = SnackBar(
+  //       content: Text(message),
+  //       backgroundColor: success ? config.success : config.error,
+  //     );
+  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  //     if (success) {
+  //       Navigator.pushReplacementNamed(context, AppRoute.login);
+  //     }
+  //   });
+  // }
+
+  void navigateToOptPage(){
     if (!_formKey.currentState!.saveAndValidate()) {
       return;
     }
 
-    Map<String, dynamic> body = {
+    final Map<String, String> signupData = {
       'firstName': firstName.text.trim(),
       'lastName': lastName.text.trim(),
       'email': email.text.trim(),
@@ -56,19 +84,16 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       'password': password.text.trim(),
       'role': 'CUSTOMER',
     };
-    register(body).then((result) {
-      final success = result['success'] as bool;
-      final message = result['message'] as String;
-      final snackBar = SnackBar(
-        content: Text(message),
-        backgroundColor: success ? config.success : config.error,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      if (success) {
-        Navigator.pushReplacementNamed(context, AppRoute.login);
-      }
-    });
+    ref.read(signUpDataProvider.notifier).save(signupData);
+
+    Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushNamed(
+          context,
+          AppRoute.signupOtp, 
+        );
+      });
   }
+  
 
 Future _registerWithGoogle(BuildContext context, IAppColorAbstract config) async {
        userRegisterWithGoogleApi().then((result) {
@@ -225,7 +250,8 @@ Future _registerWithGoogle(BuildContext context, IAppColorAbstract config) async
                     width: double.infinity,
                     height: 40,
                     child: Text("Create account"),
-                    onPressed: () => _register(config),
+                    onPressed: () => navigateToOptPage(),
+                   // onPressed: () => _register(config),
                   ),
                   const SizedBox(height: 20),
                   Row(

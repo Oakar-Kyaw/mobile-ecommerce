@@ -1,11 +1,8 @@
 //import 'package:credit_card_form/credit_card_form.dart';
 import 'dart:convert';
-
-import 'package:credit_card_flag_detector/credit_card_flag_detector.dart';
 import 'package:ecommerce_mobile/ui/bottom-model-component.ui.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class PaymentMethodWidget extends StatelessWidget {
@@ -180,7 +177,6 @@ class PaymentMethodWidget extends StatelessWidget {
 
   _handleBottomModalSheet(BuildContext context){
     final _cardForm = GlobalKey<FormState>();
-   // CardDataInputController  _cardController = CardDataInputController();
      showModalBottomSheet(
       context: context, 
       isScrollControlled: true, 
@@ -325,7 +321,7 @@ class PaymentMethodWidget extends StatelessWidget {
               //         print(data.cvc);
               //     },
               // ),
-
+           
               SizedBox(height: 20,),
 
               Row(

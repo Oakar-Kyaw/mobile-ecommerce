@@ -1,3 +1,5 @@
+import 'package:ecommerce_mobile/api/brand-api.service.dart';
+import 'package:ecommerce_mobile/api/categories-api.service.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/bottom-navigation-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
@@ -11,9 +13,11 @@ import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:ecommerce_mobile/utils/system-configuration-constant.dart';
+import 'package:ecommerce_mobile/utils/top-toast.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_mobile/components/product-card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -24,39 +28,6 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int _selectedIndex = 0; // Tracks the currently selected tab
-
-  // List of brand logos
-  final List<Map<String, dynamic>> brandAssets = [
-  {
-    'title': 'BMW',
-    'imageUrl': 'assets/images/bmw.jpg',
-  },
-  {
-    'title': 'Ford',
-    'imageUrl': 'assets/images/ford.jpg',
-  },
-  {
-    'title': 'Nike',
-    'imageUrl': 'assets/images/nike.jpg',
-  },
-  {
-    'title': 'Tesla',
-    'imageUrl': 'assets/images/tesla.jpg',
-  },
-  {
-    'title': 'Toyota',
-    'imageUrl': 'assets/images/toyota.jpg',
-  },
-  {
-    'title': 'Shirt Co.',
-    'imageUrl': 'assets/images/shirt.jpg',
-  },
-  {
-    'title': 'Facebook',
-    'imageUrl': 'assets/images/facebook.png',
-  },
-];
-
 
   final List<Map<String, dynamic>> products = [
   {
@@ -97,6 +68,60 @@ class _HomePageState extends ConsumerState<HomePage> {
 ];
 
 
+  Future<List<Map<String, dynamic>>> fetchAllBrandData() async {
+    final response = await getAllBrandApiData();
+
+    if (response != null && response["success"] == true) {
+      return List<Map<String, dynamic>>.from(
+        response["data"].map(
+          (e) => Map<String, dynamic>.from(e),
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAllCategoriesData() async {
+    final response = await getAllCategoriesApiData();
+
+    if (response != null && response["success"] == true) {
+      return List<Map<String, dynamic>>.from(
+        response["data"].map(
+          (e) => Map<String, dynamic>.from(e),
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  // void showTopSnackBar(BuildContext context){
+  //   ShadToaster.of(context).show(
+  //     ShadToast(
+  //       alignment: Alignment.topRight,
+  //       action: Icon(LucideIcons.x),
+  //       closeIcon: Text("Weishat"),
+  //       title: Row(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Icon(LucideIcons.circleCheckBig, fontWeight: FontWeight.bold, color: Colors.green,),
+  //           SizedBox(width: 10,),
+  //           const Text("Sign Up Successful", style: TextStyle(fontWeight: FontWeight.bold),),
+  //         ],
+  //       ),
+  //       description: Row(
+  //         children: [
+  //           SizedBox(width: 33),
+  //           const Text("Product added successfully"),
+  //         ],
+  //       ),
+  //       radius: BorderRadius.circular(12),
+  //       duration: const Duration(seconds: 3),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
    
@@ -105,116 +130,164 @@ class _HomePageState extends ConsumerState<HomePage> {
     final fontConfig = FontSizeConfiguration.appFontSize(context);
     print("Current Theme in Home Page: $currentTheme, $themeModeProvider, ScreenWidth: $fontConfig, ScreenHeight: $fontConfig");
 
-    return Scaffold(
-      backgroundColor: config.background,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CustomAppBar(
+    return ShadToaster(
+      child: Scaffold(
+        backgroundColor: config.background,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: CustomAppBar(
+            config: config,
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, AppRoute.login);
+          },child: Icon(Icons.menu)), lastIcon: GestureDetector(onTap: () => Navigator.pushNamed(context, AppRoute.notifications) , child: Icon(Icons.notifications)), imageUrl: "assets/images/megasmart.png", trailing: GestureDetector(onTap: () => Navigator.pushNamed(context, AppRoute.cart) ,child: Icon(Icons.shopping_cart))),
+        ),
+        body: ListView.builder(
+          padding: const EdgeInsets.only(top: 20),
+      
+          itemBuilder:(BuildContext context, index){ 
+           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search input
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SearchInput(),
+              ),
+              const SizedBox(height: 20),
+      
+              // Promotions
+              TitleWidget('Promotions', isExistedIcon: false),
+              const SizedBox(height: 10),
+              SwiperCard(config: config),
+              const SizedBox(height: 5),
+              
+              // Brands section
+              TitleWidget('Brands', onTap: () => Navigator.pushNamed(context, AppRoute.brand)),
+              SizedBox(
+                height: 100,
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: fetchAllBrandData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+      
+                    if (snapshot.hasError) {
+                      return const Center(child: Text("Failed to load brands"));
+                    }
+      
+                    final brands = snapshot.data ?? [];
+      
+                    if (brands.isEmpty) {
+                      return const Center(child: Text("No brands found"));
+                    }
+      
+                    return HorizontalScrollableBrand(
+                      datas: brands,
+                      isCheckBorderRadius: true,
+                      type: "brand",
+                    );
+                  },
+                ),
+              ),
+      
+              const SizedBox(height: 25),
+              DoubleLineTriangleDivider(color: config.lineColor),
+      
+              // Categories section
+              TitleWidget('Categories',  onTap: () => Navigator.pushNamed(context, AppRoute.categories)),
+              SizedBox(
+                height: 100,
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: fetchAllCategoriesData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+      
+                    if (snapshot.hasError) {
+                      return const Center(child: Text("Failed to load categories"));
+                    }
+      
+                    final categories = snapshot.data ?? [];
+      
+                    if (categories.isEmpty) {
+                      return const Center(child: Text("No categories found"));
+                    }
+      
+                    return HorizontalScrollableBrand(
+                      datas: categories,
+                      isCheckBorderRadius: false,
+                      type: "category",
+                    );
+                  },
+                ),
+              ),
+      
+              const SizedBox(height: 25),
+              DoubleLineTriangleDivider(color: config.lineColor),
+      
+              TitleWidget(
+                      "Trending Items",
+                      onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
+              ),
+              SizedBox(
+                height: 320,
+                child: HorizontalScrollableList<Map<String, dynamic>>(
+                  items: products,
+                  itemBuilder: (context, product, index) {
+                    return ProductCard(
+                      config: config,
+                      title: product["title"],
+                      imageUrl: product["imageUrl"],
+                      description: product["description"],
+                      price: product["price"],
+                      currency: product["currency"],
+                    );
+                  },
+                )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(width: double.infinity, height: 1, color: config.lineColor),
+              ),
+               TitleWidget(
+                      "New Arrivals",
+                      onTap: () => Navigator.pushNamed(context, AppRoute.newArrivals),
+                    ),
+              SizedBox(
+                height: 320,
+                child: HorizontalScrollableList<Map<String, dynamic>>(
+                  items: products,
+                  itemBuilder: (context, product, index) {
+                    return ProductCard(
+                      config: config,
+                      title: product["title"],
+                      imageUrl: product["imageUrl"],
+                      description: product["description"],
+                      price: product["price"],
+                      currency: product["currency"],
+                    );
+                  },
+                )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(width: double.infinity, height: 1, color: config.lineColor),
+              ),
+              SizedBox(height: 40)
+      
+            ],
+          );} ,
+          itemCount: 1,
+        ),
+        bottomNavigationBar: CustomerBottomNavigationBar(
           config: config,
-          leading: GestureDetector(onTap: () {
-          final newTheme = currentTheme == 'light' ? 'dark' : 'light';
-          ref.read(themeModeProvider.notifier).setTheme(newTheme);
-        },child: Icon(Icons.menu)), lastIcon: GestureDetector(onTap: () => Navigator.pushNamed(context, AppRoute.notifications) , child: Icon(Icons.notifications)), imageUrl: "assets/images/megasmart.png", trailing: GestureDetector(onTap: () => Navigator.pushNamed(context, AppRoute.cart) ,child: Icon(Icons.shopping_cart))),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.only(top: 20),
-
-        itemBuilder:(BuildContext context, index){ 
-         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search input
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: SearchInput(),
-            ),
-            const SizedBox(height: 20),
-    
-            // Promotions
-            TitleWidget('Promotions', isExistedIcon: false),
-            const SizedBox(height: 10),
-            SwiperCard(config: config),
-            const SizedBox(height: 5),
-    
-            // Brands section
-            TitleWidget('Brands'),
-            SizedBox(
-              height: 100,
-              child: HorizontalScrollableBrand(brands: brandAssets, isCheckBorderRadius: true)
-            ),
-    
-            const SizedBox(height: 25),
-            DoubleLineTriangleDivider(color: config.lineColor),
-    
-            // Categories section
-            TitleWidget('Categories'),
-            SizedBox(
-              height: 100,
-              child: HorizontalScrollableBrand(brands: brandAssets)
-            ),
-
-            const SizedBox(height: 25),
-            DoubleLineTriangleDivider(color: config.lineColor),
-
-            TitleWidget(
-                    "Trending Items",
-                    onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
-            ),
-            SizedBox(
-              height: 320,
-              child: HorizontalScrollableList<Map<String, dynamic>>(
-                items: products,
-                itemBuilder: (context, product, index) {
-                  return ProductCard(
-                    config: config,
-                    title: product["title"],
-                    imageUrl: product["imageUrl"],
-                    description: product["description"],
-                    price: product["price"],
-                    currency: product["currency"],
-                  );
-                },
-              )
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: config.lineColor),
-            ),
-             TitleWidget(
-                    "New Arrivals",
-                    onTap: () => Navigator.pushNamed(context, AppRoute.newArrivals),
-                  ),
-            SizedBox(
-              height: 320,
-              child: HorizontalScrollableList<Map<String, dynamic>>(
-                items: products,
-                itemBuilder: (context, product, index) {
-                  return ProductCard(
-                    config: config,
-                    title: product["title"],
-                    imageUrl: product["imageUrl"],
-                    description: product["description"],
-                    price: product["price"],
-                    currency: product["currency"],
-                  );
-                },
-              )
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(width: double.infinity, height: 1, color: config.lineColor),
-            ),
-            SizedBox(height: 40)
-
-          ],
-        );} ,
-        itemCount: 1,
-      ),
-      bottomNavigationBar: CustomerBottomNavigationBar(
-        config: config,
-        currentIndex: _selectedIndex,
-        activeColor: config.primary,
-        inactiveColor: config.textSecondary,
+          currentIndex: _selectedIndex,
+          activeColor: config.primary,
+          inactiveColor: config.textSecondary,
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/api/favorite.api.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
@@ -48,16 +49,19 @@ class ProductCard extends ConsumerWidget {
                Positioned(
                   top: 8,
                   right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(6), // space around the icon
-                    decoration: BoxDecoration(
-                      color: config.promotionBadgeColor, // background color
-                      shape: BoxShape.circle,   // make it circular
-                    ),
-                    child: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? config.primary : config.primary,
-                      size: 18,
+                  child: GestureDetector(
+                    onTap: () => addProductToFavorite({ "userId": 58, "id": 2}),
+                    child: Container(
+                      padding: const EdgeInsets.all(6), // space around the icon
+                      decoration: BoxDecoration(
+                        color: config.promotionBadgeColor, // background color
+                        shape: BoxShape.circle,   // make it circular
+                      ),
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? config.primary : config.primary,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ),

@@ -1,5 +1,14 @@
 class AppRoute {
   static const String home = '/home';
+  static const String personalProfile = '/personal-profile';
+  static const String notificationSetting = '/notification-setting';
+  static const String shippingAddressSetting = '/shipping-address-setting';
+  static const String addShippingAddressSetting = '/add-shipping-address-setting';
+  static const String paymentSetting = '/payment-setting';
+  static const String brand = '/brand';
+  static const String brandDetail = '/brand-details';
+  static const String categories = '/categories';
+  static const String categoriesDetail = '/category-details';
   static const String login = '/login';
   static const String register = '/register';
   static const String promotion = '/promotion';
@@ -18,4 +27,7 @@ class AppRoute {
   static const String shippingInfo = "/shipping-info";
   static const String orderConfirm = "/order-confirm";
   static const String orderHistory = "/order-history";
+  static const String otp = "/otp";
+  static const String changePassword = "/change-password";
+  static const String signupOtp = "/sign-up/otp";
 }
