@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/ui/circle-component.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
@@ -55,24 +56,42 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
                   return null;
                 }),
                 const SizedBox(height: 10),
-                _buildSelectRow(
-                  firstId: "country", 
-                  firstPlaceholder: "Country*", 
-                  firstOption: ["Myanmar"], 
-                  firstSelectValue: _selectedCountry, 
-                  firstDivideNum: 2,
-                  firstFn: (value) => setState(() {
-                    _selectedCountry = value ;
-                  }),
-                  secondId: "city", 
-                  secondPlaceholder: "City*", 
-                  secondOption: ["Yangon", "Mandalay"], 
-                  secondSelectValue: _selectedCity, 
-                  secondDivideNum: 2,
-                  secondFn: (value) => setState(() {
-                    _selectedCity = value ;
-                  }),
-                ),
+                // _buildSelectRow(
+                //   firstId: "country", 
+                //   firstPlaceholder: "Country*", 
+                //   firstOption: ["Myanmar"], 
+                //   firstSelectValue: _selectedCountry, 
+                //   firstDivideNum: 2,
+                //   firstFn: (value) => setState(() {
+                //     _selectedCountry = value ;
+                //   }),
+                //   secondId: "city", 
+                //   secondPlaceholder: "City*", 
+                //   secondOption: ["Yangon", "Mandalay"], 
+                //   secondSelectValue: _selectedCity, 
+                //   secondDivideNum: 2,
+                //   secondFn: (value) => setState(() {
+                //     _selectedCity = value ;
+                //   }),
+                // ),
+                CSCPickerPlus(
+                    // countryStateLanguage: CountryStateLanguage.englishOrNative,
+                    onCountryChanged: (value) {
+                      // setState(() {
+                      //   countryValue = value;
+                      // });
+                    },
+                    onStateChanged: (value) {
+                      // setState(() {
+                      //   stateValue = value ?? '';
+                      // });
+                    },
+                    // onCityChanged: (value) {
+                    //   // setState(() {
+                    //   //   cityValue = value ?? '';
+                    //   // });
+                    // },
+                  ),
                 const SizedBox(height: 10),
                 _buildSelectRowForPhone(
                   firstId: "phonecode", 

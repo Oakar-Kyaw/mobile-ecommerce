@@ -67,18 +67,20 @@ class OrderHistoryPage extends ConsumerWidget {
           child: const Icon(Icons.arrow_back),
           onTap: () => Navigator.pop(context),
         ),),
-      body: OrderContentUI(isOrderHistory: true, cartItems: cartItems, title: "Your order #BE12345 has been Delivered.",
-          message: Row(
-          children: [
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: Icon(LucideIcons.package),
-              ),
-              SizedBox(width: 5,),
-              Text("Delivered by Oct 10 to Oct 20",)
-          ],
-    )),
+      body: Text("hello history")
+    //   OrderContentUI(isOrderHistory: true, cartItems: cartItems, title: "Your order #BE12345 has been Delivered.",
+    //       message: Row(
+    //       children: [
+    //           SizedBox(
+    //             width: 40,
+    //             height: 40,
+    //             child: Icon(LucideIcons.package),
+    //           ),
+    //           SizedBox(width: 5,),
+    //           Text("Delivered by Oct 10 to Oct 20",)
+    //       ],
+    // )),
+    
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/fix-content.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
+import 'package:ecommerce_mobile/response/cartItem.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/order-card.ui.dart';
@@ -14,7 +15,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 class OrderContentUI extends ConsumerWidget {
   final bool isOrderHistory;
   final String title;
-  final List<Map<String, dynamic>> cartItems;
+  final List<CartItem> cartItems;
   final Widget message;
   const OrderContentUI({
     super.key,
@@ -207,18 +208,19 @@ class OrderContentUI extends ConsumerWidget {
                   size: "L",
                   existQuantityButton: false,
                   realQuantity: 1,
-                  name: cartItems[index]['name'],
-                  brand: cartItems[index]['brand'],
-                  price: (cartItems[index]['price'] as num).toDouble(),
-                  imageUrl: cartItems[index]['imageUrl'],
-                  quantity: (cartItems[index]['quantity'] as int),
+                  name: cartItems[index].name,
+                  brand: cartItems[index].brand,
+                  price: (cartItems[index].price as num).toDouble(),
+                  currency: cartItems[index].currency,
+                  imageUrl: cartItems[index].imageUrl,
+                  quantity: (cartItems[index].quantity ),
                   isChecked: false,
-                  onQuantityChanged: (newQuantity) {
-                    print("New quantity: $newQuantity");
-                  },
-                  onChecked: (checked) {
-                    print("Checkbox value: $checked");
-                  },
+                  // onQuantityChanged: (price, newQuantity, isChecked) {
+                  //   print("New quantity: $newQuantity");
+                  // },
+                  // onChecked: (checked) {
+                  //   print("Checkbox value: $checked");
+                  // },
                 );
               },
               childCount: cartItems.length,
@@ -230,7 +232,7 @@ class OrderContentUI extends ConsumerWidget {
             padding: EdgeInsetsGeometry.symmetric(vertical: 10),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                OrderSummaryWidget(config: config, cartItems: cartItems),
+                OrderSummaryWidget(cartItems: cartItems),
                 if(!isOrderHistory)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),

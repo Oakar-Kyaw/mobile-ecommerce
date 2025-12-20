@@ -18,8 +18,8 @@ final Dio _dio = Dio();
 
 Future register(body) async{
    try {
-  //final url = "${dotenv.env['BACKEND_URL']}/api/v1/users";
-  final url = "${dotenv.env['USER_URL']}/api/v1/users";
+  final url = "${dotenv.env['BACKEND_URL']}/api/v1/users";
+ //final url = "${dotenv.env['USER_URL']}/api/v1/users";
   print("url $url, body: $body");
   final response = await _dio.post(
       url,

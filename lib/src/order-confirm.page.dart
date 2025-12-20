@@ -63,18 +63,19 @@ class OrderConfirmPage extends ConsumerWidget {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      body: OrderContentUI(cartItems: cartItems, title: "Your order #BE12345 has been placed.",
-         message: Row(
-          children: [
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: Icon(LucideIcons.truck),
-              ),
-              SizedBox(width: 5,),
-              Text("Arrives by Oct 10 to Oct 20",)
-          ],
-    ),),
+      body:Text("hello")
+    //    OrderContentUI(cartItems: cartItems, title: "Your order #BE12345 has been placed.",
+    //      message: Row(
+    //       children: [
+    //           SizedBox(
+    //             width: 40,
+    //             height: 40,
+    //             child: Icon(LucideIcons.truck),
+    //           ),
+    //           SizedBox(width: 5,),
+    //           Text("Arrives by Oct 10 to Oct 20",)
+    //       ],
+    // ),),
     );
   }
 }

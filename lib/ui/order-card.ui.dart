@@ -1,9 +1,11 @@
+import 'package:ecommerce_mobile/riverpod/checkout-order-calculation.dart';
 import 'package:ecommerce_mobile/ui/circle-component.ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 
-class OrderCard extends StatelessWidget {
+class OrderCard extends ConsumerWidget {
   final IAppColorAbstract config;
   final bool existCheckBox;
   final bool existColorField;
@@ -14,6 +16,7 @@ class OrderCard extends StatelessWidget {
   final double price;
   final String imageUrl;
   final int quantity;
+  final String currency;
   final int? realQuantity;
   final String? size;
   final String? color;
@@ -33,6 +36,7 @@ class OrderCard extends StatelessWidget {
     required this.brand,
     required this.price,
     required this.imageUrl,
+    required this.currency,
     this.quantity = 1,
     this.size,
     this.color,
@@ -42,19 +46,27 @@ class OrderCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final orderTotals = ref.read(checkOutOrderCalculationDataProvider.notifier);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         if(existCheckBox)
-          ShadCheckbox(
+          /// ✅ Checkbox
+          if (existCheckBox)
+            ShadCheckbox(
               value: isChecked,
-              onChanged: onChecked,
+              onChanged: (value) {
+                if (onChecked != null) {
+                  onChecked!(value);
+                }
+              },
             ),
-         if(existCheckBox)
-           const SizedBox(width: 10),
+
+          if (existCheckBox) const SizedBox(width: 10),
+
+          /// ✅ Image
           Container(
             height: 120,
             width: 100,
@@ -66,65 +78,84 @@ class OrderCard extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(width: 10),
+
+          /// ✅ Info
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(name),
               const SizedBox(height: 5),
+
               Row(
                 children: [
-                  Text("${price.toString()} MMK", style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(width: 20,),
-                  if(realQuantity != null) Text("( ${realQuantity.toString()} pc )")
+                  Text(
+                    "$price $currency",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  if (realQuantity != null) ...[
+                    const SizedBox(width: 10),
+                    Text("( $realQuantity pc )"),
+                  ],
                 ],
               ),
+
               const SizedBox(height: 5),
               Text(brand, style: const TextStyle(fontSize: 12)),
-              const SizedBox(height: 5),
-              //check color
-              if(existColorField)
-                Text("Color: ${color}"),
-                SizedBox(height: 5,),
-              //check size
-              if(existSizeField)
+
+              if (existColorField && color != null) ...[
+                const SizedBox(height: 5),
+                Text("Color: $color"),
+              ],
+
+              if (existSizeField && size != null) ...[
+                const SizedBox(height: 5),
                 Text("Size: $size"),
-              //check on quantity button
-              if(existQuantityButton)
+              ],
+
+              /// ✅ Quantity Buttons
+              if (existQuantityButton) ...[
+                const SizedBox(height: 5),
                 Row(
-                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      // if (onQuantityChanged != null && quantity > 1) {
-                      //   onQuantityChanged!(quantity - 1);
-                      // }
-                    },
-                    child: CircleWidget(
-                      colorData: config.textSecondary,
-                      widgetData: const Icon(Icons.remove, size: 14),
-                      height: 20,
-                      width: 20,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (onQuantityChanged != null && quantity > 0) {
+                          onQuantityChanged!(quantity - 1);
+                        }
+                      },
+                      child: CircleWidget(
+                        colorData: config.textSecondary,
+                        widgetData: const Icon(Icons.remove, size: 14),
+                        height: 20,
+                        width: 20,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 15),
-                  Text(quantity.toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(width: 15),
-                  GestureDetector(
-                     onTap: () {
-                      // if (onQuantityChanged != null) {
-                      //   onQuantityChanged!(quantity + 1);
-                      // }
-                    },
-                    child: CircleWidget(
-                      colorData: config.textSecondary,
-                      widgetData: const Icon(Icons.add, size: 14),
-                      height: 20,
-                      width: 20,
+
+                    const SizedBox(width: 15),
+                    Text(
+                      quantity.toString(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(width: 15),
+
+                    GestureDetector(
+                      onTap: () {
+                        if (onQuantityChanged != null) {
+                          onQuantityChanged!(quantity + 1);                          
+                        }
+                      },
+                      child: CircleWidget(
+                        colorData: config.textSecondary,
+                        widgetData: const Icon(Icons.add, size: 14),
+                        height: 20,
+                        width: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ],

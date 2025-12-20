@@ -1,4 +1,6 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
+import 'package:ecommerce_mobile/response/cartItem.dart';
+import 'package:ecommerce_mobile/riverpod/order-calculation.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/order-card.ui.dart';
@@ -17,48 +19,49 @@ class CheckoutPage extends ConsumerStatefulWidget {
 }
 
 class _CheckoutPageState extends ConsumerState<CheckoutPage> {
-  final List<Map<String, dynamic>> cartItems = [
-        {
-          "name": "Short T-Shirt Black",
-          "brand": "Adidas",
-          "price": 200000,
-          "imageUrl": "assets/images/jeanshirt.jpg",
-          "quantity": 2,
-          "isChecked": true,
-        },
-        {
-          "name": "Classic White Shirt",
-          "brand": "Nike",
-          "price": 150000,
-          "imageUrl": "assets/images/menshirt.jpg",
-          "quantity": 1,
-          "isChecked": false,
-        },
-        {
-          "name": "Leather Jacket",
-          "brand": "Zara",
-          "price": 350000,
-          "imageUrl": "assets/images/jacket.jpg",
-          "quantity": 1,
-          "isChecked": true,
-        },
-        {
-          "name": "Denim Jeans",
-          "brand": "Levi's",
-          "price": 250000,
-          "imageUrl": "assets/images/jean.jpg",
-          "quantity": 3,
-          "isChecked": false,
-        },
-        {
-          "name": "Sneakers",
-          "brand": "Puma",
-          "price": 180000,
-          "imageUrl": "assets/images/sneaker.jpg",
-          "quantity": 1,
-          "isChecked": true,
-        },
-      ];
+  // final List<Map<String, dynamic>> cartItems = [
+  //       {
+  //         "name": "Short T-Shirt Black",
+  //         "brand": "Adidas",
+  //         "price": 200000,
+  //         "imageUrl": "assets/images/jeanshirt.jpg",
+  //         "quantity": 2,
+  //         "isChecked": true,
+  //       },
+  //       {
+  //         "name": "Classic White Shirt",
+  //         "brand": "Nike",
+  //         "price": 150000,
+  //         "imageUrl": "assets/images/menshirt.jpg",
+  //         "quantity": 1,
+  //         "isChecked": false,
+  //       },
+  //       {
+  //         "name": "Leather Jacket",
+  //         "brand": "Zara",
+  //         "price": 350000,
+  //         "imageUrl": "assets/images/jacket.jpg",
+  //         "quantity": 1,
+  //         "isChecked": true,
+  //       },
+  //       {
+  //         "name": "Denim Jeans",
+  //         "brand": "Levi's",
+  //         "price": 250000,
+  //         "imageUrl": "assets/images/jean.jpg",
+  //         "quantity": 3,
+  //         "isChecked": false,
+  //       },
+  //       {
+  //         "name": "Sneakers",
+  //         "brand": "Puma",
+  //         "price": 180000,
+  //         "imageUrl": "assets/images/sneaker.jpg",
+  //         "quantity": 1,
+  //         "isChecked": true,
+  //       },
+  //     ];
+  List<CartItem> cartItems = [];
 
   final TextEditingController _addressController = TextEditingController();
   bool _agreeTerms = false;
@@ -73,10 +76,22 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
   }
 
+  _onQuantityChanged( int index, int newQuantity ) {
+        setState(() {
+           cartItems[index].quantity = newQuantity ;
+        });
+
+       final selectedCart = cartItems.where((items) => items.isChecked).toList();
+    
+       ref.read(orderItemProvider.notifier).addItem(itemList: selectedCart, shippingFee: 5, tax: 5);
+  }
+
   @override
   Widget build(BuildContext context) {
     // ✅ ref is now available
     final IAppColorAbstract config = ref.watch(appColorProvider);
+    cartItems = ref.watch(orderItemProvider).items;
+    final orderCalculation = ref.watch(orderItemProvider).calculation ;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -147,19 +162,18 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 return OrderCard(
                   config: config,
                   existCheckBox: false,
-                  realQuantity: 1,
-                  name: cartItems[index]['name'],
-                  brand: cartItems[index]['brand'],
-                  price: (cartItems[index]['price'] as num).toDouble(),
-                  imageUrl: cartItems[index]['imageUrl'],
-                  quantity: (cartItems[index]['quantity'] as int),
+                  realQuantity: cartItems[index].quantity,
+                  name: cartItems[index].name,
+                  brand: cartItems[index].brand,
+                  price: cartItems[index].price,
+                  currency: cartItems[index].currency,
+                  imageUrl: cartItems[index].imageUrl,
+                  quantity: cartItems[index].quantity,
                   isChecked: false,
-                  onQuantityChanged: (newQuantity) {
-                    print("New quantity: $newQuantity");
-                  },
-                  onChecked: (checked) {
-                    print("Checkbox value: $checked");
-                  },
+                  onQuantityChanged: ( newQuantity ) =>  _onQuantityChanged(index, newQuantity),
+                  // onChecked: (checked) {
+                  //   print("Checkbox value: $checked");
+                  // },
                 );
               },
               childCount: cartItems.length,
@@ -176,7 +190,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           SliverToBoxAdapter(child: Divider(thickness: 5, color: config.greyColor,)),
 
           SliverToBoxAdapter(
-            child: OrderSummaryWidget(config: config, cartItems: cartItems)
+            child: OrderSummaryWidget(cartItems: cartItems)
           ),
           
           SliverToBoxAdapter(
@@ -220,7 +234,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("107,000 MMK", style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text("${orderCalculation.total} MMK", style: TextStyle(fontWeight: FontWeight.bold),),
                   ShadButton(
                     backgroundColor: config.clickColor,
                     decoration: ShadDecoration(
