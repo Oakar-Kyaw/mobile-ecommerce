@@ -62,9 +62,19 @@ class RouteGenerator {
            BrandPage(),
         );
       case AppRoute.brandDetail:
+      final args = settings.arguments;
+
+      if (args is Map<String, dynamic>) {
         return _buildPageRoute(
-           BrandDetailPage(),
+          BrandDetailPage(id: args["id"]),
         );
+      }
+
+      // fallback if arguments are missing
+      return _buildPageRoute(
+        const BrandDetailPage(),
+      );
+
       case AppRoute.categories:
         return _buildPageRoute(
            CategoriesPage(),
@@ -87,7 +97,7 @@ class RouteGenerator {
         );
       case AppRoute.checkout:
         return _buildPageRoute(
-           const CheckoutPage(),
+           ShadToaster(child: const CheckoutPage()),
         );
       case AppRoute.chat:
         return _buildPageRoute(
@@ -103,7 +113,7 @@ class RouteGenerator {
         );
       case AppRoute.shippingInfo:
         return _buildPageRoute(
-           const ShippingInfoPage(),
+           ShadToaster(child: const ShippingInfoPage()),
         );
       case AppRoute.otp:
         return _buildPageRoute(

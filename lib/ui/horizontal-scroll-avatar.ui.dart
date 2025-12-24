@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/response/brand.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HorizontalScrollableBrand extends ConsumerWidget {
   final bool isCheckBorderRadius;
-  final List<Map<String, dynamic>> datas;
+  final List<Brand> datas;
   final String type;
   final void Function(int)? onTap;
 
@@ -23,7 +24,7 @@ class HorizontalScrollableBrand extends ConsumerWidget {
     final IAppColorAbstract config = ref.watch(appColorProvider);
 
     return SizedBox(
-      height: 80, // enough space for image + title
+      height: 80,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -31,14 +32,15 @@ class HorizontalScrollableBrand extends ConsumerWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
           final data = datas[index];
-          final String? photoUrl = data['photoUrl'];
+          print("data of branch is $data");
+          final String? photoUrl = data.photoUrl;
           final Image image = (photoUrl != null && photoUrl.isNotEmpty)
                             ? Image.network(photoUrl, fit: BoxFit.cover)
                             : Image.asset("assets/images/default.jpg", fit: BoxFit.cover);
-          final title = type == "brand" ? data['name'] : data["title"];
+          final title = type == "brand" ? data.name : data.name;
 
           return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AppRoute.brandDetail),
+            onTap: () => Navigator.pushNamed(context, AppRoute.brandDetail, arguments: { "id": data.id}),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -61,7 +63,7 @@ class HorizontalScrollableBrand extends ConsumerWidget {
                 SizedBox(
                   width: 60, // limit width for long brand names
                   child: Text(
-                    title ?? '',
+                    title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,

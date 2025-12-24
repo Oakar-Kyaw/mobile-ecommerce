@@ -1,13 +1,11 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
-import 'package:ecommerce_mobile/response/cartItem.dart';
+import 'package:ecommerce_mobile/response/item.dart';
 import 'package:ecommerce_mobile/riverpod/checkout-order-calculation.dart';
 import 'package:ecommerce_mobile/riverpod/order-calculation.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
-import 'package:ecommerce_mobile/ui/circle-component.ui.dart';
 import 'package:ecommerce_mobile/ui/order-card.ui.dart';
 import 'package:ecommerce_mobile/ui/order-summary.ui.dart';
-import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -21,8 +19,8 @@ class CartPage extends ConsumerStatefulWidget {
 
 class _CartPageState extends ConsumerState<CartPage> {
   // Cart items state
-  List<CartItem> cartItems = [
-    CartItem(
+  List<Item> Items = [
+    Item(
       id: 1,
       name: "Short T-Shirt Black",
       brand: "Adidas",
@@ -34,7 +32,7 @@ class _CartPageState extends ConsumerState<CartPage> {
       quantity: 0,
       isChecked: false,
     ),
-    CartItem(
+    Item(
       id: 2,
       name: "Classic White Shirt",
       brand: "Nike",
@@ -46,7 +44,7 @@ class _CartPageState extends ConsumerState<CartPage> {
       quantity: 0,
       isChecked: false,
     ),
-    CartItem(
+    Item(
       id: 3,
       name: "Leather Jacket",
       brand: "Zara",
@@ -58,7 +56,7 @@ class _CartPageState extends ConsumerState<CartPage> {
       quantity: 0,
       isChecked: false,
     ),
-    CartItem(
+    Item(
       id: 4,
       name: "Denim Jeans",
       brand: "Levi's",
@@ -70,7 +68,7 @@ class _CartPageState extends ConsumerState<CartPage> {
       quantity: 3,
       isChecked: false,
     ),
-    CartItem(
+    Item(
       id: 5,
       name: "Sneakers",
       brand: "Puma",
@@ -84,9 +82,9 @@ class _CartPageState extends ConsumerState<CartPage> {
     ),
   ];
   
-  List<CartItem> selectedItem = [];
+  List<Item> selectedItem = [];
 
-  void _recalculate( List<CartItem> cartlists ){
+  void _recalculate( List<Item> cartlists ){
      print("carlist is ${cartlists.length}");
      double subTotal = 0;
      double shippingFee = 5;
@@ -110,17 +108,17 @@ class _CartPageState extends ConsumerState<CartPage> {
   // Update quantity
   void _onQuantityChanged(int index, int newQuantity ) {
     setState(() {
-      cartItems[index].quantity = newQuantity;
+      Items[index].quantity = newQuantity;
     });
     
-    final selectedCart = cartItems.where((items) => items.isChecked).toList();
+    final selectedCart = Items.where((items) => items.isChecked).toList();
     
     ref.read(orderItemProvider.notifier).addItem(itemList: selectedCart, shippingFee: 5, tax: 5);
 
-    // if(cartItems[index].isChecked){
+    // if(Items[index].isChecked){
     //   ref.read(orderItemProvider.notifier).addItem(itemList: selectedCart, shippingFee: 5, tax: 5);
     // }
-    //final selectedCart = cartItems.where((items) => items.isChecked).toList();
+    //final selectedCart = Items.where((items) => items.isChecked).toList();
     
   //  _recalculate(selectedCart);
   }
@@ -129,10 +127,10 @@ class _CartPageState extends ConsumerState<CartPage> {
   void _onChecked(int index,  bool? checked) {
 
     setState(() {
-      cartItems[index].isChecked = checked ?? false ;
+      Items[index].isChecked = checked ?? false ;
     });
 
-    final selectedCart = cartItems.where((items) => items.isChecked).toList();
+    final selectedCart = Items.where((items) => items.isChecked).toList();
     
     ref.read(orderItemProvider.notifier).addItem(itemList: selectedCart, shippingFee: 5, tax: 5);
 
@@ -162,7 +160,7 @@ class _CartPageState extends ConsumerState<CartPage> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final item = cartItems[index];
+                final item = Items[index];
                 return OrderCard(
                   config: config,
                   name: item.name,
@@ -176,13 +174,13 @@ class _CartPageState extends ConsumerState<CartPage> {
                   onChecked: (checked) => _onChecked(index, checked),
                 );
               },
-              childCount: cartItems.length,
+              childCount: Items.length,
             ),
           ),
           SliverToBoxAdapter(child: Divider(thickness: 8, color: config.greyColor)),
           SliverToBoxAdapter(
             child: OrderSummaryWidget(
-              cartItems: cartItems,
+              cartItems: Items,
              // shippingFee: orderTotals['shippingFee'],
              // tax: orderTotals['tax'],
             ),

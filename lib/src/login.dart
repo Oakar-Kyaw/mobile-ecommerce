@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:ecommerce_mobile/api/user-api.service.dart';
+import 'package:ecommerce_mobile/response/user.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
+import 'package:ecommerce_mobile/riverpod/user.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/social-button.ui.dart';
 import 'package:ecommerce_mobile/utils/check-email-and-phone.dart';
@@ -11,7 +13,6 @@ import 'package:ecommerce_mobile/utils/top-toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -35,6 +36,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
  Future<void> _signIn(IAppColorAbstract config) async {
+  final userNotifier = ref.read(userProvider.notifier);
   if (!_formKey.currentState!.saveAndValidate()) return;
 
   Map<String, dynamic> body = {'password': password.text.trim()};
@@ -59,13 +61,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
       print("userResponse: $userResponse");
       
-      if (userResponse != null && userResponse['success'] == true) {
+      if (userResponse != null && userResponse['success'] == true ) {
+        User user = User.fromJson(userResponse["data"]);
         // Save the full user data in secure storage
         await storage.write(
           key: "userFullData",
           value: jsonEncode(userResponse['data']), // <- access with ['data']
         );
-        print("User data saved in secure storage");
+        userNotifier.save(user);
+        print("User data saved in secure storage, ${userNotifier.get()?.firstName}");
       } else {
         print("Failed to get user data or success is false");
       }

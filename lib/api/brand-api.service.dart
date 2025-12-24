@@ -21,3 +21,20 @@ Future<Map<String, dynamic>?> getAllBrandApiData() async {
   }
 }
 
+Future<Map<String, dynamic>?> getBrandByIdApiData(int id) async {
+  try {
+    //final url = "${dotenv.env['USER_URL']}/api/v1/brands?isDeleted=false";
+    final url = "${dotenv.env['BACKEND_URL']}/api/v1/brands/${id}";
+    final response = await _dio.get(url);
+    final data = response.data as Map<String, dynamic>;
+    print("brand $data");
+    return {
+      "success": data["success"],
+      "data": data["data"],
+      "message": data["message"],
+    };
+  } catch (e) {
+    print("Unexpected error: $e");
+    return null;
+  }
+}

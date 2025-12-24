@@ -1,4 +1,3 @@
-import 'package:ecommerce_mobile/api/email-api.service.dart';
 import 'package:ecommerce_mobile/api/user-api.service.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';

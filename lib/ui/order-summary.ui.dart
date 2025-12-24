@@ -1,5 +1,4 @@
-import 'package:ecommerce_mobile/response/cartItem.dart';
-import 'package:ecommerce_mobile/riverpod/checkout-order-calculation.dart';
+import 'package:ecommerce_mobile/response/item.dart';
 import 'package:ecommerce_mobile/riverpod/order-calculation.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 
 class OrderSummaryWidget extends ConsumerWidget {
-  final List<CartItem> cartItems; // Each item: {"price": 40000, "quantity": 2}
+  final List<Item> cartItems; // Each item: {"price": 40000, "quantity": 2}
   final double shippingFee;
   final double tax;
 

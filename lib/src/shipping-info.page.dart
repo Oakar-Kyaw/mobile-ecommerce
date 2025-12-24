@@ -1,10 +1,14 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:csc_picker_plus/csc_picker_plus.dart';
+import 'package:ecommerce_mobile/api/shipping-address-info.api.dart';
+import 'package:ecommerce_mobile/response/shipping-data.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
+import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/circle-component.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:ecommerce_mobile/utils/country-code.dart';
 import 'package:ecommerce_mobile/utils/phone-country-model.dart';
+import 'package:ecommerce_mobile/utils/top-toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
@@ -19,13 +23,43 @@ class ShippingInfoPage extends ConsumerStatefulWidget {
 
 class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
   final _formKey = GlobalKey<ShadFormState>();
+  TextEditingController name = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController addressTitle = TextEditingController();
+  TextEditingController adress = TextEditingController();
+  TextEditingController address1 = TextEditingController();
+  TextEditingController address2 = TextEditingController();
 
-  String? _selectedCountry;
-  String? _selectedCity;
-  String? _selectedCountryCode;
-  String? _selectedPhoneNumber;
+  bool markDefault = false;
+  bool existAddress2 = false;
+  String _selectedCountry = "";
+  String _selectedCity = "";
+  CountryCode _selectedCountryCode = CountryCode(dialCode: "+95");
+ // String? _selectedPhoneNumber;
+  
+  void _submit() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      final shippingData = ShippingAddressInfo(
+        name: name.text.trim(), 
+        country: _selectedCountry, 
+        city: _selectedCity, 
+        phone: "$_selectedCountryCode ${phone.text.trim()}", 
+        email: email.text.trim(), 
+        address: address1.text.trim(),
+        address2: address2.text.trim(),
+        addressTitle: addressTitle.text.trim(),
+        markDefault: markDefault 
+        );
 
-  late double _codePadding = 15 ;
+      debugPrint("Shipping Info: ${shippingData.toJson()}");
+      final shippingAddress = await shippingAddressInfoApi(shippingData);
+      if(shippingAddress["success"]){
+         TopToast.show(context: context, title: "Shipping Info is created successfully");
+         Future.delayed(const Duration(milliseconds: 300),() =>Navigator.pop(context, true));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,49 +83,43 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
               children: [
                 _buildDivider(config),
                 _buildSectionHeader(config, "1", "Recipients Information"),
-                _buildInputField(id:  "name", title: "Name and Surname*", validator: (v) {
-                  if (v.length < 2) {
-                    return "Name must be at least 2 word.";
-                  }
-                  return null;
-                }),
+                _buildInputField(
+                  id:  "name", 
+                  title: "Name and Surname*", 
+                  validator: (v) {
+                    if (v.length < 2) {
+                      return "Name must be at least 2 word.";
+                    }
+                    return null;
+                  },
+                  controller: name
+                ),
                 const SizedBox(height: 10),
-                // _buildSelectRow(
-                //   firstId: "country", 
-                //   firstPlaceholder: "Country*", 
-                //   firstOption: ["Myanmar"], 
-                //   firstSelectValue: _selectedCountry, 
-                //   firstDivideNum: 2,
-                //   firstFn: (value) => setState(() {
-                //     _selectedCountry = value ;
-                //   }),
-                //   secondId: "city", 
-                //   secondPlaceholder: "City*", 
-                //   secondOption: ["Yangon", "Mandalay"], 
-                //   secondSelectValue: _selectedCity, 
-                //   secondDivideNum: 2,
-                //   secondFn: (value) => setState(() {
-                //     _selectedCity = value ;
-                //   }),
-                // ),
-                CSCPickerPlus(
-                    // countryStateLanguage: CountryStateLanguage.englishOrNative,
-                    onCountryChanged: (value) {
-                      // setState(() {
-                      //   countryValue = value;
-                      // });
-                    },
-                    onStateChanged: (value) {
-                      // setState(() {
-                      //   stateValue = value ?? '';
-                      // });
-                    },
-                    // onCityChanged: (value) {
-                    //   // setState(() {
-                    //   //   cityValue = value ?? '';
-                    //   // });
-                    // },
-                  ),
+                Padding(
+                  padding: EdgeInsetsGeometry.symmetric(horizontal:  20, vertical: 10),
+                  child: CSCPickerPlus(
+                    showCities: false,
+                      // countryStateLanguage: CountryStateLanguage.englishOrNative,
+                      onCountryChanged: (value) {
+                          if (value == null) return;
+
+                          setState(() {
+                            // Remove emoji + extra spaces
+                            final countryName =
+                                value.replaceAll(RegExp(r'[^\x00-\x7F]'), '').trim();
+
+                            _selectedCountry = countryName;
+
+                            debugPrint("Country: $_selectedCountry");
+                          });
+                        },
+                      onStateChanged: (value) {
+                        setState(() {
+                          _selectedCity = value ?? '';
+                        });
+                      },
+                    ),
+                ),
                 const SizedBox(height: 10),
                 _buildSelectRowForPhone(
                   firstId: "phonecode", 
@@ -105,28 +133,65 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
                   secondDivideNum: 2
                 ),
                 const SizedBox(height: 10),
-                _buildInputField(id: "email", title: "E-mail Address*", validator: (v) {
-                  if (v.isEmpty) return 'Email is required.';
-                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                  if (!emailRegex.hasMatch(v)) return 'Enter a valid email address.';
-                  return null;
-                }, description: "This address will be used to send you order and bill details."),
+                _buildInputField(
+                  id: "email", 
+                  title: "E-mail Address*", 
+                  validator: (v) {
+                    if (v.isEmpty) return 'Email is required.';
+                    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    if (!emailRegex.hasMatch(v)) return 'Enter a valid email address.';
+                    return null;
+                  }, 
+                description: "This address will be used to send you order and bill details.",
+                controller: email
+                ),
                  _buildSectionHeader(config, "2", "Shipping Address"),
                 const SizedBox(height: 10),
-                _buildInputField(id: "addressTitle", title: "Address Title (Optional)",validator:(v) {
-                  return null;
-                }, description: "For estimating if the place is opened or closed on the weekends."),
+                _buildInputField(
+                  id: "addressTitle", 
+                  title: "Address Title (Optional)",
+                  validator:(v) {
+                    return null;
+                  }, 
+                description: "For estimating if the place is opened or closed on the weekends.",
+                controller: addressTitle
+                ),
                 const SizedBox(height: 10),
-                _buildInputField(id: "addressStreet",title:  "Address*, Street and apartment name etc ..", validator: (v) {
+                _buildInputField(
+                  id: "addressStreet",
+                  title:  "Address*, Street and apartment name etc ..", 
+                  validator: (v) {
                   if (v.length < 2) {
                     return "Address Street must be at least 2 word.";
                   }
                   return null;
-                }, widget: Icon(LucideIcons.mapPin)),
+                }, 
+                controller: address1,
+                widget: Icon(LucideIcons.mapPin)),
                 const SizedBox(height: 10),
-                _buildOptionalWidget( config.readColor, Icon(Icons.add, size: 18,), "Street Address 2 (Optional)"),
+                if(!existAddress2)
+                  _buildOptionalWidget( config.readColor, GestureDetector(onTap: () => setState(() {
+                    existAddress2 = true;
+                  }),child: Icon(Icons.add, size: 18,)), "Street Address 2 (Optional)"),
+                if(existAddress2)
+                  _buildInputField(
+                    id: "addressStreet",
+                    title:  "Address*, Street and apartment name etc ..", 
+                    validator: (v) {
+                    if (v.length < 2) {
+                      return "Address Street must be at least 2 word.";
+                    }
+                    return null;
+                }, 
+                controller: address2,
+                widget: Icon(LucideIcons.mapPin)),
                 const SizedBox(height: 10),
-                _buildOptionalWidget( config.primary, ShadCheckbox(value: false), "Set as default shipping address"),
+                _buildOptionalWidget( 
+                  config.primary, 
+                  ShadCheckbox(value: markDefault, onChanged: (value) => setState(() {
+                    markDefault = value ;
+                  }),), 
+                  "Set as default shipping address"),
                 const SizedBox(height: 10),
                 _buildSaveButton(config),
                 const SizedBox(height: 30),
@@ -172,6 +237,7 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
   Widget _buildInputField({
   required String id,
   required String title,
+  required TextEditingController controller,
   required String? Function(String v) validator,
   String? description,
   Widget? widget
@@ -180,61 +246,13 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
       child: ShadInputFormField(
         id: id,
+        controller: controller,
         padding: EdgeInsets.all(15),
         placeholder: Text(title),
         description: description != null ? Text(description) : null,
         decoration: const ShadDecoration(secondaryFocusedBorder: ShadBorder.none),
         validator: validator,
         trailing: widget,
-      ),
-    );
-  }
-
-  Widget _buildSelectRow({
-    required String firstId, 
-    required String firstPlaceholder, 
-    required firstSelectValue, 
-    required Function firstFn, 
-    required List<String> firstOption, 
-    required double firstDivideNum, 
-    required double secondDivideNum,
-    bool? inputField,
-    String? secondId, 
-    String? secondPlaceholder, 
-    String? secondSelectValue, 
-    Function? secondFn, 
-    List<String>? secondOption
-    }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final firstFieldWidth = (constraints.maxWidth - 10) / firstDivideNum;
-          final secondFieldWidth =  (constraints.maxWidth - 10) / secondDivideNum ;
-          return Row(
-            children: [
-              _buildSelectField(
-                width: firstFieldWidth,
-                id: firstId,
-                placeholder: firstPlaceholder,
-                value: firstSelectValue,
-                options: firstOption,
-                onChanged: (value) => firstFn(value),
-              ),
-              const SizedBox(width: 10),
-              //second select field
-              if(secondId != null && secondPlaceholder != null && secondOption != null && secondFn != null)
-                _buildSelectField(
-                  width: secondFieldWidth,
-                  id: secondId,
-                  placeholder: secondPlaceholder,
-                  value: secondSelectValue,
-                  options: secondOption,
-                  onChanged: (value) => secondFn(value),
-                ),
-            ],
-          );
-        },
       ),
     );
   }
@@ -258,46 +276,6 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
             children: [
               Row(
                 children: [
-                  // ShadSelectFormField<PhoneCountry>(
-                  //   id: 'phone_country',
-                  //   padding: EdgeInsets.all(_codePadding),
-                  //   placeholder: const Text("Code"),
-                  //   minWidth: firstFieldWidth,
-                  //   selectedOptionBuilder: (context, value) {
-                  //     return Row(
-                  //       children: [
-                  //         Text(
-                  //           value.flag, // 🇲🇲 +95
-                  //           style: const TextStyle(fontSize: 20),
-                  //         ),
-                  //         const SizedBox(width: 5,),
-                  //         Text(value.code, style: TextStyle(fontWeight: FontWeight.bold),)
-                  //       ],
-                  //     );
-                  //   },
-
-                  //   options: phoneCountries.map((country) {
-                  //     return ShadOption(
-                  //       value: country,
-                  //       child: Text(
-                  //         country.display, // 🇲🇲 Myanmar (+95)
-                  //        // style: const TextStyle(fontSize: 14),
-                  //       ),
-                  //     );
-                  //   }).toList(),
-
-                  //   validator: (v) => v == null ? "Select country code" : null,
-
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       _codePadding = 11;
-                  //     });
-                  //   },
-
-                  //   decoration: const ShadDecoration(
-                  //     secondaryFocusedBorder: ShadBorder.none,
-                  //   ),
-                  // ),
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
@@ -307,20 +285,14 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
                     ),
                     child: CountryCodePicker(
                       padding: EdgeInsetsGeometry.all(7),
-                      onChanged: print,
+                      onChanged: (v) => setState(() {
+                        print("counst code $v");
+                        _selectedCountryCode = v ;
+                      }),
                       hideCloseIcon: true,
                       hideHeaderText: true,
-                      // searchDecoration: InputDecoration(
-                      //   icon: Icon(Icons.search)
-                      // ),
-                      // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                       initialSelection: 'MM',
-                      favorite: ['+95','MM'],
-                      // optional. Shows only country name and flag
-                      // showCountryOnly: false,
-                      // // optional. Shows only country name and flag when popup is closed.
-                      // showOnlyCountryWhenClosed: false,
-                      // optional. aligns the flag and the Text left
+                      //favorite: ['+95','MM'],
                       alignLeft: false,
                     ),
                   ),
@@ -328,6 +300,7 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
                   Expanded(
                     child: ShadInputFormField(
                       id: 'phone_number',
+                      controller: phone,
                       keyboardType: TextInputType.number,
                       decoration: ShadDecoration(
                         secondaryFocusedBorder: ShadBorder.none
@@ -347,38 +320,38 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
     );
   }
 
-  Widget _buildSelectField({
-    required double width,
-    required String id,
-    required String placeholder,
-    required String? value,
-    required List<String> options,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return SizedBox(
-      width: width,
-      child: ShadSelectFormField<String>(
-        id: id,
-        minWidth: width,
-        padding: const EdgeInsets.all(15),
-        placeholder: Text('$placeholder'),
-        selectedOptionBuilder: (_, value) => Text(value),
-        options: options
-            .map((option) => ShadOption(
-                  value: option,
-                  child: Text(option),
-                ))
-            .toList(),
-        validator: (v) => (v == null || v.isEmpty) 
-            ? 'Please select a ${placeholder.replaceAll('*', '').toLowerCase()}'
-            : null,
-        decoration: const ShadDecoration(
-          secondaryFocusedBorder: ShadBorder.none,
-        ),
-        onChanged: onChanged,
-      ),
-    );
-  }
+  // Widget _buildSelectField({
+  //   required double width,
+  //   required String id,
+  //   required String placeholder,
+  //   required String? value,
+  //   required List<String> options,
+  //   required ValueChanged<String?> onChanged,
+  // }) {
+  //   return SizedBox(
+  //     width: width,
+  //     child: ShadSelectFormField<String>(
+  //       id: id,
+  //       minWidth: width,
+  //       padding: const EdgeInsets.all(15),
+  //       placeholder: Text('$placeholder'),
+  //       selectedOptionBuilder: (_, value) => Text(value),
+  //       options: options
+  //           .map((option) => ShadOption(
+  //                 value: option,
+  //                 child: Text(option),
+  //               ))
+  //           .toList(),
+  //       validator: (v) => (v == null || v.isEmpty) 
+  //           ? 'Please select a ${placeholder.replaceAll('*', '').toLowerCase()}'
+  //           : null,
+  //       decoration: const ShadDecoration(
+  //         secondaryFocusedBorder: ShadBorder.none,
+  //       ),
+  //       onChanged: onChanged,
+  //     ),
+  //   );
+  // }
 
   Widget _buildSaveButton(IAppColorAbstract config) {
     return Padding(
@@ -400,18 +373,6 @@ class _ShippingInfoPageState extends ConsumerState<ShippingInfoPage> {
     );
   }
 
-  void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
-      final shippingData = {
-        "country": _selectedCountry,
-        "city": _selectedCity,
-      };
-
-      debugPrint("Shipping Info: $shippingData");
-    }
-  }
-  
-  
   Widget _buildOptionalWidget(Color color, Widget widget, String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

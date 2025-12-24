@@ -1,6 +1,6 @@
 
 
-import 'package:ecommerce_mobile/response/cartItem.dart';
+import 'package:ecommerce_mobile/response/item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class OrderCalculation {
@@ -36,14 +36,14 @@ class OrderCalculation {
 }
 
 class OrderItemType {
-   final List<CartItem> items;
+   final List<Item> items;
    final OrderCalculation calculation;
    const OrderItemType({
      required this.items,
      required this.calculation
    });
 
-   OrderItemType copyWith({List<CartItem>? items, OrderCalculation? calculation}){
+   OrderItemType copyWith({List<Item>? items, OrderCalculation? calculation}){
      return OrderItemType(items: items ?? this.items, calculation: calculation ?? this.calculation);
    }
 }
@@ -56,7 +56,7 @@ class OrderItems extends Notifier<OrderItemType> {
   }
 
   /// Add checked item only
-  void addItem({required List<CartItem> itemList, double? shippingFee, double? tax}) {
+  void addItem({required List<Item> itemList, double? shippingFee, double? tax}) {
     final newItems = itemList;
     print("new item $newItems");
     state = state.copyWith(items: newItems);
@@ -90,7 +90,7 @@ class OrderItems extends Notifier<OrderItemType> {
     _calculate(5,5);
   }
 
-  List<CartItem> getByItem() {
+  List<Item> getByItem() {
     return state.items;
   }
 

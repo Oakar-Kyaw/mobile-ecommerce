@@ -37,6 +37,13 @@
             {
               "client_id": "566223411513-968i6vh14olp2eev1atptkio78mf1bg2.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "566223411513-on058g5el3dedm2pn8c2j01fihi2cfop.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ecommerceMobile"
+              }
             }
           ]
         }

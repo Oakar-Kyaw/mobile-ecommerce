@@ -2,7 +2,6 @@ import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/fix-content.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
-import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/vertical-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';

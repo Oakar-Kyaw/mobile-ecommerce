@@ -1,7 +1,6 @@
-import 'package:ecommerce_mobile/components/app-bar.dart';
-import 'package:ecommerce_mobile/components/fix-content.dart';
-import 'package:ecommerce_mobile/components/search-input.dart';
-import 'package:ecommerce_mobile/response/cartItem.dart';
+
+import 'package:ecommerce_mobile/response/item.dart';
+import 'package:ecommerce_mobile/riverpod/shipping-info.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/order-card.ui.dart';
@@ -15,7 +14,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 class OrderContentUI extends ConsumerWidget {
   final bool isOrderHistory;
   final String title;
-  final List<CartItem> cartItems;
+  final List<Item> cartItems;
   final Widget message;
   const OrderContentUI({
     super.key,
@@ -28,6 +27,7 @@ class OrderContentUI extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
+    final shippingInfo = ref.watch(actualShippingAddressInfoProvider);
     // final List<Map<String, dynamic>> cartItems = [
     //     {
     //       "name": "Short T-Shirt Black",
@@ -124,7 +124,17 @@ class OrderContentUI extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 20,),
-                  Text("We sent an email to orders@banuelson.com with your order confirmation and bill. "),
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(color: config.primary),
+                      children: [
+                        TextSpan(text: "We sent an email to "),
+                        TextSpan(text: shippingInfo!.email, style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: " with your order confirmation and bill. ")
+                      ]
+                    )
+                  ),
+                //  Text("We sent an email to orders@banuelson.com with your order confirmation and bill. "),
                   const SizedBox(height: 20,),
                   Text("Time placed: 17/02/2020 12:45 CEST", style: TextStyle(fontWeight: FontWeight.bold),),
 
@@ -140,7 +150,7 @@ class OrderContentUI extends ConsumerWidget {
                 [
                    Text("Shipping", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                    const SizedBox(height: 20,),
-                   ShippingCard(name: "Oakar Kyaw", email: "oakarkyaw7090@gmail.com", phone: "+95922342342", address: "See the address of your current location based on your GPS position. Works worldwide and you can drag the map to adjust the location",)
+                   ShippingCard(name: shippingInfo!.name, email: shippingInfo.email, phone: shippingInfo.phone, address: shippingInfo.address)
                 ]
               )
             ),
@@ -215,12 +225,6 @@ class OrderContentUI extends ConsumerWidget {
                   imageUrl: cartItems[index].imageUrl,
                   quantity: (cartItems[index].quantity ),
                   isChecked: false,
-                  // onQuantityChanged: (price, newQuantity, isChecked) {
-                  //   print("New quantity: $newQuantity");
-                  // },
-                  // onChecked: (checked) {
-                  //   print("Checkbox value: $checked");
-                  // },
                 );
               },
               childCount: cartItems.length,
@@ -271,7 +275,7 @@ class OrderContentUI extends ConsumerWidget {
                           )
                         ),
                         child: Text("Done", style: TextStyle(fontWeight: FontWeight.bold),),
-                                           ),
+                        ),
                      ),
                   ],
                 ),

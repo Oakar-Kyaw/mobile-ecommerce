@@ -5,6 +5,7 @@ import 'package:ecommerce_mobile/components/bottom-navigation-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/components/swiper.dart';
+import 'package:ecommerce_mobile/response/brand.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/riverpod/theme-provider.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
@@ -13,7 +14,7 @@ import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:ecommerce_mobile/utils/system-configuration-constant.dart';
-import 'package:ecommerce_mobile/utils/top-toast.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_mobile/components/product-card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,6 +29,27 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int _selectedIndex = 0; // Tracks the currently selected tab
+
+  @override
+  void initState(){
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Foreground message: ${message.messageId}');
+    if (message.notification != null) {
+      print('Title: ${message.notification!.title}');
+      print('Body: ${message.notification!.body}');
+    }
+  });
+   // backgroundHandler()
+  }
+
+  requestNotification() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
 
   final List<Map<String, dynamic>> products = [
   {
@@ -68,15 +90,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 ];
 
 
-  Future<List<Map<String, dynamic>>> fetchAllBrandData() async {
+  Future<List<Brand>> fetchAllBrandData() async {
     final response = await getAllBrandApiData();
 
     if (response != null && response["success"] == true) {
-      return List<Map<String, dynamic>>.from(
-        response["data"].map(
-          (e) => Map<String, dynamic>.from(e),
-        ),
-      );
+      final List data = response["data"];
+      print("response data: ${data}");
+      return data.map((e) => Brand.fromJson(Map<String, dynamic>.from(e))).toList();
     }
 
     return [];
@@ -95,32 +115,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return [];
   }
-
-  // void showTopSnackBar(BuildContext context){
-  //   ShadToaster.of(context).show(
-  //     ShadToast(
-  //       alignment: Alignment.topRight,
-  //       action: Icon(LucideIcons.x),
-  //       closeIcon: Text("Weishat"),
-  //       title: Row(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Icon(LucideIcons.circleCheckBig, fontWeight: FontWeight.bold, color: Colors.green,),
-  //           SizedBox(width: 10,),
-  //           const Text("Sign Up Successful", style: TextStyle(fontWeight: FontWeight.bold),),
-  //         ],
-  //       ),
-  //       description: Row(
-  //         children: [
-  //           SizedBox(width: 33),
-  //           const Text("Product added successfully"),
-  //         ],
-  //       ),
-  //       radius: BorderRadius.circular(12),
-  //       duration: const Duration(seconds: 3),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +160,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               TitleWidget('Brands', onTap: () => Navigator.pushNamed(context, AppRoute.brand)),
               SizedBox(
                 height: 100,
-                child: FutureBuilder<List<Map<String, dynamic>>>(
+                child: FutureBuilder<List<Brand>>(
                   future: fetchAllBrandData(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -197,33 +191,33 @@ class _HomePageState extends ConsumerState<HomePage> {
       
               // Categories section
               TitleWidget('Categories',  onTap: () => Navigator.pushNamed(context, AppRoute.categories)),
-              SizedBox(
-                height: 100,
-                child: FutureBuilder<List<Map<String, dynamic>>>(
-                  future: fetchAllCategoriesData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+              // SizedBox(
+              //   height: 100,
+              //   child: FutureBuilder<List<Map<String, dynamic>>>(
+              //     future: fetchAllCategoriesData(),
+              //     builder: (context, snapshot) {
+              //       if (snapshot.connectionState == ConnectionState.waiting) {
+              //         return const Center(child: CircularProgressIndicator());
+              //       }
       
-                    if (snapshot.hasError) {
-                      return const Center(child: Text("Failed to load categories"));
-                    }
+              //       if (snapshot.hasError) {
+              //         return const Center(child: Text("Failed to load categories"));
+              //       }
       
-                    final categories = snapshot.data ?? [];
+              //       final categories = snapshot.data ?? [];
       
-                    if (categories.isEmpty) {
-                      return const Center(child: Text("No categories found"));
-                    }
+              //       if (categories.isEmpty) {
+              //         return const Center(child: Text("No categories found"));
+              //       }
       
-                    return HorizontalScrollableBrand(
-                      datas: categories,
-                      isCheckBorderRadius: false,
-                      type: "category",
-                    );
-                  },
-                ),
-              ),
+              //       return HorizontalScrollableBrand(
+              //         datas: categories,
+              //         isCheckBorderRadius: false,
+              //         type: "category",
+              //       );
+              //     },
+              //   ),
+              // ),
       
               const SizedBox(height: 25),
               DoubleLineTriangleDivider(color: config.lineColor),

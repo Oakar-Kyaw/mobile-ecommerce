@@ -1,18 +1,21 @@
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
 import 'package:ecommerce_mobile/components/product-card.dart';
+import 'package:ecommerce_mobile/riverpod/brand.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
-import 'package:ecommerce_mobile/ui/horizontal-scroll-avatar.ui.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
-import 'package:ecommerce_mobile/ui/product-tab-bar.ui.dart';
 import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BrandDetailPage extends ConsumerStatefulWidget {
-  const BrandDetailPage({super.key});
+  final int? id;
+  const BrandDetailPage({
+    super.key,
+    this.id
+  });
 
   @override
   ConsumerState<BrandDetailPage> createState() => _BrandDetailPageState();
@@ -24,16 +27,6 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
   late TabController tabController;
   double _tabContentHeight = 50;
   String _tabValue = "products";
-
-  final List<Map<String, dynamic>> brandAssets = [
-    {'title': 'BMW', 'imageUrl': 'assets/images/bmw.jpg'},
-    {'title': 'Ford', 'imageUrl': 'assets/images/ford.jpg'},
-    {'title': 'Nike', 'imageUrl': 'assets/images/nike.jpg'},
-    {'title': 'Tesla', 'imageUrl': 'assets/images/tesla.jpg'},
-    {'title': 'Toyota', 'imageUrl': 'assets/images/toyota.jpg'},
-    {'title': 'Shirt Co.', 'imageUrl': 'assets/images/shirt.jpg'},
-    {'title': 'Facebook', 'imageUrl': 'assets/images/facebook.png'},
-  ];
 
   final List<Map<String, dynamic>> products = [
     {
@@ -91,8 +84,8 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
     super.dispose();
   }
 
+
    void handleTabBar(int value, String? pf) {
-    print("pf $pf");
     setState(() {
       _tabValue = value == 0 ? "products" : "profile";
       _tabContentHeight = value == 0  ? 150 : MediaQuery.of(context).size.height;
@@ -102,6 +95,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
   @override
   Widget build(BuildContext context) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
+    final brandAsync = ref.watch(brandDetailProvider(widget.id!));
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -112,7 +106,14 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
           child: const Icon(Icons.arrow_back),
         ),
       ),
-      body: Container(
+      body: brandAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator(),),
+        error: (err, stack) => Center(child: Text("Error in Fetching Brand Detail")),
+        data: (brand){
+          if(brand == null){
+            return const Center(child: Text("Brand not found"));
+          }
+          return Container(
         color: config.greyColor,
         child: CustomScrollView(
           slivers: [
@@ -125,10 +126,14 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                     Container(
                       width: 70,
                       height: 70,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/puma.jpg"),
+                        image: brand.photoUrl != null && brand.photoUrl!.isNotEmpty ? DecorationImage(
+                          image: NetworkImage(brand.photoUrl ?? ""),
+                          fit: BoxFit.cover,
+                        ) :
+                        DecorationImage(
+                          image: AssetImage("assets/images/default.jpg"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -136,16 +141,16 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                     const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          "Brand Name (Brand code)",
+                          brand.name,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
                         SizedBox(height: 4),
-                        Text("99% positive feedback"),
+                        Text(brand.feedback ?? ""),
                       ],
                     ),
                   ],
@@ -215,9 +220,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                     SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                        child: const Text(
-                          'A product is anything offered for sale to satisfy a customer is need or want, encompassing tangible goods (like cars, food), intangible services (like software, consulting), digital items (ebooks, apps), or even concepts, forming the core offering a business provides to the market, resulting from production and exchange for value. Key aspects of a product:Tangible vs. Intangible: Can be a physical item (clothing, electronics) or an intangible service (streaming, education).',
-                          //overflow: TextOverflow.clip,
+                        child:  Text( brand.description ?? "",//overflow: TextOverflow.clip,
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -234,7 +237,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                            ),
                            Padding(
                              padding: const EdgeInsets.symmetric(horizontal:  20),
-                             child: Text("A company profile description is a concise overview of a business, like a professional biography, detailing its mission, history, products/services, goals, and values to inform customers, investors, partners, and potential employees. It acts as a key marketing and branding tool, building trust and presenting a strong, cohesive brand identity across various platforms, from websites to investor pitches. ", overflow: TextOverflow.clip,),
+                             child: Text(brand.info ?? "", overflow: TextOverflow.clip,),
                            ),
                            const SizedBox(height: 20,),
                            Container(
@@ -244,7 +247,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                    Padding(
-                                     padding: const EdgeInsets.all(20),
+                                     padding: const EdgeInsets.all(10),
                                      child: Text("Company Info", style: TextStyle(fontWeight: FontWeight.bold),),
                                    ),
                                    Padding(
@@ -252,7 +255,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                                      child: Row(
                                        children: [
                                          Text("Address:   "),
-                                         Text("Yangon, Myanmar")
+                                         Text(brand.address ?? "")
                                        ],
                                      ),
                                    ),
@@ -261,7 +264,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                                      child: Row(
                                        children: [
                                          Text("Phone:    "),
-                                         Text("09454353452")
+                                         Text(brand.phone ?? "")
                                        ],
                                      ),
                                    ),
@@ -270,7 +273,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                                      child: Row(
                                        children: [
                                          Text("Email:   "),
-                                         Text("alex@gmail.com")
+                                         Text(brand.email ?? "")
                                        ],
                                      ),
                                    ),
@@ -295,12 +298,12 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
             ),
 
             if(_tabValue == "products")
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 100,
-                child: HorizontalScrollableBrand(datas: brandAssets, type: "brand",),
-              ),
-            ),
+            // SliverToBoxAdapter(
+            //   child: SizedBox(
+            //     height: 100,
+            //     child: HorizontalScrollableBrand(datas: brandAssets, type: "brand",),
+            //   ),
+            // ),
 
             if(_tabValue == "products")
             /// 🔹 DIVIDER
@@ -349,6 +352,8 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
             ),
           ],
         ),
+      );
+        }
       ),
     );
   }
