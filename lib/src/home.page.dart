@@ -1,11 +1,14 @@
 import 'package:ecommerce_mobile/api/brand-api.service.dart';
 import 'package:ecommerce_mobile/api/categories-api.service.dart';
+import 'package:ecommerce_mobile/api/product.api.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/components/bottom-navigation-bar.dart';
 import 'package:ecommerce_mobile/components/divider.dart';
 import 'package:ecommerce_mobile/components/search-input.dart';
 import 'package:ecommerce_mobile/components/swiper.dart';
 import 'package:ecommerce_mobile/response/brand.dart';
+import 'package:ecommerce_mobile/response/category.dart';
+import 'package:ecommerce_mobile/response/product.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/riverpod/theme-provider.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
@@ -20,6 +23,19 @@ import 'package:ecommerce_mobile/components/product-card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+final categoriesProvider = FutureProvider.autoDispose<List<Category>>((ref) async {
+  final List<Category> response = await getAllCategoriesApiData();
+ // print("response is: $response");
+  return response;
+});
+
+final trendingItemProvider = FutureProvider.autoDispose<List<Product>>((ref) async{
+  final productApi = ProductApi();
+  final apiResponse = await productApi.getAllProductByTrendingItemApiData();
+  print("api is $apiResponse");
+  return apiResponse;
+});
+
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -32,13 +48,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   void initState(){
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Foreground message: ${message.messageId}');
-    if (message.notification != null) {
-      print('Title: ${message.notification!.title}');
-      print('Body: ${message.notification!.body}');
-    }
-  });
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print('Foreground message: ${message.messageId}');
+  //   if (message.notification != null) {
+  //     print('Title: ${message.notification!.title}');
+  //     print('Body: ${message.notification!.body}');
+  //   }
+  // });
    // backgroundHandler()
   }
 
@@ -95,22 +111,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     if (response != null && response["success"] == true) {
       final List data = response["data"];
-      print("response data: ${data}");
+    //  print("response data: ${data}");
       return data.map((e) => Brand.fromJson(Map<String, dynamic>.from(e))).toList();
-    }
-
-    return [];
-  }
-
-  Future<List<Map<String, dynamic>>> fetchAllCategoriesData() async {
-    final response = await getAllCategoriesApiData();
-
-    if (response != null && response["success"] == true) {
-      return List<Map<String, dynamic>>.from(
-        response["data"].map(
-          (e) => Map<String, dynamic>.from(e),
-        ),
-      );
     }
 
     return [];
@@ -122,8 +124,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     final IAppColorAbstract config = ref.watch(appColorProvider);
     final currentTheme = ref.watch(themeModeProvider);
     final fontConfig = FontSizeConfiguration.appFontSize(context);
-    print("Current Theme in Home Page: $currentTheme, $themeModeProvider, ScreenWidth: $fontConfig, ScreenHeight: $fontConfig");
-
+    //categories
+    final categoriesAsync = ref.watch(categoriesProvider);
+    final trendingProductAsync = ref.watch(trendingItemProvider);
+    //print("Current Theme in Home Page: $currentTheme, $themeModeProvider, ScreenWidth: $fontConfig, ScreenHeight: $fontConfig");
+    
     return ShadToaster(
       child: Scaffold(
         backgroundColor: config.background,
@@ -191,34 +196,64 @@ class _HomePageState extends ConsumerState<HomePage> {
       
               // Categories section
               TitleWidget('Categories',  onTap: () => Navigator.pushNamed(context, AppRoute.categories)),
-              // SizedBox(
-              //   height: 100,
-              //   child: FutureBuilder<List<Map<String, dynamic>>>(
-              //     future: fetchAllCategoriesData(),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.connectionState == ConnectionState.waiting) {
-              //         return const Center(child: CircularProgressIndicator());
-              //       }
-      
-              //       if (snapshot.hasError) {
-              //         return const Center(child: Text("Failed to load categories"));
-              //       }
-      
-              //       final categories = snapshot.data ?? [];
-      
-              //       if (categories.isEmpty) {
-              //         return const Center(child: Text("No categories found"));
-              //       }
-      
-              //       return HorizontalScrollableBrand(
-              //         datas: categories,
-              //         isCheckBorderRadius: false,
-              //         type: "category",
-              //       );
-              //     },
-              //   ),
-              // ),
-      
+              categoriesAsync.when(
+                data: (category){
+                  return SizedBox(
+                      height: 100,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        itemCount: category.length,
+                        separatorBuilder: (context, index) => const SizedBox(width: 10),
+                        itemBuilder: (context, index) {
+                          final data = category[index];
+                          final String? photoUrl = data.photoUrl;
+                          final Image image = (photoUrl != null && photoUrl.isNotEmpty)
+                                            ? Image.network(photoUrl, fit: BoxFit.cover)
+                                            : Image.asset("assets/images/default.jpg", fit: BoxFit.cover);
+                          //final title = type == "brand" ? data.name : data.name;
+
+                          return GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, AppRoute.categories, arguments: { "id": data.id}),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 70,
+                                  height: 70,
+                                // padding: const EdgeInsets.all(2), // space for border
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border:Border.all(color: config.textSecondary, width: 0.5),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadiusGeometry.circular(100),
+                                    child: image,
+                                  )
+                                ),
+                                const SizedBox(height: 4),
+                                SizedBox(
+                                  width: 60, // limit width for long brand names
+                                  child: Text(
+                                    data.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+  
+                }, 
+                error: (error, _) => Center(child: Text("Error: $error")),
+                loading: () => Center(child: CircularProgressIndicator(),)
+              ),
+
               const SizedBox(height: 25),
               DoubleLineTriangleDivider(color: config.lineColor),
       
@@ -226,22 +261,30 @@ class _HomePageState extends ConsumerState<HomePage> {
                       "Trending Items",
                       onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems),
               ),
-              SizedBox(
-                height: 320,
-                child: HorizontalScrollableList<Map<String, dynamic>>(
-                  items: products,
-                  itemBuilder: (context, product, index) {
-                    return ProductCard(
-                      config: config,
-                      title: product["title"],
-                      imageUrl: product["imageUrl"],
-                      description: product["description"],
-                      price: product["price"],
-                      currency: product["currency"],
-                    );
-                  },
-                )
-              ),
+              trendingProductAsync.when(
+                error: (error, _) => Center(child: Text("Error: $error")),
+                loading: () => Center(child: CircularProgressIndicator(),),
+                data: (data){
+                  return SizedBox(
+                    height: 320,
+                    child: HorizontalScrollableList(
+                      items: data,
+                      itemBuilder: (context, product, index) {
+                        return ProductCard(
+                          id: product.id,
+                          config: config,
+                          title: product.name,
+                          imageUrl: product.mainImage,
+                          description: product.description,
+                          price: product.mainPrice,
+                          currency: "MMK",
+                        );
+                      },
+                    )
+                  );
+                    },
+                  ),
+              
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Container(width: double.infinity, height: 1, color: config.lineColor),
@@ -256,9 +299,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   items: products,
                   itemBuilder: (context, product, index) {
                     return ProductCard(
+                      id: "2",
                       config: config,
                       title: product["title"],
-                      imageUrl: product["imageUrl"],
+                      imageAsset: product["imageUrl"],
                       description: product["description"],
                       price: product["price"],
                       currency: product["currency"],

@@ -88,7 +88,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     city: ""
   );
   List<ShippingAddressInfo> userShippingInfoList = [];
-  
+  bool isOrdering = false;
+
   @override
   void initState() {
     super.initState();
@@ -141,18 +142,18 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           OrderItem(
             productId: 1,
             quantity: 2,
-            price: 50000,
+            price: 20000,
             brandId: 57,
-            size: "L",
-            color: "#FFFF"
+            size: "S",
+            color: "#fef80c"
           ),
           OrderItem(
             productId: 2,
-            quantity: 1,
-            price: 30000,
+            quantity: 3,
+            price: 50000,
             brandId: 57,
-            size: "L",
-            color: "#FFFF"
+            size: "M",
+            color: "#926af2"
           ),
         ],
         totalAmount: 80000,
@@ -164,8 +165,24 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         paymentType: "KPAY",
         shippingAddressId: "69492b65f29698f74267d883"
       );
+      
+      setState(() {
+         isOrdering = true ;
+      });
+
       final response = await createOrderApi(data);
-      //Navigator.pushNamed(context, AppRoute.orderConfirm);
+      if(response['success'] && response["data"].isNotEmpty){
+        String id = response["data"]["_id"] as String;
+        print("Order ploace is ${Order.fromJson(response["data"])} ${response["data"]["_id"]}");
+        TopToast.show(context: context, title: "Place Order Successfully");
+        Future.delayed((Duration(milliseconds: 500)) , (){
+            Navigator.pushNamed(context, AppRoute.orderDetail, arguments: id);
+        });
+      }
+       setState(() {
+         isOrdering = false ;
+      });
+     // Navigator.pushNamed(context, AppRoute.orderConfirm, arguments: "694bbc258132ea4ea25c3818");
   }
 
   @override
@@ -352,13 +369,15 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 children: [
                   Text("${orderCalculation.total} MMK", style: const TextStyle(fontWeight: FontWeight.bold)),
                   ShadButton(
+                   // width: 100,
+                  //  padding: EdgeInsets.symmetric(horizontal:  15, vertical: 10),
                     backgroundColor: config.clickColor,
                     decoration: ShadDecoration(
                       color: config.background,
                       border: ShadBorder.all(radius: BorderRadius.circular(20)),
                     ),
-                    child: const Text("Place order", style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () => _submit()
+                    onPressed: !isOrdering ? () => _submit() : null,
+                    child: isOrdering ? SizedBox(width: 10, height: 10, child: CircularProgressIndicator( color: config.background)) :  Text("Place order", style: TextStyle(fontWeight: FontWeight.bold)) 
                   ),
                 ],
               ),

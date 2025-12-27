@@ -1,10 +1,9 @@
 
-import 'package:ecommerce_mobile/response/item.dart';
-import 'package:ecommerce_mobile/riverpod/shipping-info.dart';
+import 'package:ecommerce_mobile/components/order-card.component.dart';
+import 'package:ecommerce_mobile/response/orderDetail.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/order-card.ui.dart';
-import 'package:ecommerce_mobile/ui/order-summary.ui.dart';
 import 'package:ecommerce_mobile/ui/shipping-card.ui.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -12,65 +11,41 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class OrderContentUI extends ConsumerWidget {
-  final bool isOrderHistory;
-  final String title;
-  final List<Item> cartItems;
+  bool isOrderHistory;
+  String id;
+  String email;
+  List<CartItem> cartItems;
+  ShippingInfo shippingInfo;
+  double totalAmount;
+  double subTotal;
+  double shippingFee;
+  double tax;
+  String currency;
+  String paymentMethod;
+  String? createdAt;
+
   final Widget message;
-  const OrderContentUI({
+
+  OrderContentUI({
     super.key,
+    required this.email,
     this.isOrderHistory = false,
     required this.cartItems ,
-    required this.title,
-    required this.message
+    required this.id,
+    required this.message,
+    required this.shippingInfo,
+    required this.paymentMethod,
+    required this.createdAt,
+    this.totalAmount = 0,
+    this.subTotal = 0,
+    this.shippingFee = 0,
+    this.tax = 0,
+    this.currency = "MMK"
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
-    final shippingInfo = ref.watch(actualShippingAddressInfoProvider);
-    // final List<Map<String, dynamic>> cartItems = [
-    //     {
-    //       "name": "Short T-Shirt Black",
-    //       "brand": "Adidas",
-    //       "price": 200000,
-    //       "imageUrl": "assets/images/jeanshirt.jpg",
-    //       "quantity": 2,
-    //       "isChecked": true,
-    //     },
-    //     {
-    //       "name": "Classic White Shirt",
-    //       "brand": "Nike",
-    //       "price": 150000,
-    //       "imageUrl": "assets/images/menshirt.jpg",
-    //       "quantity": 1,
-    //       "isChecked": false,
-    //     },
-    //     {
-    //       "name": "Leather Jacket",
-    //       "brand": "Zara",
-    //       "price": 350000,
-    //       "imageUrl": "assets/images/jacket.jpg",
-    //       "quantity": 1,
-    //       "isChecked": true,
-    //     },
-    //     {
-    //       "name": "Denim Jeans",
-    //       "brand": "Levi's",
-    //       "price": 250000,
-    //       "imageUrl": "assets/images/jean.jpg",
-    //       "quantity": 3,
-    //       "isChecked": false,
-    //     },
-    //     {
-    //       "name": "Sneakers",
-    //       "brand": "Puma",
-    //       "price": 180000,
-    //       "imageUrl": "assets/images/sneaker.jpg",
-    //       "quantity": 1,
-    //       "isChecked": true,
-    //     },
-    //   ];
-    
     // 🔑 Status bar height
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
@@ -115,9 +90,16 @@ class OrderContentUI extends ConsumerWidget {
                           const SizedBox(height: 2),
                           SizedBox(
                             width: 250,
-                            child: Text(
-                              title, overflow: TextOverflow.clip
-                            ),
+                            child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(color: config.primary),
+                                  children: [
+                                    TextSpan(text: "Your order "),
+                                    TextSpan(text: id, style: TextStyle(fontWeight: FontWeight.bold)),
+                                    TextSpan(text: " has been placed. ")
+                                  ]
+                                )
+                              ),
                           ),
                         ],
                       ),
@@ -129,14 +111,14 @@ class OrderContentUI extends ConsumerWidget {
                       style: TextStyle(color: config.primary),
                       children: [
                         TextSpan(text: "We sent an email to "),
-                        TextSpan(text: shippingInfo!.email, style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: email, style: TextStyle(fontWeight: FontWeight.bold)),
                         TextSpan(text: " with your order confirmation and bill. ")
                       ]
                     )
                   ),
                 //  Text("We sent an email to orders@banuelson.com with your order confirmation and bill. "),
                   const SizedBox(height: 20,),
-                  Text("Time placed: 17/02/2020 12:45 CEST", style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text("Time placed: $createdAt", style: TextStyle(fontWeight: FontWeight.bold),),
 
                 ],
               ),
@@ -150,7 +132,7 @@ class OrderContentUI extends ConsumerWidget {
                 [
                    Text("Shipping", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                    const SizedBox(height: 20,),
-                   ShippingCard(name: shippingInfo!.name, email: shippingInfo.email, phone: shippingInfo.phone, address: shippingInfo.address)
+                   ShippingCard(name: shippingInfo.name, city: shippingInfo.city, email: shippingInfo.email, phone: shippingInfo.phone, address: shippingInfo.address)
                 ]
               )
             ),
@@ -171,11 +153,11 @@ class OrderContentUI extends ConsumerWidget {
                          height: 40,
                          child: ClipRRect(
                           borderRadius: BorderRadiusGeometry.circular(10),
-                          child: Image.asset("assets/images/wavepay.png"),
+                          child: paymentMethod == "KPAY" ?  Image.asset("assets/images/kpay.png") : paymentMethod == "WAVEPAY" ?  Image.asset("assets/images/wavepay.png") : Image.asset("assets/images/wavepay.png"),
                          ),
                        ),
                        SizedBox(width: 10,),
-                       Text("Wave Money", style: TextStyle(fontWeight: FontWeight.bold),)
+                       Text(paymentMethod, style: TextStyle(fontWeight: FontWeight.bold),)
                     ],
                    )
                 ]
@@ -192,13 +174,7 @@ class OrderContentUI extends ConsumerWidget {
                 [
                    Text("Order Items", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                    const SizedBox(height: 10,),
-                   Container(
-                    padding: EdgeInsets.all(10),
-                     decoration: BoxDecoration(
-                       color: isOrderHistory ? config.lightGreen : config.lightBlue
-                     ),
-                     child:message,
-                   )
+                   message
                 ]
               )
             ),
@@ -213,17 +189,16 @@ class OrderContentUI extends ConsumerWidget {
                   config: config,
                   existCheckBox: false,
                   existColorField: true,
-                  color: "Beige",
+                  color: cartItems[index].color,
                   existSizeField: true,
-                  size: "L",
+                  size: cartItems[index].size,
                   existQuantityButton: false,
-                  realQuantity: 1,
+                  realQuantity:(cartItems[index].quantity ),
                   name: cartItems[index].name,
-                  brand: cartItems[index].brand,
+                  brand: cartItems[index].brandName,
                   price: (cartItems[index].price as num).toDouble(),
-                  currency: cartItems[index].currency,
+                  currency: currency,
                   imageUrl: cartItems[index].imageUrl,
-                  quantity: (cartItems[index].quantity ),
                   isChecked: false,
                 );
               },
@@ -231,12 +206,20 @@ class OrderContentUI extends ConsumerWidget {
             ),
           ),
           ),
+          
           SliverToBoxAdapter(child: Divider(color: config.greyColor, thickness: 5,)),
           SliverPadding(
             padding: EdgeInsetsGeometry.symmetric(vertical: 10),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                OrderSummaryWidget(cartItems: cartItems),
+                OrderSummaryCard(
+                  totalItem: cartItems.length,
+                  totalAmount: totalAmount.toDouble(),
+                  subTotal: subTotal.toDouble(),
+                  shippingFee: shippingFee.toDouble(),
+                  tax: tax.toDouble(),
+                  currency: currency,
+                ),
                 if(!isOrderHistory)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),

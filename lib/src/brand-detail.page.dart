@@ -334,6 +334,7 @@ class _BrandDetailPageState extends ConsumerState<BrandDetailPage>
                   items: products,
                   itemBuilder: (context, product, index) {
                     return ProductCard(
+                      id: "2",
                       config: config,
                       title: product["title"],
                       imageUrl: product["imageUrl"],

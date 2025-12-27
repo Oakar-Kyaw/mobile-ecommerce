@@ -29,6 +29,7 @@ class VerticalScrollItem extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             return ProductCard(
+              id: "2",
               isFavorite: isFavorite,
               config: config,
               title: product[index]["title"],

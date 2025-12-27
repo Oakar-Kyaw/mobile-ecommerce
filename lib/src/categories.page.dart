@@ -1,24 +1,31 @@
+import 'package:ecommerce_mobile/api/categories-api.service.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ecommerce_mobile/response/category.dart';
 
-class CategoriesPage extends ConsumerWidget {
-  CategoriesPage({super.key});
+// --- Provider inside this file ---
+final categoriesProvider = FutureProvider.autoDispose<List<Category>>((ref) async {
+  final List<Category> response = await getAllCategoriesApiData();
+  print("response is: $response");
+  return response;
+});
 
-  final List<Map<String, String>> brandList = [
-    {"name": "Nike", "photoUrl": "assets/images/nike.jpg"},
-    {"name": "Puma", "photoUrl": "assets/images/puma.jpg"},
-    {"name": "Reebok", "photoUrl": "assets/images/reebook.jpg"},
-    {"name": "Shein", "photoUrl": "assets/images/shein.jpg"},
-    {"name": "Zara", "photoUrl": "assets/images/zara.jpg"},
-    {"name": "H&M", "photoUrl": "assets/images/handm.jpg"},
-    {"name": "Asics", "photoUrl": "assets/images/asis.jpg"},
-  ];
+class CategoriesPage extends ConsumerStatefulWidget {
+  const CategoriesPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CategoriesPage> createState() => _CategoriesPageState();
+}
+
+class _CategoriesPageState extends ConsumerState<CategoriesPage> {
+  List<SubCategory> subCate = [];
+
+  @override
+  Widget build(BuildContext context) {
     final config = ref.watch(appColorProvider);
+    final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -29,100 +36,121 @@ class CategoriesPage extends ConsumerWidget {
           child: const Icon(Icons.arrow_back),
         ),
       ),
-
-      body: Container(
-        color: config.greyColor,
-        child: Row(
-          children: [
-            /// LEFT SIDE MENU
-            Container(
-              width: 90,
-              color: config.background,
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const Divider(color: Color.fromARGB(255, 236, 235, 235)),
-                itemCount: brandList.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    child: Center(
-                      child: Text(
-                        brandList[index]['name']!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+      body: categoriesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(child: Text("Error: $error")),
+        data: (categories) {
+          return Container(
+            color: config.greyColor,
+            child: Row(
+              children: [
+                // LEFT SIDE MENU
+                Container(
+                  width: 90,
+                  color: config.background,
+                  child: ListView.separated(
+                    separatorBuilder: (_, __) => const Divider(
+                      color: Color.fromARGB(255, 236, 235, 235),
                     ),
-                  );
-                },
-              ),
-            ),
-        
-            /// RIGHT GRID
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.only(left: 10, right: 20, top:10),
-                    sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final brand = brandList[index];
-        
-                          return GestureDetector(
-                            onTap: () {
-                              debugPrint("Clicked: ${brand['name']}");
-                            },
-                            child: Column(
-                              children: [
-                                /// IMAGE (takes remaining space)
-                                Expanded(
-                                  child: Center(
-                                    child: AspectRatio(
-                                      aspectRatio: 1, // ✅ forces square
-                                      child: ClipOval(
-                                        child: Image.asset(
-                                          brand['photoUrl']!,
-                                          fit: BoxFit.cover,
+                    itemCount: subCate.length,
+                    itemBuilder: (context, index) {
+                      return subCate.isNotEmpty ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 20,
+                        ),
+                        child: Center(
+                          child: Text(
+                            subCate[index].title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ) : Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 20,
+                        ),
+                        child: Text("No Subcategories", style: TextStyle(color: config.textPrimary),)
+                        );
+                    },
+                  ),
+                ),
+
+                // RIGHT GRID
+                Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 20,
+                          top: 10,
+                        ),
+                        sliver: SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final data = categories[index]; // List<Category>
+                              final String? photoUrl = data.photoUrl;
+                              final Image image = (photoUrl != null && photoUrl.isNotEmpty)
+                                  ? Image.network(photoUrl, fit: BoxFit.cover)
+                                  : Image.asset("assets/images/default.jpg", fit: BoxFit.cover);
+
+                              return GestureDetector(
+                                onTap: () {
+                                  print("click is ${data.subCategory}");
+                                  setState(() {
+                                    subCate = data.subCategory ?? [] ;
+                                  });
+                                },
+                                child: Column(
+                                  children: [
+                                    // IMAGE
+                                    Expanded(
+                                      child: Center(
+                                        child: AspectRatio(
+                                          aspectRatio: 1,
+                                          child: ClipOval(child: image),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    const SizedBox(height: 6),
+                                    // TEXT
+                                    SizedBox(
+                                      height: 18,
+                                      child: Text(
+                                        data.title,
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 6),
-        
-                                /// TEXT (fixed height)
-                                SizedBox(
-                                  height: 18,
-                                  child: Text(
-                                    brand['name']!,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        childCount: brandList.length,
+                              );
+                            },
+                            childCount: categories.length, // <-- use categories.length, not brandList
+                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.85,
+                          ),
+                        ),
                       ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.85,
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -83,7 +83,7 @@ class CustomerBottomNavigationBar extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(context: context, config: config, icon: Icons.home, label: 'Home', index: 0, route: AppRoute.home),
-              _buildNavItem(context: context,config: config, icon: Icons.history, label: 'Orders', index: 1, route: AppRoute.order ),
+              _buildNavItem(context: context,config: config, icon: Icons.history, label: 'Orders', index: 1, route: AppRoute.orderHistory ),
               _buildNavItem(context: context,config: config, icon: Icons.chat, label: 'Chat', index: 2, route: AppRoute.chat),
               _buildNavItem(
                 context: context,

@@ -54,7 +54,7 @@ class OrderItems extends Notifier<OrderItemType> {
     return OrderItemType(items: [], calculation: OrderCalculation());
    // return state;
   }
-
+  
   /// Add checked item only
   void addItem({required List<Item> itemList, double? shippingFee, double? tax}) {
     final newItems = itemList;

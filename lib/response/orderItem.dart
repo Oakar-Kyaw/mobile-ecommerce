@@ -16,11 +16,12 @@ class OrderItem {
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
+    print("order item json $json");
     return OrderItem(
-      productId: json['productId'],
-      quantity: json['quantity'],
+      productId: json['productId'] as int,
+      quantity: json['quantity'] as int,
       price: (json['price'] as num).toDouble(),
-      brandId: json['brandId'],
+      brandId: json['brandId'] as int,
       size: json["size"],
       color: json["color"]
     );

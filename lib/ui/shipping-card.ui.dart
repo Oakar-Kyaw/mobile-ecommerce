@@ -8,12 +8,14 @@ class ShippingCard extends ConsumerWidget {
   final String phone;
   final String email;
   final String address;
+  final String city;
   const ShippingCard({
     super.key, 
     required this.name,
     required this.phone,
     required this.email,
-    required this.address
+    required this.address,
+    required this.city
   });
 
   @override
@@ -31,11 +33,12 @@ class ShippingCard extends ConsumerWidget {
           Text(name, style: TextStyle(fontWeight: FontWeight.bold),),
           SizedBox(height: 15,),
           Text(email, style: TextStyle(fontWeight: FontWeight.bold),),
-          SizedBox(height: 5,),
+          SizedBox(height: 3,),
           Text(phone, style: TextStyle(fontWeight: FontWeight.bold),),
           SizedBox(height: 15,),
           Text(address, overflow: TextOverflow.clip, style: TextStyle(fontWeight: FontWeight.bold),),
-          SizedBox(height: 15,),
+          SizedBox(height: 3,),
+          Text(city, overflow: TextOverflow.clip, style: TextStyle(fontWeight: FontWeight.bold),)
         ],
       ),
     );

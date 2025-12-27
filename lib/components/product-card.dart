@@ -7,21 +7,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ProductCard extends ConsumerWidget {
+  final String id;
   final String title;
-  final num price;
+  final int price;
   final String currency;
-  final num? discountPrice;
-  final String imageUrl;
+  final int? discountPrice;
+  final String? imageUrl;
+  final String? imageAsset;
   final String? description;
   final bool isFavorite;
   final IAppColorAbstract config;
 
   const ProductCard({
     Key? key,
+    required this.id,
     required this.config,
     required this.title,
-    required this.imageUrl,
+    this.imageUrl,
     required this.price,
+    this.imageAsset,
     this.currency = "MMK",
     this.description,
     this.discountPrice,
@@ -31,21 +35,29 @@ class ProductCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, AppRoute.productDetail),
+      onTap: () => Navigator.pushNamed(context, AppRoute.productDetail, arguments: { "id": id}),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         //crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Stack(
             children: [
+             imageAsset != null ?
               SizedBox(
                 width: 180,
                 height: 185,
                 child: Image.asset(
-                  imageUrl,
+                  imageAsset!,
                   fit: BoxFit.cover,
                 ),
-              ),
+              ): SizedBox(
+                  width: 180,
+                  height: 185,
+                  child: Image.network(
+                    imageUrl!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
                Positioned(
                   top: 8,
                   right: 8,
@@ -109,7 +121,8 @@ class ProductCard extends ConsumerWidget {
                 style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
-            description: Padding(
+            description: Container(
+              height: 50,
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
                 description ?? "No description",

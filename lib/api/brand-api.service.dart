@@ -27,7 +27,7 @@ Future<Map<String, dynamic>?> getBrandByIdApiData(int id) async {
     final url = "${dotenv.env['BACKEND_URL']}/api/v1/brands/${id}";
     final response = await _dio.get(url);
     final data = response.data as Map<String, dynamic>;
-    print("brand $data");
+    //print("brand $data");
     return {
       "success": data["success"],
       "data": data["data"],

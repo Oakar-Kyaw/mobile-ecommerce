@@ -1,3 +1,4 @@
+import 'package:ecommerce_mobile/response/order.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/src/brand-detail.page.dart';
 import 'package:ecommerce_mobile/src/cart.page.dart';
@@ -9,7 +10,7 @@ import 'package:ecommerce_mobile/src/favorite.page.dart';
 import 'package:ecommerce_mobile/src/home.page.dart';
 import 'package:ecommerce_mobile/src/login.dart';
 import 'package:ecommerce_mobile/src/notification.page.dart';
-import 'package:ecommerce_mobile/src/order-confirm.page.dart';
+import 'package:ecommerce_mobile/src/order-detail.page.dart';
 import 'package:ecommerce_mobile/src/order-history.page.dart';
 import 'package:ecommerce_mobile/src/order.page.dart';
 import 'package:ecommerce_mobile/src/otp.page.dart';
@@ -62,39 +63,55 @@ class RouteGenerator {
            BrandPage(),
         );
       case AppRoute.brandDetail:
-      final args = settings.arguments;
+        final args = settings.arguments;
 
-      if (args is Map<String, dynamic>) {
+        if (args is Map<String, dynamic>) {
+          return _buildPageRoute(
+            BrandDetailPage(id: args["id"]),
+          );
+        }
+
+        // fallback if arguments are missing
         return _buildPageRoute(
-          BrandDetailPage(id: args["id"]),
+          const BrandDetailPage(),
         );
-      }
-
-      // fallback if arguments are missing
-      return _buildPageRoute(
-        const BrandDetailPage(),
-      );
 
       case AppRoute.categories:
         return _buildPageRoute(
            CategoriesPage(),
         );
       case AppRoute.productDetail:
-        return _buildPageRoute(
-           const ProductDetailPage(),
+        final args = settings.arguments;
+        print("argumetn $args");
+        if (args is Map<String, dynamic>) {
+          return _buildPageRoute(
+           ProductDetailPage(id: args["id"]),
         );
-      case AppRoute.order:
+        }
         return _buildPageRoute(
-           const OrderPage(),
-        );
-      case AppRoute.orderConfirm:
-        return _buildPageRoute(
-           const OrderConfirmPage(),
+           ProductDetailPage(id: "1",),
         );
       case AppRoute.orderHistory:
         return _buildPageRoute(
-           const OrderHistoryPage(),
+           const OrderPage(),
         );
+      case AppRoute.orderDetail:
+        final args = settings.arguments as String?; 
+        if (args != null && args.isNotEmpty) {
+          return _buildPageRoute(
+            OrderDetailPage(id: args),
+          );
+        }
+
+        // fallback if arguments are missing
+        return _buildPageRoute(
+          const OrderDetailPage(),
+        );
+
+      // case AppRoute.orderHistory:
+      //   return _buildPageRoute(
+      //      const OrderHistoryPage(),
+      //   );
       case AppRoute.checkout:
         return _buildPageRoute(
            ShadToaster(child: const CheckoutPage()),

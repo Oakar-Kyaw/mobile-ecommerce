@@ -1,5 +1,6 @@
 import 'package:ecommerce_mobile/riverpod/checkout-order-calculation.dart';
 import 'package:ecommerce_mobile/ui/circle-component.ui.dart';
+import 'package:ecommerce_mobile/utils/color-converter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -73,7 +74,7 @@ class OrderCard extends ConsumerWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
-                image: AssetImage(imageUrl),
+                image: NetworkImage(imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -105,9 +106,22 @@ class OrderCard extends ConsumerWidget {
               Text(brand, style: const TextStyle(fontSize: 12)),
 
               if (existColorField && color != null) ...[
-                const SizedBox(height: 5),
-                Text("Color: $color"),
-              ],
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Text("Color: "),
+                      Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: hexToColor(color!), // converts your hex string like "#FFFF"
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color.fromARGB(255, 196, 196, 196), width: 1), // optional border
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
 
               if (existSizeField && size != null) ...[
                 const SizedBox(height: 5),

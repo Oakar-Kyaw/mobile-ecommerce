@@ -21,6 +21,13 @@ abstract class IAppColorAbstract {
   Color get redColor;
   Color get lightBlue;
   Color get lightGreen;
+  Color get pending;
+  Color get paid ;
+  Color get confirmed ;
+  Color get failed ;
+  Color get shipped ;
+  Color get delivered ;
+  Color get cancelled ;
 }
 
 abstract class IAppFontSizeAbstract {

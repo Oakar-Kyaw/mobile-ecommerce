@@ -3,7 +3,7 @@ import 'package:ecommerce_mobile/response/orderItem.dart';
 
 class Order {
   final String userId;
-  final List<OrderItem> items;
+  final List<OrderItem>? items;
   final String paymentType;
   final double? totalAmount;
   final double? subTotal;
@@ -16,7 +16,7 @@ class Order {
 
   Order({
     required this.userId,
-    required this.items,
+    this.items,
     required this.paymentType,
     this.totalAmount,
     this.subTotal,
@@ -29,11 +29,12 @@ class Order {
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
+    print("json, $json");
     return Order(
-      userId: json['userId'],
-      items: (json['items'] as List)
-          .map((e) => OrderItem.fromJson(e))
-          .toList(),
+      userId: json['userId'].toString(),
+      // items: (json['items'] as List)
+      //     .map((e) => OrderItem.fromJson(e))
+      //     .toList(),
       totalAmount: (json['totalAmount'] as num?)?.toDouble(),
       subTotal: (json['subTotal'] as num?)?.toDouble(),
       shippingFee: (json['shippingFee'] as num?)?.toDouble(),
@@ -48,7 +49,7 @@ class Order {
   Map<String, dynamic> toJson() {
     return {
       'userId': userId,
-      'items': items.map((e) => e.toJson()).toList(),
+      'items': items?.map((e) => e.toJson()).toList(),
       'totalAmount': totalAmount,
       'subTotal': subTotal,
       'shippingFee': shippingFee,

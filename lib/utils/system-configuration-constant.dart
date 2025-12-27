@@ -123,6 +123,27 @@ class LightAppColors implements IAppColorAbstract {
 
   @override
   Color get lightGreen => const Color.fromRGBO(227, 255, 226, 1);
+
+  @override
+  Color get pending => const Color.fromRGBO(250, 204, 21, 1);
+
+  @override
+  Color get paid => const Color.fromRGBO(59, 130, 246, 1);
+
+  @override
+  Color get confirmed => const Color.fromRGBO(34, 197, 94, 1);
+
+  @override
+  Color get failed => const Color.fromARGB(255, 239, 68, 68);
+
+  @override
+  Color get shipped => const Color.fromRGBO(139, 92, 246, 1);
+
+  @override
+  Color get delivered => const Color.fromRGBO(22, 163, 74, 1);
+
+  @override
+  Color get cancelled => const Color.fromRGBO(107, 114, 128, 1);
 }
 
 class DarkAppColors implements IAppColorAbstract {
@@ -185,6 +206,27 @@ class DarkAppColors implements IAppColorAbstract {
 
   @override
   Color get lightGreen => const Color.fromRGBO(227, 255, 226, 1);
+
+  @override
+  Color get pending => const Color.fromRGBO(250, 204, 21, 1);
+
+  @override
+  Color get paid => const Color.fromRGBO(59, 130, 246, 1);
+
+  @override
+  Color get confirmed => const Color.fromRGBO(34, 197, 94, 1);
+
+  @override
+  Color get failed => const Color.fromARGB(255, 239, 68, 68);
+
+  @override
+  Color get shipped => const Color.fromRGBO(139, 92, 246, 1);
+
+  @override
+  Color get delivered => const Color.fromRGBO(22, 163, 74, 1);
+
+  @override
+  Color get cancelled => const Color.fromRGBO(107, 114, 128, 1);
 }
 
 class FontSizeConfiguration {

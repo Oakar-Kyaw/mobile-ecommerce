@@ -1,26 +1,32 @@
+import 'package:ecommerce_mobile/api/product.api.dart';
 import 'package:ecommerce_mobile/components/app-bar.dart';
-import 'package:ecommerce_mobile/components/product-card.dart';
+import 'package:ecommerce_mobile/response/product.dart';
+import 'package:ecommerce_mobile/riverpod/product-detail.dart';
 import 'package:ecommerce_mobile/riverpod/system-configuration.dart';
 import 'package:ecommerce_mobile/src/app-route.dart';
 import 'package:ecommerce_mobile/ui/horizontal-scroll-item.ui.dart';
 import 'package:ecommerce_mobile/ui/product-tab-bar.ui.dart';
 import 'package:ecommerce_mobile/ui/review-component.ui.dart';
-import 'package:ecommerce_mobile/ui/title.dart';
 import 'package:ecommerce_mobile/utils/review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecommerce_mobile/utils/constant.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+
 class ProductDetailPage extends ConsumerStatefulWidget {
-  const ProductDetailPage({super.key});
+ String id;
+ ProductDetailPage({
+    super.key,
+    required this.id
+  });
 
   @override
   ConsumerState<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with SingleTickerProviderStateMixin {
-
+ // late String selectedMainImage ;
   final List<Map<String, dynamic>> products = [
     {"title": "Classic White Shirt","imageUrl": "assets/images/menshirt.jpg","description": "Soft cotton white shirt, perfect for casual or formal wear.","price": 40000,"currency": "MMK"},
     {"title": "Denim Jeans","imageUrl": "assets/images/jean.jpg","description": "Slim fit denim jeans with stretchable fabric.","price": 55000,"currency": "MMK"},
@@ -29,11 +35,17 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
     {"title": "Smart Watch","imageUrl": "assets/images/smartwatch.jpg","description": "Waterproof smartwatch with heart rate and sleep tracking.","price": 850000,"currency": "MMK"},
   ];
 
+  // final List<String> images = [
+  //   "assets/images/white-shirt.jpg",
+  //   "assets/images/white-shirt.jpg",
+  //   "assets/images/white-shirt.jpg",
+  //   "assets/images/white-shirt.jpg",
+  // ];
   final List<String> images = [
-    "assets/images/white-shirt.jpg",
-    "assets/images/white-shirt.jpg",
-    "assets/images/white-shirt.jpg",
-    "assets/images/white-shirt.jpg",
+    // "assets/images/white-shirt.jpg",
+    // "assets/images/white-shirt.jpg",
+    // "assets/images/white-shirt.jpg",
+    // "assets/images/white-shirt.jpg",
   ];
 
   final List<String> sizes = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -43,7 +55,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   ];
 
   late TabController tabController;
-  late double _tabContentHeight = 100;
+  late final double _tabContentHeight = 100;
 
   String _tabValue = "description";
 
@@ -58,22 +70,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   @override
   void initState() {
     super.initState();
+
     tabController = TabController(length: 2, vsync: this);
-
-    // Listen for swipe or tap changes
-    tabController.addListener(() {
-      // Only run when animation is completed
-      if (!tabController.indexIsChanging) {
-        setState(() {
-          _tabValue = tabController.index == 0 ? 'description' : 'reviews';
-
-          // Update dynamic height
-          _tabContentHeight = _tabValue == 'description' ? 100 : 600;
-        });
-      }
-    });
   }
-
 
   @override
   void dispose() {
@@ -90,7 +89,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
   @override
   Widget build(BuildContext context) {
     final IAppColorAbstract config = ref.watch(appColorProvider);
-
+    final productByIdAsync = ref.watch(productByIdProvider(widget.id));
+    final productDetail = ref.watch(productDetailStateProvider);
+    
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -102,7 +103,23 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
           lastIcon: const Icon(Icons.shopping_cart),
           title: "Product Detail",
         ),
-        body: CustomScrollView(
+        body: productByIdAsync.when(
+                  loading: () => const SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  error: (error, _) => SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: Text("Error: $error"),
+                    ),
+                  ),
+          data: (product) {
+        //  selectedMainImage = product.mainImage;
+        // print("selec $selectedMainImage");
+         return CustomScrollView(
           slivers: [
             // Main Product Image
             SliverToBoxAdapter(
@@ -112,8 +129,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                   borderRadius: BorderRadius.circular(10),
                   child: Stack(
                     children: [
-                      Image.asset(
-                        "assets/images/white-shirt.jpg",
+                       Image.network(
+                        productDetail.mainImage ,
                         fit: BoxFit.cover,
                         height: 250,
                         width: double.infinity,
@@ -149,24 +166,41 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
               ),
             ),
 
-            // Thumbnail Images
+            //Thumbnail Images
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 80,
                 child: HorizontalScrollableList(
                   spacing: 8,
-                  items: images,
+                  items: productDetail.images,
                   itemBuilder: (context, image, index) {
-                    return Container(
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                          image: AssetImage(image),
-                          fit: BoxFit.cover,
+                     return GestureDetector(
+                      onTap: () {
+                        ref.read(productDetailStateProvider.notifier).changeMainImage(image);
+                      },
+                       child: Container(
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          image: DecorationImage(
+                            image: NetworkImage(image),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                    );
+                                           ),
+                     );
+                 
+                    // return Container(
+                    //   width: 100,
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(5),
+                    //     image: DecorationImage(
+                    //       image: AssetImage(image),
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //   ),
+                    // );
+                 
                   },
                 ),
               ),
@@ -180,9 +214,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    const Text("Shirt T (Sis-Burma)", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(product.name, style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
-                    const Text("\$50", style: TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey)),
+                  //  const Text("\$50", style: TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey)),
                     const SizedBox(height: 5),
 
                     // Price + Quantity
@@ -190,7 +224,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text("\$29.99", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Row(
+                          children: [
+                            Text( productDetail.price.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                            SizedBox(width: 5,),
+                            Text( "MMk", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          ],
+                        ),
                         Row(
                           children: [
                             GestureDetector(
@@ -212,9 +252,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
                     const SizedBox(height: 10),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [Text("Color: White"), Text("Availability: In Stock")]),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children:  [Text("Color: ${productDetail.colorName}"), Text("Availability: ${productDetail.quantity}")]),
                     const SizedBox(height: 10),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [Text("Weight: 0.5kg"), Text("Category: T-shirt")]),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text("Weight: ${product.weight}"), Text("Category: ${product.category.title}")]),
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
                     const SizedBox(height: 10),
@@ -227,9 +267,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                       child: HorizontalScrollableList(
                         padding: EdgeInsets.all(0),
                         spacing: 8,
-                        items: sizes,
+                        items: productDetail.sizes,
                         itemBuilder: (context, size, index) {
-                          return circleWidget(colorData: config.textSecondary, widgetData: Text(size, style: const TextStyle(fontWeight: FontWeight.bold)), height: 40, width: 40);
+                          return GestureDetector(
+                            onTap: () => ref.read(productDetailStateProvider.notifier).savePrice(size.productSize.price),
+                            child: circleWidget(colorData: config.textSecondary, widgetData: Text(size.productSize.name, style: const TextStyle(fontWeight: FontWeight.bold)), height: 40, width: 40));
                         },
                       ),
                     ),
@@ -237,17 +279,21 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                     const Text("Color", style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
 
-                    SizedBox(
+                    product.colors.isNotEmpty ?
+                      SizedBox(
                       height: 50,
                       child: HorizontalScrollableList(
                         padding: EdgeInsets.all(0),
                         spacing: 8,
-                        items: colorHex,
-                        itemBuilder: (context, hex, index) {
-                          return circleWidget(colorData: config.textSecondary, widgetData: Container(decoration: BoxDecoration(shape: BoxShape.circle, color: hexToColor(hex))), height: 40, width: 40);
+                        items: product.colors,
+                        itemBuilder: (context, productColor, index) {
+                          return GestureDetector(
+                            onTap: () => ref.read(productDetailStateProvider.notifier).saveData(productColor.images.front, productColor.images, productColor.sizes[index].productSize.price, productColor.sizes, productColor.sizes[index].quantity, productColor.name),
+                            child: circleWidget(colorData: config.textSecondary, widgetData: Container(decoration: BoxDecoration(shape: BoxShape.circle, color: hexToColor(productColor.hex))), height: 40, width: 40));
                         },
                       ),
-                    ),
+                    )
+                    : Container(),
                     const SizedBox(height: 10),
                     Divider(color: config.lineColor, thickness: 1),
 
@@ -259,14 +305,14 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            circleWidget(colorData: Colors.transparent, widgetData: Image.asset("assets/images/bmw.jpg", fit: BoxFit.cover), height: 60, width: 60),
+                            circleWidget(colorData: Colors.transparent, widgetData: product.brand.imageUrl.isNotEmpty ? Image.network(product.brand.imageUrl, fit: BoxFit.cover) : Image.asset("assets/images/default.jpg", fit: BoxFit.cover), height: 60, width: 60),
                             const SizedBox(width: 10),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("BMW Car (Branch Code)", style: TextStyle(fontWeight: FontWeight.bold)),
-                                Text("99% positive feedback")
+                                Text(product.brand.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                                //Text("99% positive feedback")
                               ],
                             )
                           ],
@@ -288,9 +334,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                         children: [
                           SingleChildScrollView(
                             padding: const EdgeInsets.symmetric(vertical: 15),
-                            child:  const Text(
-                              'A product description is persuasive marketing copy explaining what a product is, its features, benefits, and why a customer should buy it, often using vivid language to help buyers visualize it and feel an emotional connection, ultimately driving sales. It\'s more than just specs; it tells a story, highlights unique selling points (USPs), and uses SEO-friendly language to attract the right audience and answer potential questions, according to resources from Shopify and ClearVoice. Key elements to include: Features & Specs: Dimensions, materials, technical details, colors, weight. Benefits: How the product solves problems or improves the customer\'s life (focus on benefits over just features). Unique Selling Points (USPs): What makes it special or different.A product description is persuasive marketing copy explaining what a product is, its features, benefits, and why a customer should buy it, often using vivid language to help buyers visualize it and feel an emotional connection, ultimately driving sales. It is more than just specs; it tells a story, highlights unique selling points (USPs), and uses SEO-friendly language to attract the right audience and answer potential questions, according to resources from',
-                              style: TextStyle(fontSize: 14),
+                            child: Text(
+                               product.description,
+                               style: TextStyle(fontSize: 14),
                             ),
                           ),
                           SingleChildScrollView(
@@ -331,37 +377,42 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> with Sing
                     ),
                     const SizedBox(height: 15),
                   ],
-                ),
+                )
+              
+            
               ),
             ),
 
             // Related Products
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  TitleWidget("Related Product", onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems)),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 320,
-                    child: HorizontalScrollableList<Map<String, dynamic>>(
-                      items: products,
-                      itemBuilder: (context, product, index) {
-                        return ProductCard(
-                          config: config,
-                          title: product["title"],
-                          imageUrl: product["imageUrl"],
-                          description: product["description"],
-                          price: product["price"],
-                          currency: product["currency"],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )
+            // SliverToBoxAdapter(
+            //   child: Column(
+            //     children: [
+            //       TitleWidget("Related Product", onTap: () => Navigator.pushNamed(context, AppRoute.trendingItems)),
+            //       const SizedBox(height: 10),
+            //       SizedBox(
+            //         height: 320,
+            //         child: HorizontalScrollableList<Map<String, dynamic>>(
+            //           items: products,
+            //           itemBuilder: (context, product, index) {
+            //             return ProductCard(
+            //               id: "2",
+            //               config: config,
+            //               title: product["title"],
+            //               imageUrl: product["imageUrl"],
+            //               description: product["description"],
+            //               price: product["price"],
+            //               currency: product["currency"],
+            //             );
+            //           },
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // )
+          
           ],
-        ),
+        );
+          })
       ),
     );
   }

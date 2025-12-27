@@ -32,7 +32,6 @@ class HorizontalScrollableBrand extends ConsumerWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
           final data = datas[index];
-          print("data of branch is $data");
           final String? photoUrl = data.photoUrl;
           final Image image = (photoUrl != null && photoUrl.isNotEmpty)
                             ? Image.network(photoUrl, fit: BoxFit.cover)
